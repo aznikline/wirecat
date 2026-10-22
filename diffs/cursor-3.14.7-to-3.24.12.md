@@ -1,8 +1,9 @@
 # Catalog diff: 3.14.7 -> 3.24.12
 
 - **services**: +14 / -0 / ~33
-- **messages**: +2873 / -96 / ~784
+- **messages**: +2903 / -96 / ~784
 - **enums**: +409 / -1 / ~53
+- **ipc_channels**: +25 / -2 / ~2
 
 ## Added services (14)
 - `aiserver.v1.McpToolService`
@@ -832,7 +833,7 @@
   - changed: `GetCiState`
   - changed: `WatchChangeSyncEvents`
 
-## Added messages (2873)
+## Added messages (2903)
 - `agent.v1.ShellOomKill`
 - `agent.v1.McpSymbolicPathArgument`
 - `agent.v1.SystemReminder`
@@ -3704,6 +3705,36 @@
 - `aiserver.v1.RemoteAgentHostSupersededDetail`
 - `origin.v1.ChangeMergeWhenReadySummary`
 - `origin.v1.CheckRunAnnotation`
+- `google.protobuf.FieldMask`
+- `google.protobuf.Duration`
+- `google.protobuf.Type`
+- `google.protobuf.Field`
+- `google.protobuf.Enum`
+- `google.protobuf.EnumValue`
+- `google.protobuf.Option`
+- `google.protobuf.Api`
+- `google.protobuf.Method`
+- `google.protobuf.Mixin`
+- `google.protobuf.SourceContext`
+- `google.protobuf.Empty`
+- `google.protobuf.Timestamp`
+- `google.protobuf.DoubleValue`
+- `google.protobuf.FloatValue`
+- `google.protobuf.Int64Value`
+- `google.protobuf.UInt64Value`
+- `google.protobuf.Int32Value`
+- `google.protobuf.UInt32Value`
+- `google.protobuf.BoolValue`
+- `google.protobuf.StringValue`
+- `google.protobuf.BytesValue`
+- `google.protobuf.Any`
+- `google.protobuf.Struct`
+- `google.protobuf.Value`
+- `google.protobuf.ListValue`
+- `google.protobuf.compiler.Version`
+- `google.protobuf.compiler.CodeGeneratorRequest`
+- `google.protobuf.compiler.CodeGeneratorResponse`
+- `google.rpc.Status`
 - `aiserver.v1.StoredRequestTrackingMetadata`
 - `aiserver.v1.StoredRequestTrackingMetadata.File`
 
@@ -6922,3 +6953,38 @@
 - `git_forge.v1.CompareCommitsStatus`
 - `origin.v1.CheckRunLifecycleStatus`
 - `origin.v1.RulesetBypassActorKind`
+
+## Added IPC channels (25)
+- `vscode:browser-view-message`
+- `vscode:listAllExtensionsResponse`
+- `vscode:closeExtensionMonitor`
+- `vscode:listAllExtensions`
+- `vscode:toggleDevTools`
+- `vscode:reloadWindow`
+- `vscode:pidToNameResponse`
+- `vscode:listProcessesForWorkspacesResponse`
+- `vscode:listProcessesResponse`
+- `vscode:pidToNameRequest`
+- `vscode:listProcessesForWorkspaces`
+- `vscode:listProcesses`
+- `vscode:closeProcessExplorer`
+- `vscode:workbenchCommand`
+- `vscode:trayRequestRefresh`
+- `vscode:trayLogIn`
+- `vscode:traySignUp`
+- `vscode:agentHostUpdaterFailure`
+- `vscode:webviewGetURL`
+- `cursor:timer`
+- `vscode:fetchShellEnv`
+- `ipc-message`
+- `before-input-event`
+- `vscode:getAnyPendingCertificateError`
+- `vscode:setupWebviewDevtoolsAutoConnect`
+
+## Removed IPC channels (2)
+- `vscode:createAlwaysLocalSingletonChannelConnection`
+- `vscode:createAlwaysLocalSingletonChannelConnectionResult`
+
+## Changed IPC channels (2)
+- `vscode:openDevTools`
+- `vscode:runAction`

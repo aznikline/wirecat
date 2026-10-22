@@ -1,0 +1,45 @@
+name: track-cursor-releases
+
+on:
+  schedule:
+    - cron: "17 */6 * * *"   # every 6h, offset minute
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  track:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - name: Detect latest stable
+        id: detect
+        run: |
+          set -e
+          META=$(curl -fsS --max-time 30 "https://api2.cursor.sh/updates/api/download/stable/darwin-arm64/cursor")
+          V=$(printf '%s' "$META" | python3 -c 'import json,sys; print(json.load(sys.stdin)["version"])')
+          echo "version=$V" >> "$GITHUB_OUTPUT"
+          echo "meta=$META" >> "$GITHUB_OUTPUT"
+      - name: Skip if already cataloged
+        id: skip
+        run: |
+          if [ -f "catalogs/cursor/${{ steps.detect.outputs.version }}.json" ]; then
+            echo "new=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "new=true" >> "$GITHUB_OUTPUT"
+          fi
+      - name: Download + extract + catalog + diff
+        if: steps.skip.outputs.new == 'true'
+        run: bash tools/track-cursor-release.sh
+      - name: Commit catalog
+        if: steps.skip.outputs.new == 'true'
+        run: |
+          git config user.name "wirecat-bot"
+          git config user.email "bot@wirecat.local"
+          git add catalogs/cursor/ specs/cursor/ diffs/
+          git commit -m "catalog: cursor ${{ steps.detect.outputs.version }}"
+          git push

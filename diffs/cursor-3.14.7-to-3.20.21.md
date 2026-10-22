@@ -3,6 +3,7 @@
 - **services**: +8 / -0 / ~33
 - **messages**: +1197 / -65 / ~635
 - **enums**: +127 / -0 / ~34
+- **ipc_channels**: +5 / -2 / ~0
 
 ## Added services (8)
 - `aiserver.v1.CodebaseProtectionService`
@@ -3737,3 +3738,14 @@
 - `origin.v1.AuthPolicyAppliesTo`
 - `git_forge.v1.CompareCommitsStatus`
 - `origin.v1.RulesetBypassActorKind`
+
+## Added IPC channels (5)
+- `vscode:trayRequestRefresh`
+- `vscode:trayLogIn`
+- `vscode:traySignUp`
+- `vscode:webviewGetURL`
+- `cursor:timer`
+
+## Removed IPC channels (2)
+- `vscode:createAlwaysLocalSingletonChannelConnection`
+- `vscode:createAlwaysLocalSingletonChannelConnectionResult`

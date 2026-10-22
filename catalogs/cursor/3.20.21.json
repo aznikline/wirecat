@@ -3,6 +3,7 @@
  "sources": [
   "workbench.desktop.main.js",
   "workbench.glass.main.js",
+  "preload-webview-browser.js",
   "extensionHostProcess.js",
   "extensionHostWorkerMain.js",
   "cloudAgentTranscriptIndexWorkerMain.js"
@@ -11,7 +12,8 @@
   "services": 324,
   "messages": 28622,
   "enums": 2468,
-  "methods": 7801
+  "methods": 7801,
+  "ipc_channels": 160
  },
  "services": {
   "aiserver.v1.AnalyticsService": {
@@ -231440,6 +231442,570 @@
     }
    ]
   }
+ },
+ "ipc": {
+  "channels": {
+   "vscode:extensionProcessSpawned": {
+    "sends": 2,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 0,
+    "sites": [
+     "ipcRenderer.send"
+    ]
+   },
+   "vscode:registerAuxiliaryWindow": {
+    "sends": 0,
+    "invokes": 2,
+    "listeners": 0,
+    "handlers": 0,
+    "sites": [
+     "ipcRenderer.invoke"
+    ]
+   },
+   "vscode:sleepWakeRange": {
+    "sends": 0,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 0,
+    "sites": []
+   },
+   "vscode:createConversationSearchProcessConnection": {
+    "sends": 0,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 0,
+    "sites": []
+   },
+   "vscode:createConversationSearchProcessConnectionResult": {
+    "sends": 0,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 0,
+    "sites": []
+   },
+   "vscode:prepublish": {
+    "sends": 0,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 0,
+    "sites": []
+   },
+   "vscode:uninstall": {
+    "sends": 0,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 0,
+    "sites": []
+   },
+   "vscode:openDevTools": {
+    "sends": 0,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 0,
+    "sites": []
+   },
+   "vscode:createUtilityProcessWorkerMessageChannelResult": {
+    "sends": 0,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 0,
+    "sites": []
+   },
+   "vscode:runAction": {
+    "sends": 0,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 0,
+    "sites": []
+   },
+   "vscode:runKeybinding": {
+    "sends": 0,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 0,
+    "sites": []
+   },
+   "vscode:reportSharedProcessCrash": {
+    "sends": 0,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 0,
+    "sites": []
+   },
+   "vscode:openFiles": {
+    "sends": 0,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 0,
+    "sites": []
+   },
+   "vscode:addRemoveFolders": {
+    "sends": 0,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 0,
+    "sites": []
+   },
+   "vscode:showInfoMessage": {
+    "sends": 0,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 0,
+    "sites": []
+   },
+   "vscode:showResolveShellEnvError": {
+    "sends": 0,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 0,
+    "sites": []
+   },
+   "vscode:trayRequestRefresh": {
+    "sends": 0,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 0,
+    "sites": []
+   },
+   "vscode:openComposer": {
+    "sends": 0,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 0,
+    "sites": []
+   },
+   "vscode:createNewComposer": {
+    "sends": 0,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 0,
+    "sites": []
+   },
+   "vscode:clearAllNotifications": {
+    "sends": 0,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 0,
+    "sites": []
+   },
+   "vscode:trayLogIn": {
+    "sends": 0,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 0,
+    "sites": []
+   },
+   "vscode:traySignUp": {
+    "sends": 0,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 0,
+    "sites": []
+   },
+   "vscode:openSettings": {
+    "sends": 0,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 0,
+    "sites": []
+   },
+   "vscode:trayAnalytics": {
+    "sends": 0,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 0,
+    "sites": []
+   },
+   "vscode:osFileAssociationOpen": {
+    "sends": 0,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 0,
+    "sites": []
+   },
+   "vscode:showCredentialsError": {
+    "sends": 0,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 0,
+    "sites": []
+   },
+   "vscode:showTranslatedBuildWarning": {
+    "sends": 0,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 0,
+    "sites": []
+   },
+   "vscode:showArgvParseWarning": {
+    "sends": 0,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 0,
+    "sites": []
+   },
+   "vscode:enterFullScreen": {
+    "sends": 0,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 0,
+    "sites": []
+   },
+   "vscode:leaveFullScreen": {
+    "sends": 0,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 0,
+    "sites": []
+   },
+   "vscode:openProxyAuthenticationDialog": {
+    "sends": 0,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 0,
+    "sites": []
+   },
+   "vscode:accessibilitySupportChanged": {
+    "sends": 0,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 0,
+    "sites": []
+   },
+   "vscode:configureAllowedUNCHost": {
+    "sends": 0,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 0,
+    "sites": []
+   },
+   "vscode:disablePromptForProtocolHandling": {
+    "sends": 0,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 0,
+    "sites": []
+   },
+   "vscode:notifyZoomLevel": {
+    "sends": 0,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 0,
+    "sites": []
+   },
+   "vscode:createSharedProcessChannelConnection": {
+    "sends": 0,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 0,
+    "sites": []
+   },
+   "vscode:createSharedProcessChannelConnectionResult": {
+    "sends": 0,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 0,
+    "sites": []
+   },
+   "vscode:createSharedProcessRawConnection": {
+    "sends": 0,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 0,
+    "sites": []
+   },
+   "vscode:createSharedProcessRawConnectionResult": {
+    "sends": 0,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 0,
+    "sites": []
+   },
+   "vscode:createMcpProcessChannelConnection": {
+    "sends": 0,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 0,
+    "sites": []
+   },
+   "vscode:createMcpProcessChannelConnectionResult": {
+    "sends": 0,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 0,
+    "sites": []
+   },
+   "vscode:createMcpProcessRawConnection": {
+    "sends": 0,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 0,
+    "sites": []
+   },
+   "vscode:createMcpProcessRawConnectionResult": {
+    "sends": 0,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 0,
+    "sites": []
+   },
+   "vscode:message": {
+    "sends": 0,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 0,
+    "sites": []
+   },
+   "vscode:disconnect": {
+    "sends": 0,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 0,
+    "sites": []
+   },
+   "vscode:hello": {
+    "sends": 0,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 0,
+    "sites": []
+   },
+   "vscode:onBeforeUnload": {
+    "sends": 0,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 0,
+    "sites": []
+   },
+   "vscode:onWillUnload": {
+    "sends": 0,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 0,
+    "sites": []
+   },
+   "vscode:contextmenu": {
+    "sends": 0,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 0,
+    "sites": []
+   },
+   "vscode:onCloseContextMenu": {
+    "sends": 0,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 0,
+    "sites": []
+   },
+   "vscode:startExtensionHostMessagePortResult": {
+    "sends": 0,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 0,
+    "sites": []
+   },
+   "vscode:registerWorkbenchExtensionHosts": {
+    "sends": 0,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 0,
+    "sites": []
+   },
+   "vscode:unregisterWorkbenchExtensionHosts": {
+    "sends": 0,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 0,
+    "sites": []
+   },
+   "vscode:extensionWarning": {
+    "sends": 0,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 0,
+    "sites": []
+   },
+   "vscode:getDiagnosticInfo": {
+    "sends": 0,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 0,
+    "sites": []
+   },
+   "vscode:createPtyHostMessageChannel": {
+    "sends": 0,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 0,
+    "sites": []
+   },
+   "vscode:createPtyHostMessageChannelResult": {
+    "sends": 0,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 0,
+    "sites": []
+   },
+   "vscode:rendererPing": {
+    "sends": 0,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 0,
+    "sites": []
+   },
+   "vscode:rendererPong": {
+    "sends": 0,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 0,
+    "sites": []
+   },
+   "vscode:rendererBlockedAnalytics": {
+    "sends": 0,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 0,
+    "sites": []
+   },
+   "vscode:openWindowCountsAnalytics": {
+    "sends": 0,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 0,
+    "sites": []
+   },
+   "vscode:webviewPopupClosed": {
+    "sends": 0,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 0,
+    "sites": []
+   },
+   "vscode:webviewPopupOpenTab": {
+    "sends": 0,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 0,
+    "sites": []
+   },
+   "vscode:setupWebviewCertificateHandler": {
+    "sends": 0,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 0,
+    "sites": []
+   },
+   "vscode:webviewLoadRememberedCertificates": {
+    "sends": 0,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 0,
+    "sites": []
+   },
+   "vscode:webviewGetURL": {
+    "sends": 0,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 0,
+    "sites": []
+   },
+   "vscode:webviewNavigateHistory": {
+    "sends": 0,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 0,
+    "sites": []
+   },
+   "vscode:webviewGetNavigationState": {
+    "sends": 0,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 0,
+    "sites": []
+   },
+   "vscode:setDevToolsWebContents": {
+    "sends": 0,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 0,
+    "sites": []
+   },
+   "vscode:webviewEmulateColorScheme": {
+    "sends": 0,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 0,
+    "sites": []
+   },
+   "vscode:webviewGetMatchedCSSStyles": {
+    "sends": 0,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 0,
+    "sites": []
+   },
+   "vscode:webviewAcceptCertificate": {
+    "sends": 0,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 0,
+    "sites": []
+   },
+   "vscode:webviewRejectCertificate": {
+    "sends": 0,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 0,
+    "sites": []
+   },
+   "vscode:webviewClearAcceptedCertificates": {
+    "sends": 0,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 0,
+    "sites": []
+   },
+   "vscode:webviewSendCDPCommand": {
+    "sends": 0,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 0,
+    "sites": []
+   },
+   "vscode:webviewForcefullyCrashRenderer": {
+    "sends": 0,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 0,
+    "sites": []
+   },
+   "vscode:getWebviewCertificateError": {
+    "sends": 0,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 0,
+    "sites": []
+   },
+   "vscode:registerGalleryBrowserWebview": {
+    "sends": 0,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 0,
+    "sites": []
+   },
+   "cursor:timer": {
+    "sends": 0,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 0,
+    "sites": []
+   }
+  },
+  "exposed_globals": [
+   "cursorBrowser"
+  ]
  },
  "notes": [
   "145 identifier(s) could not be resolved to a typeName",

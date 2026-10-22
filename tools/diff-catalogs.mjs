@@ -34,6 +34,9 @@ const enumSig = (e) => e.values.map((v) => `${v.no}=${v.name}`).join("|");
 const svc = diffTypeMap(old.services, cur.services, svcSig);
 const msg = diffTypeMap(old.messages, cur.messages, msgSig);
 const enm = diffTypeMap(old.enums, cur.enums, enumSig);
+const ipcA = old.ipc?.channels ?? {}, ipcB = cur.ipc?.channels ?? {};
+const ipc = diffTypeMap(ipcA, ipcB, (c) => `${c.sends}/${c.invokes}/${c.listeners}/${c.handlers}`);
+const ipcSig = { added: ipc.added, removed: ipc.removed, changed: ipc.changed };
 
 // per-service method-level detail for changed services
 const methodChanges = {};
@@ -70,10 +73,12 @@ const report = {
     services: { added: svc.added.length, removed: svc.removed.length, changed: svc.changed.length },
     messages: { added: msg.added.length, removed: msg.removed.length, changed: msg.changed.length },
     enums: { added: enm.added.length, removed: enm.removed.length, changed: enm.changed.length },
+    ipc_channels: { added: ipc.added.length, removed: ipc.removed.length, changed: ipc.changed.length },
   },
   services: svc,
   messages: msg,
   enums: enm,
+  ipc_channels: ipcSig,
   method_changes: methodChanges,
   field_changes: fieldChanges,
 };
@@ -104,6 +109,9 @@ if (md) {
   sect("Added enums", enm.added);
   sect("Removed enums", enm.removed);
   sect("Changed enums", enm.changed);
+  sect("Added IPC channels", ipc.added);
+  sect("Removed IPC channels", ipc.removed);
+  sect("Changed IPC channels", ipc.changed);
   process.stdout.write(out.join("\n") + "\n");
 } else {
   process.stdout.write(JSON.stringify(report, null, 1) + "\n");

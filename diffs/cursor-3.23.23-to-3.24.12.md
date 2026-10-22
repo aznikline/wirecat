@@ -1,8 +1,9 @@
 # Catalog diff: 3.23.23 -> 3.24.12
 
 - **services**: +1 / -0 / ~38
-- **messages**: +417 / -34 / ~551
+- **messages**: +417 / -34 / ~555
 - **enums**: +75 / -5 / ~18
+- **ipc_channels**: +0 / -0 / ~0
 
 ## Added services (1)
 - `origin.v1.OriginPrPageService`
@@ -821,7 +822,7 @@
 - `origin.v1.CreateMergeCommitBypassingChecksClientRequest`
 - `origin.v1.CreateMergeCommitBypassingChecksResponse`
 
-## Changed messages (551)
+## Changed messages (555)
 - `agent.v1.NetworkPolicy`
   - changed: `2 default_action -> default_action`
 - `agent.v1.ShellResult`
@@ -2277,6 +2278,14 @@
   - changed: `11 payload -> payload`
 - `aiserver.v1.EnvironmentHistoryLifecycleEvent`
   - changed: `2 event_kind -> event_kind`
+- `google.protobuf.Type`
+  - changed: `4 options -> options`
+- `google.protobuf.Field`
+  - changed: `9 options -> options`
+- `google.protobuf.Enum`
+  - changed: `3 options -> options`
+- `google.protobuf.EnumValue`
+  - changed: `3 options -> options`
 
 ## Added enums (75)
 - `agent.v1.ShellOomKill.Kind`

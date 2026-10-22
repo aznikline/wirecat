@@ -1,13 +1,22 @@
 {
  "generated_by": "wirecat extract-bundle-protos",
  "sources": [
+  "preload-browser.js",
   "conversationSearchMain.js",
+  "extensionMonitorMain.js",
+  "extensionMonitor.js",
+  "workbench.js",
+  "processExplorerMain.js",
+  "processExplorer.js",
   "workbench.desktop.main.js",
   "workbench.glass.main.js",
+  "preload-webview-browser.js",
   "workbench.xai-commerce-prepaid.js",
   "extensionHostProcess.js",
   "extensionHostWorkerMain.js",
   "cloudAgentTranscriptIndexWorkerMain.js",
+  "preload.js",
+  "preload-aux.js",
   "editorWebWorkerMain.js",
   "main.js",
   "types.js",
@@ -23,6 +32,12 @@
   "proto-runtime.js",
   "create-descriptor-set.js",
   "create-registry-from-desc.js",
+  "ipc.js",
+  "index.js",
+  "default.js",
+  "ipc.js",
+  "index.js",
+  "default.js",
   "types.js",
   "types.js",
   "types.js",
@@ -51,9 +66,10 @@
  ],
  "counts": {
   "services": 418,
-  "messages": 48788,
+  "messages": 49164,
   "enums": 4708,
-  "methods": 16317
+  "methods": 16317,
+  "ipc_channels": 280
  },
  "services": {
   "aiserver.v1.AnalyticsService": {
@@ -255086,6 +255102,690 @@
     }
    ]
   },
+  "google.protobuf.FieldMask": {
+   "kind": "message",
+   "name": "google.protobuf.FieldMask",
+   "fields": [
+    {
+     "no": 1,
+     "name": "paths",
+     "kind": "scalar",
+     "type": "string",
+     "repeated": true
+    }
+   ]
+  },
+  "google.protobuf.Duration": {
+   "kind": "message",
+   "name": "google.protobuf.Duration",
+   "fields": [
+    {
+     "no": 1,
+     "name": "seconds",
+     "kind": "scalar",
+     "type": "int64"
+    },
+    {
+     "no": 2,
+     "name": "nanos",
+     "kind": "scalar",
+     "type": "int32"
+    }
+   ]
+  },
+  "google.protobuf.Type": {
+   "kind": "message",
+   "name": "google.protobuf.Type",
+   "fields": [
+    {
+     "no": 1,
+     "name": "name",
+     "kind": "scalar",
+     "type": "string"
+    },
+    {
+     "no": 2,
+     "name": "fields",
+     "kind": "message",
+     "type": "google.protobuf.Int32Value",
+     "repeated": true
+    },
+    {
+     "no": 3,
+     "name": "oneofs",
+     "kind": "scalar",
+     "type": "string",
+     "repeated": true
+    },
+    {
+     "no": 4,
+     "name": "options",
+     "kind": "message",
+     "type": "google.protobuf.EnumValueDescriptorProto",
+     "repeated": true
+    },
+    {
+     "no": 5,
+     "name": "source_context",
+     "kind": "message",
+     "type": "google.protobuf.SourceContext"
+    },
+    {
+     "no": 6,
+     "name": "syntax",
+     "kind": "enum",
+     "type": "google.protobuf.Value"
+    },
+    {
+     "no": 7,
+     "name": "edition",
+     "kind": "scalar",
+     "type": "string"
+    }
+   ]
+  },
+  "google.protobuf.Field": {
+   "kind": "message",
+   "name": "google.protobuf.Field",
+   "fields": [
+    {
+     "no": 1,
+     "name": "kind",
+     "kind": "enum",
+     "type": "google.protobuf.ListValue"
+    },
+    {
+     "no": 2,
+     "name": "cardinality",
+     "kind": "enum",
+     "type": "google.protobuf.Int64Value"
+    },
+    {
+     "no": 3,
+     "name": "number",
+     "kind": "scalar",
+     "type": "int32"
+    },
+    {
+     "no": 4,
+     "name": "name",
+     "kind": "scalar",
+     "type": "string"
+    },
+    {
+     "no": 6,
+     "name": "type_url",
+     "kind": "scalar",
+     "type": "string"
+    },
+    {
+     "no": 7,
+     "name": "oneof_index",
+     "kind": "scalar",
+     "type": "int32"
+    },
+    {
+     "no": 8,
+     "name": "packed",
+     "kind": "scalar",
+     "type": "bool"
+    },
+    {
+     "no": 9,
+     "name": "options",
+     "kind": "message",
+     "type": "google.protobuf.EnumValueDescriptorProto",
+     "repeated": true
+    },
+    {
+     "no": 10,
+     "name": "json_name",
+     "kind": "scalar",
+     "type": "string"
+    },
+    {
+     "no": 11,
+     "name": "default_value",
+     "kind": "scalar",
+     "type": "string"
+    }
+   ]
+  },
+  "google.protobuf.Enum": {
+   "kind": "message",
+   "name": "google.protobuf.Enum",
+   "fields": [
+    {
+     "no": 1,
+     "name": "name",
+     "kind": "scalar",
+     "type": "string"
+    },
+    {
+     "no": 2,
+     "name": "enumvalue",
+     "kind": "message",
+     "type": "google.protobuf.BoolValue",
+     "repeated": true
+    },
+    {
+     "no": 3,
+     "name": "options",
+     "kind": "message",
+     "type": "google.protobuf.EnumValueDescriptorProto",
+     "repeated": true
+    },
+    {
+     "no": 4,
+     "name": "source_context",
+     "kind": "message",
+     "type": "google.protobuf.SourceContext"
+    },
+    {
+     "no": 5,
+     "name": "syntax",
+     "kind": "enum",
+     "type": "google.protobuf.Value"
+    },
+    {
+     "no": 6,
+     "name": "edition",
+     "kind": "scalar",
+     "type": "string"
+    }
+   ]
+  },
+  "google.protobuf.EnumValue": {
+   "kind": "message",
+   "name": "google.protobuf.EnumValue",
+   "fields": [
+    {
+     "no": 1,
+     "name": "name",
+     "kind": "scalar",
+     "type": "string"
+    },
+    {
+     "no": 2,
+     "name": "number",
+     "kind": "scalar",
+     "type": "int32"
+    },
+    {
+     "no": 3,
+     "name": "options",
+     "kind": "message",
+     "type": "google.protobuf.EnumValueDescriptorProto",
+     "repeated": true
+    }
+   ]
+  },
+  "google.protobuf.Option": {
+   "kind": "message",
+   "name": "google.protobuf.Option",
+   "fields": [
+    {
+     "no": 1,
+     "name": "name",
+     "kind": "scalar",
+     "type": "string"
+    },
+    {
+     "no": 2,
+     "name": "value",
+     "kind": "message",
+     "type": "google.protobuf.Any"
+    }
+   ]
+  },
+  "google.protobuf.Api": {
+   "kind": "message",
+   "name": "google.protobuf.Api",
+   "fields": [
+    {
+     "no": 1,
+     "name": "name",
+     "kind": "scalar",
+     "type": "string"
+    },
+    {
+     "no": 2,
+     "name": "methods",
+     "kind": "message",
+     "type": "google.protobuf.ListValue",
+     "repeated": true
+    },
+    {
+     "no": 3,
+     "name": "options",
+     "kind": "message",
+     "type": "google.protobuf.Option",
+     "repeated": true
+    },
+    {
+     "no": 4,
+     "name": "version",
+     "kind": "scalar",
+     "type": "string"
+    },
+    {
+     "no": 5,
+     "name": "source_context",
+     "kind": "message",
+     "type": "google.protobuf.SourceContext"
+    },
+    {
+     "no": 6,
+     "name": "mixins",
+     "kind": "message",
+     "type": "google.protobuf.Int64Value",
+     "repeated": true
+    },
+    {
+     "no": 7,
+     "name": "syntax",
+     "kind": "enum",
+     "type": "unresolved:r.proto3.getEnumType(s.Syntax)"
+    }
+   ]
+  },
+  "google.protobuf.Method": {
+   "kind": "message",
+   "name": "google.protobuf.Method",
+   "fields": [
+    {
+     "no": 1,
+     "name": "name",
+     "kind": "scalar",
+     "type": "string"
+    },
+    {
+     "no": 2,
+     "name": "request_type_url",
+     "kind": "scalar",
+     "type": "string"
+    },
+    {
+     "no": 3,
+     "name": "request_streaming",
+     "kind": "scalar",
+     "type": "bool"
+    },
+    {
+     "no": 4,
+     "name": "response_type_url",
+     "kind": "scalar",
+     "type": "string"
+    },
+    {
+     "no": 5,
+     "name": "response_streaming",
+     "kind": "scalar",
+     "type": "bool"
+    },
+    {
+     "no": 6,
+     "name": "options",
+     "kind": "message",
+     "type": "google.protobuf.Option",
+     "repeated": true
+    },
+    {
+     "no": 7,
+     "name": "syntax",
+     "kind": "enum",
+     "type": "unresolved:r.proto3.getEnumType(s.Syntax)"
+    }
+   ]
+  },
+  "google.protobuf.Mixin": {
+   "kind": "message",
+   "name": "google.protobuf.Mixin",
+   "fields": [
+    {
+     "no": 1,
+     "name": "name",
+     "kind": "scalar",
+     "type": "string"
+    },
+    {
+     "no": 2,
+     "name": "root",
+     "kind": "scalar",
+     "type": "string"
+    }
+   ]
+  },
+  "google.protobuf.SourceContext": {
+   "kind": "message",
+   "name": "google.protobuf.SourceContext",
+   "fields": [
+    {
+     "no": 1,
+     "name": "file_name",
+     "kind": "scalar",
+     "type": "string"
+    }
+   ]
+  },
+  "google.protobuf.Empty": {
+   "kind": "message",
+   "name": "google.protobuf.Empty",
+   "fields": []
+  },
+  "google.protobuf.Timestamp": {
+   "kind": "message",
+   "name": "google.protobuf.Timestamp",
+   "fields": [
+    {
+     "no": 1,
+     "name": "seconds",
+     "kind": "scalar",
+     "type": "int64"
+    },
+    {
+     "no": 2,
+     "name": "nanos",
+     "kind": "scalar",
+     "type": "int32"
+    }
+   ]
+  },
+  "google.protobuf.DoubleValue": {
+   "kind": "message",
+   "name": "google.protobuf.DoubleValue",
+   "fields": [
+    {
+     "no": 1,
+     "name": "value",
+     "kind": "scalar",
+     "type": "double"
+    }
+   ]
+  },
+  "google.protobuf.FloatValue": {
+   "kind": "message",
+   "name": "google.protobuf.FloatValue",
+   "fields": [
+    {
+     "no": 1,
+     "name": "value",
+     "kind": "scalar",
+     "type": "float"
+    }
+   ]
+  },
+  "google.protobuf.Int64Value": {
+   "kind": "message",
+   "name": "google.protobuf.Int64Value",
+   "fields": [
+    {
+     "no": 1,
+     "name": "value",
+     "kind": "scalar",
+     "type": "int64"
+    }
+   ]
+  },
+  "google.protobuf.UInt64Value": {
+   "kind": "message",
+   "name": "google.protobuf.UInt64Value",
+   "fields": [
+    {
+     "no": 1,
+     "name": "value",
+     "kind": "scalar",
+     "type": "uint64"
+    }
+   ]
+  },
+  "google.protobuf.Int32Value": {
+   "kind": "message",
+   "name": "google.protobuf.Int32Value",
+   "fields": [
+    {
+     "no": 1,
+     "name": "value",
+     "kind": "scalar",
+     "type": "int32"
+    }
+   ]
+  },
+  "google.protobuf.UInt32Value": {
+   "kind": "message",
+   "name": "google.protobuf.UInt32Value",
+   "fields": [
+    {
+     "no": 1,
+     "name": "value",
+     "kind": "scalar",
+     "type": "uint32"
+    }
+   ]
+  },
+  "google.protobuf.BoolValue": {
+   "kind": "message",
+   "name": "google.protobuf.BoolValue",
+   "fields": [
+    {
+     "no": 1,
+     "name": "value",
+     "kind": "scalar",
+     "type": "bool"
+    }
+   ]
+  },
+  "google.protobuf.StringValue": {
+   "kind": "message",
+   "name": "google.protobuf.StringValue",
+   "fields": [
+    {
+     "no": 1,
+     "name": "value",
+     "kind": "scalar",
+     "type": "string"
+    }
+   ]
+  },
+  "google.protobuf.BytesValue": {
+   "kind": "message",
+   "name": "google.protobuf.BytesValue",
+   "fields": [
+    {
+     "no": 1,
+     "name": "value",
+     "kind": "scalar",
+     "type": "bytes"
+    }
+   ]
+  },
+  "google.protobuf.Any": {
+   "kind": "message",
+   "name": "google.protobuf.Any",
+   "fields": [
+    {
+     "no": 1,
+     "name": "type_url",
+     "kind": "scalar",
+     "type": "string"
+    },
+    {
+     "no": 2,
+     "name": "value",
+     "kind": "scalar",
+     "type": "bytes"
+    }
+   ]
+  },
+  "google.protobuf.Struct": {
+   "kind": "message",
+   "name": "google.protobuf.Struct",
+   "fields": [
+    {
+     "no": 1,
+     "name": "fields",
+     "kind": "map"
+    }
+   ]
+  },
+  "google.protobuf.Value": {
+   "kind": "message",
+   "name": "google.protobuf.Value",
+   "fields": [
+    {
+     "no": 1,
+     "name": "null_value",
+     "kind": "enum",
+     "type": "google.protobuf.Any",
+     "oneof": "kind"
+    },
+    {
+     "no": 2,
+     "name": "number_value",
+     "kind": "scalar",
+     "type": "double",
+     "oneof": "kind"
+    },
+    {
+     "no": 3,
+     "name": "string_value",
+     "kind": "scalar",
+     "type": "string",
+     "oneof": "kind"
+    },
+    {
+     "no": 4,
+     "name": "bool_value",
+     "kind": "scalar",
+     "type": "bool",
+     "oneof": "kind"
+    },
+    {
+     "no": 5,
+     "name": "struct_value",
+     "kind": "message",
+     "type": "google.protobuf.Struct",
+     "oneof": "kind"
+    },
+    {
+     "no": 6,
+     "name": "list_value",
+     "kind": "message",
+     "type": "google.protobuf.ListValue",
+     "oneof": "kind"
+    }
+   ]
+  },
+  "google.protobuf.ListValue": {
+   "kind": "message",
+   "name": "google.protobuf.ListValue",
+   "fields": [
+    {
+     "no": 1,
+     "name": "values",
+     "kind": "message",
+     "type": "google.protobuf.Value",
+     "repeated": true
+    }
+   ]
+  },
+  "google.protobuf.compiler.Version": {
+   "kind": "message",
+   "name": "google.protobuf.compiler.Version",
+   "fields": [
+    {
+     "no": 1,
+     "name": "fields",
+     "kind": "map"
+    }
+   ]
+  },
+  "google.protobuf.compiler.CodeGeneratorRequest": {
+   "kind": "message",
+   "name": "google.protobuf.compiler.CodeGeneratorRequest",
+   "fields": [
+    {
+     "no": 1,
+     "name": "null_value",
+     "kind": "enum",
+     "type": "google.protobuf.FieldMask",
+     "oneof": "kind"
+    },
+    {
+     "no": 2,
+     "name": "number_value",
+     "kind": "scalar",
+     "type": "double",
+     "oneof": "kind"
+    },
+    {
+     "no": 3,
+     "name": "string_value",
+     "kind": "scalar",
+     "type": "string",
+     "oneof": "kind"
+    },
+    {
+     "no": 4,
+     "name": "bool_value",
+     "kind": "scalar",
+     "type": "bool",
+     "oneof": "kind"
+    },
+    {
+     "no": 5,
+     "name": "struct_value",
+     "kind": "message",
+     "type": "google.protobuf.Timestamp",
+     "oneof": "kind"
+    },
+    {
+     "no": 6,
+     "name": "list_value",
+     "kind": "message",
+     "type": "google.protobuf.ListValue",
+     "oneof": "kind"
+    }
+   ]
+  },
+  "google.protobuf.compiler.CodeGeneratorResponse": {
+   "kind": "message",
+   "name": "google.protobuf.compiler.CodeGeneratorResponse",
+   "fields": [
+    {
+     "no": 1,
+     "name": "values",
+     "kind": "message",
+     "type": "google.protobuf.Value",
+     "repeated": true
+    }
+   ]
+  },
+  "google.rpc.Status": {
+   "kind": "message",
+   "name": "google.rpc.Status",
+   "fields": [
+    {
+     "no": 1,
+     "name": "code",
+     "kind": "scalar",
+     "type": "int32"
+    },
+    {
+     "no": 2,
+     "name": "message",
+     "kind": "scalar",
+     "type": "string"
+    },
+    {
+     "no": 3,
+     "name": "details",
+     "kind": "message",
+     "type": "google.protobuf.Any",
+     "repeated": true
+    }
+   ]
+  },
   "aiserver.v1.StoredRequestTrackingMetadata": {
    "kind": "message",
    "name": "aiserver.v1.StoredRequestTrackingMetadata",
@@ -276561,6 +277261,720 @@
    ]
   }
  },
+ "ipc": {
+  "channels": {
+   "vscode:browser-view-message": {
+    "sends": 0,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 0,
+    "sites": []
+   },
+   "vscode:listAllExtensionsResponse": {
+    "sends": 0,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 0,
+    "sites": []
+   },
+   "vscode:closeExtensionMonitor": {
+    "sends": 0,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 0,
+    "sites": []
+   },
+   "vscode:listAllExtensions": {
+    "sends": 0,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 0,
+    "sites": []
+   },
+   "vscode:openDevTools": {
+    "sends": 3,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 0,
+    "sites": [
+     "ipcRenderer.send"
+    ]
+   },
+   "vscode:toggleDevTools": {
+    "sends": 0,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 0,
+    "sites": []
+   },
+   "vscode:reloadWindow": {
+    "sends": 0,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 0,
+    "sites": []
+   },
+   "vscode:contextmenu": {
+    "sends": 0,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 0,
+    "sites": []
+   },
+   "vscode:onCloseContextMenu": {
+    "sends": 0,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 0,
+    "sites": []
+   },
+   "vscode:message": {
+    "sends": 0,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 0,
+    "sites": []
+   },
+   "vscode:disconnect": {
+    "sends": 0,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 0,
+    "sites": []
+   },
+   "vscode:hello": {
+    "sends": 0,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 0,
+    "sites": []
+   },
+   "vscode:pidToNameResponse": {
+    "sends": 0,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 0,
+    "sites": []
+   },
+   "vscode:listProcessesForWorkspacesResponse": {
+    "sends": 0,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 0,
+    "sites": []
+   },
+   "vscode:listProcessesResponse": {
+    "sends": 0,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 0,
+    "sites": []
+   },
+   "vscode:pidToNameRequest": {
+    "sends": 0,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 0,
+    "sites": []
+   },
+   "vscode:listProcessesForWorkspaces": {
+    "sends": 0,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 0,
+    "sites": []
+   },
+   "vscode:listProcesses": {
+    "sends": 0,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 0,
+    "sites": []
+   },
+   "vscode:closeProcessExplorer": {
+    "sends": 0,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 0,
+    "sites": []
+   },
+   "vscode:workbenchCommand": {
+    "sends": 0,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 0,
+    "sites": []
+   },
+   "vscode:extensionProcessSpawned": {
+    "sends": 2,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 0,
+    "sites": [
+     "ipcRenderer.send"
+    ]
+   },
+   "vscode:registerAuxiliaryWindow": {
+    "sends": 0,
+    "invokes": 2,
+    "listeners": 0,
+    "handlers": 0,
+    "sites": [
+     "ipcRenderer.invoke"
+    ]
+   },
+   "vscode:sleepWakeRange": {
+    "sends": 0,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 0,
+    "sites": []
+   },
+   "vscode:createConversationSearchProcessConnection": {
+    "sends": 0,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 0,
+    "sites": []
+   },
+   "vscode:createConversationSearchProcessConnectionResult": {
+    "sends": 0,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 0,
+    "sites": []
+   },
+   "vscode:prepublish": {
+    "sends": 0,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 0,
+    "sites": []
+   },
+   "vscode:uninstall": {
+    "sends": 0,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 0,
+    "sites": []
+   },
+   "vscode:createUtilityProcessWorkerMessageChannelResult": {
+    "sends": 0,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 0,
+    "sites": []
+   },
+   "vscode:runAction": {
+    "sends": 1,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 0,
+    "sites": [
+     "webContents.send"
+    ]
+   },
+   "vscode:runKeybinding": {
+    "sends": 0,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 0,
+    "sites": []
+   },
+   "vscode:reportSharedProcessCrash": {
+    "sends": 0,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 0,
+    "sites": []
+   },
+   "vscode:openFiles": {
+    "sends": 0,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 0,
+    "sites": []
+   },
+   "vscode:addRemoveFolders": {
+    "sends": 0,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 0,
+    "sites": []
+   },
+   "vscode:showInfoMessage": {
+    "sends": 0,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 0,
+    "sites": []
+   },
+   "vscode:showResolveShellEnvError": {
+    "sends": 0,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 0,
+    "sites": []
+   },
+   "vscode:trayRequestRefresh": {
+    "sends": 0,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 0,
+    "sites": []
+   },
+   "vscode:openComposer": {
+    "sends": 0,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 0,
+    "sites": []
+   },
+   "vscode:createNewComposer": {
+    "sends": 0,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 0,
+    "sites": []
+   },
+   "vscode:clearAllNotifications": {
+    "sends": 0,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 0,
+    "sites": []
+   },
+   "vscode:trayLogIn": {
+    "sends": 0,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 0,
+    "sites": []
+   },
+   "vscode:traySignUp": {
+    "sends": 0,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 0,
+    "sites": []
+   },
+   "vscode:openSettings": {
+    "sends": 0,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 0,
+    "sites": []
+   },
+   "vscode:trayAnalytics": {
+    "sends": 0,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 0,
+    "sites": []
+   },
+   "vscode:agentHostUpdaterFailure": {
+    "sends": 0,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 0,
+    "sites": []
+   },
+   "vscode:osFileAssociationOpen": {
+    "sends": 0,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 0,
+    "sites": []
+   },
+   "vscode:showCredentialsError": {
+    "sends": 0,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 0,
+    "sites": []
+   },
+   "vscode:showTranslatedBuildWarning": {
+    "sends": 0,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 0,
+    "sites": []
+   },
+   "vscode:showArgvParseWarning": {
+    "sends": 0,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 0,
+    "sites": []
+   },
+   "vscode:enterFullScreen": {
+    "sends": 0,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 0,
+    "sites": []
+   },
+   "vscode:leaveFullScreen": {
+    "sends": 0,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 0,
+    "sites": []
+   },
+   "vscode:openProxyAuthenticationDialog": {
+    "sends": 0,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 0,
+    "sites": []
+   },
+   "vscode:accessibilitySupportChanged": {
+    "sends": 0,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 0,
+    "sites": []
+   },
+   "vscode:configureAllowedUNCHost": {
+    "sends": 0,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 0,
+    "sites": []
+   },
+   "vscode:disablePromptForProtocolHandling": {
+    "sends": 0,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 0,
+    "sites": []
+   },
+   "vscode:notifyZoomLevel": {
+    "sends": 0,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 0,
+    "sites": []
+   },
+   "vscode:createSharedProcessChannelConnection": {
+    "sends": 0,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 0,
+    "sites": []
+   },
+   "vscode:createSharedProcessChannelConnectionResult": {
+    "sends": 0,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 0,
+    "sites": []
+   },
+   "vscode:createSharedProcessRawConnection": {
+    "sends": 0,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 0,
+    "sites": []
+   },
+   "vscode:createSharedProcessRawConnectionResult": {
+    "sends": 0,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 0,
+    "sites": []
+   },
+   "vscode:createMcpProcessChannelConnection": {
+    "sends": 0,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 0,
+    "sites": []
+   },
+   "vscode:createMcpProcessChannelConnectionResult": {
+    "sends": 0,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 0,
+    "sites": []
+   },
+   "vscode:createMcpProcessRawConnection": {
+    "sends": 0,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 0,
+    "sites": []
+   },
+   "vscode:createMcpProcessRawConnectionResult": {
+    "sends": 0,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 0,
+    "sites": []
+   },
+   "vscode:onBeforeUnload": {
+    "sends": 0,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 0,
+    "sites": []
+   },
+   "vscode:onWillUnload": {
+    "sends": 0,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 0,
+    "sites": []
+   },
+   "vscode:startExtensionHostMessagePortResult": {
+    "sends": 0,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 0,
+    "sites": []
+   },
+   "vscode:registerWorkbenchExtensionHosts": {
+    "sends": 0,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 0,
+    "sites": []
+   },
+   "vscode:unregisterWorkbenchExtensionHosts": {
+    "sends": 0,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 0,
+    "sites": []
+   },
+   "vscode:extensionWarning": {
+    "sends": 0,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 0,
+    "sites": []
+   },
+   "vscode:getDiagnosticInfo": {
+    "sends": 0,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 0,
+    "sites": []
+   },
+   "vscode:createPtyHostMessageChannel": {
+    "sends": 0,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 0,
+    "sites": []
+   },
+   "vscode:createPtyHostMessageChannelResult": {
+    "sends": 0,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 0,
+    "sites": []
+   },
+   "vscode:rendererPing": {
+    "sends": 0,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 0,
+    "sites": []
+   },
+   "vscode:rendererPong": {
+    "sends": 0,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 0,
+    "sites": []
+   },
+   "vscode:rendererBlockedAnalytics": {
+    "sends": 0,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 0,
+    "sites": []
+   },
+   "vscode:openWindowCountsAnalytics": {
+    "sends": 0,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 0,
+    "sites": []
+   },
+   "vscode:webviewPopupClosed": {
+    "sends": 0,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 0,
+    "sites": []
+   },
+   "vscode:webviewPopupOpenTab": {
+    "sends": 0,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 0,
+    "sites": []
+   },
+   "vscode:setupWebviewCertificateHandler": {
+    "sends": 0,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 0,
+    "sites": []
+   },
+   "vscode:webviewLoadRememberedCertificates": {
+    "sends": 0,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 0,
+    "sites": []
+   },
+   "vscode:webviewGetURL": {
+    "sends": 0,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 0,
+    "sites": []
+   },
+   "vscode:webviewNavigateHistory": {
+    "sends": 0,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 0,
+    "sites": []
+   },
+   "vscode:webviewGetNavigationState": {
+    "sends": 0,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 0,
+    "sites": []
+   },
+   "vscode:setDevToolsWebContents": {
+    "sends": 0,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 0,
+    "sites": []
+   },
+   "vscode:webviewEmulateColorScheme": {
+    "sends": 0,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 0,
+    "sites": []
+   },
+   "vscode:webviewGetMatchedCSSStyles": {
+    "sends": 0,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 0,
+    "sites": []
+   },
+   "vscode:webviewAcceptCertificate": {
+    "sends": 0,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 0,
+    "sites": []
+   },
+   "vscode:webviewRejectCertificate": {
+    "sends": 0,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 0,
+    "sites": []
+   },
+   "vscode:webviewClearAcceptedCertificates": {
+    "sends": 0,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 0,
+    "sites": []
+   },
+   "vscode:webviewSendCDPCommand": {
+    "sends": 0,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 0,
+    "sites": []
+   },
+   "vscode:webviewForcefullyCrashRenderer": {
+    "sends": 0,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 0,
+    "sites": []
+   },
+   "vscode:getWebviewCertificateError": {
+    "sends": 0,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 0,
+    "sites": []
+   },
+   "vscode:registerGalleryBrowserWebview": {
+    "sends": 0,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 0,
+    "sites": []
+   },
+   "cursor:timer": {
+    "sends": 0,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 0,
+    "sites": []
+   },
+   "vscode:fetchShellEnv": {
+    "sends": 0,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 0,
+    "sites": []
+   },
+   "ipc-message": {
+    "sends": 0,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 1,
+    "sites": [
+     "webContents.on"
+    ]
+   },
+   "before-input-event": {
+    "sends": 0,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 1,
+    "sites": [
+     "webContents.on"
+    ]
+   },
+   "vscode:getAnyPendingCertificateError": {
+    "sends": 0,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 0,
+    "sites": []
+   },
+   "vscode:setupWebviewDevtoolsAutoConnect": {
+    "sends": 0,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 0,
+    "sites": []
+   }
+  },
+  "exposed_globals": [
+   "cursorPasskey",
+   "vscode",
+   "__SENTRY_IPC__"
+  ]
+ },
  "notes": [
   "10 identifier(s) could not be resolved to a typeName",
   "174 identifier(s) could not be resolved to a typeName",
@@ -276571,12 +277985,17 @@
   "41 identifier(s) could not be resolved to a typeName",
   "33 identifier(s) could not be resolved to a typeName",
   "1 identifier(s) could not be resolved to a typeName",
-  "271 identifier(s) could not be resolved to a typeName",
+  "7 identifier(s) could not be resolved to a typeName",
+  "10 identifier(s) could not be resolved to a typeName",
+  "60 identifier(s) could not be resolved to a typeName",
+  "46 identifier(s) could not be resolved to a typeName",
+  "2814 identifier(s) could not be resolved to a typeName",
   "6 identifier(s) could not be resolved to a typeName",
   "78 identifier(s) could not be resolved to a typeName",
   "39 identifier(s) could not be resolved to a typeName",
   "62 identifier(s) could not be resolved to a typeName",
   "33 identifier(s) could not be resolved to a typeName",
-  "458 identifier(s) could not be resolved to a typeName"
+  "2024 identifier(s) could not be resolved to a typeName",
+  "2510 identifier(s) could not be resolved to a typeName"
  ]
 }

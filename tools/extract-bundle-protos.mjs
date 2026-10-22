@@ -96,8 +96,30 @@ export function extractFromSource(src, fileLabel) {
   for (const m of src.matchAll(/\b([A-Za-z_$][\w$]*)\s*=\s*([A-Za-z_$][\w$]*)\b/g)) {
     if (!(m[1] in bindings) && m[2] in bindings) bindings[m[1]] = bindings[m[2]];
   }
+  // namespace member exports: Ns.Prop=Ident (webpack `t.FooRequest=I` style) where
+  // Ident is a minified class var reused across messages. Codegen emits the export
+  // first and `Ident.typeName="..."` right after, so pair each export with the
+  // NEXT typeName assignment for that ident. prop -> typeName, or null on conflict.
+  const tnEvents = [...src.matchAll(/\b([A-Za-z_$][\w$]*)\.typeName\s*=\s*["'`]([^"'`]+)["'`]/g)]
+    .map((m) => ({ idx: m.index, ident: m[1], tn: m[2] }));
+  const memberBindings = {};
+  for (const m of src.matchAll(/\b([A-Za-z_$][\w$]*)\.([A-Za-z_$][\w$]*)\s*=\s*([A-Za-z_$][\w$]*)\b/g)) {
+    if (m[1] === m[3] || m[2] === "typeName") continue;
+    const next = tnEvents.find((e) => e.ident === m[3] && e.idx > m.index && e.idx - m.index < 10000);
+    if (!next) continue;
+    if (m[2] in memberBindings && memberBindings[m[2]] !== next.tn) memberBindings[m[2]] = null;
+    else memberBindings[m[2]] = next.tn;
+  }
 
   const resolve = (raw) => {
+    if (raw === undefined || raw === null) return { ref: "", resolved: null };
+    const member = String(raw).trim().match(/^([A-Za-z_$][\w$]*)\.([A-Za-z_$][\w$]*)$/);
+    if (member) {
+      const tn = memberBindings[member[2]];
+      if (tn) return { ref: raw, resolved: tn };
+      unresolvedIdents.add(raw.trim());
+      return { ref: raw, resolved: null };
+    }
     const id = ident(raw);
     if (!id) return { ref: raw, resolved: null };
     if (id in bindings) return { ref: id, resolved: bindings[id] };
@@ -146,6 +168,53 @@ export function extractFromSource(src, fileLabel) {
     }
     fields.sort((a, b) => a.no - b.no);
     messages[typeName] = { kind: "message", name: typeName, fields };
+  }
+
+  const parseFieldList = (fieldsBody) => {
+    const fields = [];
+    for (const fo of splitTop(fieldsBody)) {
+      const t = fo.trim();
+      if (!t.startsWith("{")) continue;
+      const inner = t.slice(1, findBalanced(t, 0, "{", "}") ?? t.length - 1);
+      const f = parseObjectBody(inner);
+      const field = { no: Number(f.no), name: str(f.name), kind: str(f.kind) };
+      if (f.T !== undefined) {
+        if (field.kind === "scalar") {
+          const tn = Number(f.T);
+          field.type = SCALAR[tn] ?? `scalar#${tn}`;
+        } else {
+          const inner2 = f.T.match(/getEnumType\(\s*([A-Za-z_$][\w$]*)\s*\)/);
+          const r = resolve(inner2 ? inner2[1] : f.T);
+          field.type = r.resolved ?? `unresolved:${r.ref}`;
+        }
+      }
+      if (f.repeated === "!0" || f.repeat === "!0" || f.repeat === "1" || f.repeat === "2") field.repeated = true;
+      if (f.opt === "!0") field.optional = true;
+      if (f.req === "!0") field.required = true;
+      if (f.packed === "!0") field.packed = true;
+      if (f.jsonName) field.json_name = str(f.jsonName);
+      if (f.oneof) field.oneof = str(f.oneof);
+      if (f.L) field.list_kind = f.L;
+      fields.push(field);
+    }
+    return fields.sort((a, b) => a.no - b.no);
+  };
+
+  // pass 2b: protobuf-ts messages — Ident.typeName="pkg.Msg",Ident.fields=X.proto3.util.newFieldList(()=>[...])
+  for (const e of tnEvents) {
+    if (messages[e.tn]) continue;
+    const tail = src.slice(e.idx, e.idx + 20000);
+    const id = e.ident.replace(/[$]/g, "\\$&");
+    const fl = tail.match(new RegExp(`\\b${id}\\.fields\\s*=\\s*[\\w$]+\\.proto3\\.util\\.newFieldList\\s*\\(`));
+    if (!fl) continue;
+    const callStart = e.idx + fl.index + fl[0].length;
+    const arrowIdx = src.indexOf("=>", callStart);
+    if (arrowIdx === -1 || arrowIdx - callStart > 100) continue;
+    const openBracket = src.indexOf("[", arrowIdx);
+    if (openBracket === -1) continue;
+    const close = findBalanced(src, openBracket, "[", "]");
+    if (close === -1) continue;
+    messages[e.tn] = { kind: "message", name: e.tn, fields: parseFieldList(src.slice(openBracket + 1, close)) };
   }
 
   // pass 3: enums
@@ -200,6 +269,40 @@ export function extractFromSource(src, fileLabel) {
     }
   }
 
+  // pass 6: Electron IPC surface ------------------------------------------------
+  const ipc = { channels: {}, exposed_globals: [], call_sites: [] };
+  {
+    // 6a: call sites with literal channel names
+    for (const m of src.matchAll(/\b(ipcRenderer|ipcMain|webContents|webFrame)\.(invoke|send|sendSync|sendTo|on|once|handle|handleOnce|postMessage)\s*\(\s*["'`]([^"'`]+)["'`]/g)) {
+      const [, target, op, ch] = m;
+      const c = (ipc.channels[ch] ??= { sends: 0, invokes: 0, listeners: 0, handlers: 0, sites: [] });
+      if (op === "invoke" || op === "send" || op === "sendSync" || op === "sendTo" || op === "postMessage") {
+        if (op === "invoke") c.invokes++; else c.sends++;
+      } else if (target === "ipcMain" || target === "webContents") {
+        c.handlers++;
+      } else c.listeners++;
+      c.sites.push(`${target}.${op}`);
+    }
+    // 6b: channel-name vocabulary — namespace must appear in a real call site
+    // (self-calibrating) or be a known app prefix; otherwise a:b strings
+    // capture CSS selectors and string-literal noise.
+    const knownNs = new Set(["vscode", "cursor", "agent", "sentry", "electron"]);
+    const activeNs = new Set(
+      Object.keys(ipc.channels).map((ch) => ch.split(":")[0])
+    );
+    for (const m of src.matchAll(/["'`]([a-zA-Z][\w-]*:[a-zA-Z][\w.:-]*)["'`]/g)) {
+      const ch = m[1];
+      if (/^(https?|wss?|file|data|blob|mailto|tel|urn|doi|node|npm|git|ssh|ftp|chrome|devtools|about):/.test(ch)) continue;
+      const ns = ch.split(":")[0];
+      if (!activeNs.has(ns) && !knownNs.has(ns)) continue;
+      if (!(ch in ipc.channels))
+        ipc.channels[ch] = { sends: 0, invokes: 0, listeners: 0, handlers: 0, sites: [], vocabulary_only: true };
+    }
+    // 6c: contextBridge globals
+    for (const m of src.matchAll(/exposeInMainWorld\s*\(\s*["'`]([^"'`]+)["'`]/g))
+      if (!ipc.exposed_globals.includes(m[1])) ipc.exposed_globals.push(m[1]);
+  }
+
   if (unresolvedIdents.size) {
     notes.push(`${unresolvedIdents.size} identifier(s) could not be resolved to a typeName`);
   }
@@ -211,8 +314,9 @@ export function extractFromSource(src, fileLabel) {
       messages: Object.keys(messages).length,
       enums: Object.keys(enums).length,
       methods: Object.values(services).reduce((n, s) => n + Object.keys(s.methods).length, 0),
+      ipc_channels: Object.keys(ipc.channels).length,
     },
-    services, messages, enums,
+    services, messages, enums, ipc,
     notes,
   };
 }
@@ -222,9 +326,12 @@ if (process.argv[1] && process.argv[1].endsWith("extract-bundle-protos.mjs")) {
   const args = process.argv.slice(2);
   const outIdx = args.indexOf("--out");
   const out = outIdx >= 0 ? args.splice(outIdx, 2)[1] : null;
+  const lfIdx = args.indexOf("--files");
+  const listFile = lfIdx >= 0 ? args.splice(lfIdx, 2)[1] : null;
   const files = args.filter((a) => !a.startsWith("--"));
+  if (listFile) for (const l of readFileSync(listFile, "utf8").split("\n")) if (l.trim()) files.push(l.trim());
 
-  const merged = { generated_by: "wirecat extract-bundle-protos", sources: [], counts: { services: 0, messages: 0, enums: 0, methods: 0 }, services: {}, messages: {}, enums: {}, notes: [] };
+  const merged = { generated_by: "wirecat extract-bundle-protos", sources: [], counts: { services: 0, messages: 0, enums: 0, methods: 0, ipc_channels: 0 }, services: {}, messages: {}, enums: {}, ipc: { channels: {}, exposed_globals: [] }, notes: [] };
   for (const f of files) {
     const src = readFileSync(f, "utf8");
     const r = extractFromSource(src, basename(f));
@@ -232,7 +339,15 @@ if (process.argv[1] && process.argv[1].endsWith("extract-bundle-protos.mjs")) {
     for (const [k, v] of Object.entries(r.services)) if (!merged.services[k]) merged.services[k] = v;
     for (const [k, v] of Object.entries(r.messages)) if (!merged.messages[k]) merged.messages[k] = v;
     for (const [k, v] of Object.entries(r.enums)) if (!merged.enums[k]) merged.enums[k] = v;
-    for (const k of ["services", "messages", "enums", "methods"]) merged.counts[k] += r.counts[k];
+    if (r.ipc) {
+      for (const [ch, info] of Object.entries(r.ipc.channels)) {
+        const c = (merged.ipc.channels[ch] ??= { sends: 0, invokes: 0, listeners: 0, handlers: 0, sites: [] });
+        for (const kk of ["sends", "invokes", "listeners", "handlers"]) c[kk] += info[kk] ?? 0;
+        for (const s of info.sites ?? []) if (!c.sites.includes(s)) c.sites.push(s);
+      }
+      for (const g of r.ipc.exposed_globals) if (!merged.ipc.exposed_globals.includes(g)) merged.ipc.exposed_globals.push(g);
+    }
+    for (const k of ["services", "messages", "enums", "methods", "ipc_channels"]) merged.counts[k] += r.counts[k] ?? 0;
     merged.notes.push(...r.notes);
   }
   const json = JSON.stringify(merged, null, 1);
