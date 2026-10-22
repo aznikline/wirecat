@@ -1,0 +1,21 @@
+{
+  "key": "wirecat_audit",
+  "kind": "command",
+  "description": "Static attack-surface audit of an extracted Electron app directory (asar output or unpacked app/). Finds ungated contextBridge IPC passthroughs, bulk ipcMain service-registry registration, unvalidated handlers reaching file/exec sinks, weak webPreferences. PREFER THIS over manual grep for the initial sweep — it encodes known Electron exposure patterns and costs one call. Returns a markdown findings report; full JSON lands at /tmp/wc-audit.json.",
+  "exec": {
+    "command": "find {target} \\( -name \"*.js\" -o -name \"*.cjs\" \\) ! -path \"*node_modules*\" > /tmp/wc-files.txt && node {wirecat_dir}/tools/audit-electron.mjs --files /tmp/wc-files.txt --app {app} --version {version} --out /tmp/wc-audit.json --md /tmp/wc-audit.md && cat /tmp/wc-audit.md",
+    "timeout_ms": 180000
+  },
+  "schema": {
+    "type": "object",
+    "properties": {
+      "target":  { "type": "string", "description": "directory containing extracted app bundle (e.g. /work/unityhub-asar)" },
+      "app":     { "type": "string", "description": "app name label" },
+      "version": { "type": "string", "description": "app version label" }
+    },
+    "required": ["target", "app", "version"]
+  },
+  "agents": ["worker", "mainagent", "pentest"],
+  "enabled": true,
+  "deferred": false
+}
