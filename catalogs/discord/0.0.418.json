@@ -1,0 +1,338 @@
+{
+ "generated_by": "wirecat extract-bundle-protos",
+ "sources": [
+  "splashScreenPreload.js",
+  "bundle.js"
+ ],
+ "counts": {
+  "services": 0,
+  "messages": 0,
+  "enums": 0,
+  "methods": 0,
+  "ipc_channels": 18
+ },
+ "services": {},
+ "messages": {},
+ "enums": {},
+ "ipc": {
+  "channels": {
+   "DISCORD_SPLASH_SCREEN_QUIT": {
+    "sends": 2,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 0,
+    "sites": [
+     "ipcRenderer.send"
+    ]
+   },
+   "DISCORD_CLEAR_BUILD_OVERRIDE": {
+    "sends": 0,
+    "invokes": 1,
+    "listeners": 0,
+    "handlers": 0,
+    "sites": [
+     "ipcRenderer.invoke"
+    ]
+   },
+   "DISCORD_SPLASH_UPDATE_STATE": {
+    "sends": 0,
+    "invokes": 0,
+    "listeners": 1,
+    "handlers": 0,
+    "sites": [
+     "ipcRenderer.on"
+    ]
+   },
+   "DISCORD_SPLASH_SCREEN_QUOTE": {
+    "sends": 0,
+    "invokes": 0,
+    "listeners": 1,
+    "handlers": 0,
+    "sites": [
+     "ipcRenderer.on"
+    ]
+   },
+   "DISCORD_GET_BUILD_OVERRIDE_STATUS": {
+    "sends": 0,
+    "invokes": 1,
+    "listeners": 0,
+    "handlers": 0,
+    "sites": [
+     "ipcRenderer.invoke"
+    ]
+   },
+   "DISCORD_SPLASH_SCREEN_READY": {
+    "sends": 1,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 0,
+    "sites": [
+     "ipcRenderer.send"
+    ]
+   },
+   "console-message": {
+    "sends": 0,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 1,
+    "sites": [
+     "webContents.on"
+    ]
+   },
+   "will-navigate": {
+    "sends": 0,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 1,
+    "sites": [
+     "webContents.on"
+    ]
+   },
+   "did-fail-load": {
+    "sends": 0,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 2,
+    "sites": [
+     "webContents.on"
+    ]
+   },
+   "preload-error": {
+    "sends": 0,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 2,
+    "sites": [
+     "webContents.on"
+    ]
+   },
+   "DISCORD_${event}": {
+    "sends": 1,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 0,
+    "sites": [
+     "webContents.send"
+    ]
+   },
+   "did-finish-load": {
+    "sends": 0,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 1,
+    "sites": [
+     "webContents.on"
+    ]
+   },
+   "destroyed": {
+    "sends": 0,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 1,
+    "sites": [
+     "webContents.on"
+    ]
+   },
+   "unresponsive": {
+    "sends": 0,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 1,
+    "sites": [
+     "webContents.on"
+    ]
+   },
+   "did-fail-provisional-load": {
+    "sends": 0,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 1,
+    "sites": [
+     "webContents.on"
+    ]
+   },
+   "dom-ready": {
+    "sends": 0,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 1,
+    "sites": [
+     "webContents.once"
+    ]
+   },
+   "__ELECTRON_LOG_IPC__": {
+    "sends": 0,
+    "invokes": 0,
+    "listeners": 1,
+    "handlers": 0,
+    "sites": [
+     "ipcRenderer.on"
+    ]
+   },
+   "__ELECTRON_LOG__": {
+    "sends": 2,
+    "invokes": 1,
+    "listeners": 0,
+    "handlers": 0,
+    "sites": [
+     "ipcRenderer.invoke",
+     "ipcRenderer.send"
+    ]
+   }
+  },
+  "exposed_globals": [
+   "__SENTRY_IPC__",
+   "__electronLog"
+  ]
+ },
+ "endpoints": {
+  "urls": {
+   "https://discord.com/api": 1,
+   "https://updates.discord.com/": 1,
+   "https://discord.com": 1,
+   "https://cdn.discordapp.com": 1,
+   "http://localhost": 1,
+   "http://www.w3.org/2000/svg": 5,
+   "https://sentry.io/welcome/": 1,
+   "https://o447951.ingest.sentry.io/api/4509632503087104/envelope/?sentry_version=7&sentry_key=REDACTED&sentry_client=sentry.javascript.browser%2F1.33.7": 1,
+   "http://localhost:8969/stream": 2,
+   "https://browser.sentry-cdn.com": 1,
+   "http://s.io": 1,
+   "https://f.a.k/e": 1,
+   "http://json-schema.org/draft-07/schema": 1,
+   "http://json-schema.org/schema": 1,
+   "https://raw.githubusercontent.com/ajv-validator/ajv/master/lib/refs/data.json#": 3,
+   "https://github.com/ajv-validator/ajv/blob/master/lib/definition_schema.js": 1,
+   "http://unix:SOCKET:PATH": 1,
+   "https://github.com/fastify/otel/issues": 1,
+   "https://github.com/fastify/otel#readme": 1,
+   "https://github.com/sponsors/fastify": 1,
+   "https://opencollective.com/fastify": 1,
+   "http://json-schema.org/draft-07/schema#": 3,
+   "http://json-schema.org/draft-06/schema#": 20
+  },
+  "hosts": {
+   "discord.com": {
+    "urls": [
+     "https://discord.com/api",
+     "https://discord.com"
+    ],
+    "files": [
+     "bundle.js"
+    ]
+   },
+   "updates.discord.com": {
+    "urls": [
+     "https://updates.discord.com/"
+    ],
+    "files": [
+     "bundle.js"
+    ]
+   },
+   "cdn.discordapp.com": {
+    "urls": [
+     "https://cdn.discordapp.com"
+    ],
+    "files": [
+     "bundle.js"
+    ]
+   },
+   "localhost": {
+    "urls": [
+     "http://localhost",
+     "http://localhost:8969/stream"
+    ],
+    "files": [
+     "bundle.js"
+    ]
+   },
+   "www.w3.org": {
+    "urls": [
+     "http://www.w3.org/2000/svg"
+    ],
+    "files": [
+     "bundle.js"
+    ]
+   },
+   "sentry.io": {
+    "urls": [
+     "https://sentry.io/welcome/"
+    ],
+    "files": [
+     "bundle.js"
+    ]
+   },
+   "o447951.ingest.sentry.io": {
+    "urls": [
+     "https://o447951.ingest.sentry.io/api/4509632503087104/envelope/?sentry_version=7&sentry_key=REDACTED&sentry_client=sentry.javascript.browser%2F1.33.7"
+    ],
+    "files": [
+     "bundle.js"
+    ]
+   },
+   "browser.sentry-cdn.com": {
+    "urls": [
+     "https://browser.sentry-cdn.com"
+    ],
+    "files": [
+     "bundle.js"
+    ]
+   },
+   "s.io": {
+    "urls": [
+     "http://s.io"
+    ],
+    "files": [
+     "bundle.js"
+    ]
+   },
+   "f.a.k": {
+    "urls": [
+     "https://f.a.k/e"
+    ],
+    "files": [
+     "bundle.js"
+    ]
+   },
+   "json-schema.org": {
+    "urls": [
+     "http://json-schema.org/draft-07/schema",
+     "http://json-schema.org/schema",
+     "http://json-schema.org/draft-07/schema#",
+     "http://json-schema.org/draft-06/schema#"
+    ],
+    "files": [
+     "bundle.js"
+    ]
+   },
+   "raw.githubusercontent.com": {
+    "urls": [
+     "https://raw.githubusercontent.com/ajv-validator/ajv/master/lib/refs/data.json#"
+    ],
+    "files": [
+     "bundle.js"
+    ]
+   },
+   "github.com": {
+    "urls": [
+     "https://github.com/ajv-validator/ajv/blob/master/lib/definition_schema.js",
+     "https://github.com/fastify/otel/issues",
+     "https://github.com/fastify/otel#readme",
+     "https://github.com/sponsors/fastify"
+    ],
+    "files": [
+     "bundle.js"
+    ]
+   },
+   "opencollective.com": {
+    "urls": [
+     "https://opencollective.com/fastify"
+    ],
+    "files": [
+     "bundle.js"
+    ]
+   }
+  }
+ },
+ "notes": []
+}

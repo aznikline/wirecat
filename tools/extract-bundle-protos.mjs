@@ -298,13 +298,19 @@ export function extractFromSource(src, fileLabel) {
     if (u.length > 300) continue;
     // strip trailing punctuation often glued to literals
     u = u.replace(/[).,;]+$/, "");
+    // redact credential-like material: URL userinfo (Sentry DSN keys) and
+    // sentry_key query params. Host/path evidence is kept; keys are not data.
+    u = u.replace(/sentry_key=[0-9a-fA-F]+/, "sentry_key=REDACTED");
+    u = u.replace(/^(https?:\/\/)[^/@\s]+@/, "$1REDACTED@");
     urls[u] = (urls[u] ?? 0) + 1;
   }
   const endpoints = { urls, hosts: {} };
   for (const u of Object.keys(urls)) {
     try {
       const h = new URL(u).hostname;
-      (endpoints.hosts[h] ??= []).push(u);
+      const e = (endpoints.hosts[h] ??= { urls: [], files: [] });
+      e.urls.push(u);
+      if (!e.files.includes(fileLabel)) e.files.push(fileLabel);
     } catch { /* malformed literal, keep in urls only */ }
   }
 
@@ -354,11 +360,13 @@ if (process.argv[1] && process.argv[1].endsWith("extract-bundle-protos.mjs")) {
     }
     if (r.endpoints) {
       for (const [u, n] of Object.entries(r.endpoints.urls)) merged.endpoints.urls[u] = (merged.endpoints.urls[u] ?? 0) + n;
-      for (const [h, us] of Object.entries(r.endpoints.hosts))
-        for (const u of us) {
-          (merged.endpoints.hosts[h] ??= []);
-          if (!merged.endpoints.hosts[h].includes(u)) merged.endpoints.hosts[h].push(u);
-        }
+      for (const [h, info] of Object.entries(r.endpoints.hosts)) {
+        const e = (merged.endpoints.hosts[h] ??= { urls: [], files: [] });
+        const us = Array.isArray(info) ? info : info.urls ?? [];
+        const fs = Array.isArray(info) ? [] : info.files ?? [];
+        for (const u of us) if (!e.urls.includes(u)) e.urls.push(u);
+        for (const f of fs) if (!e.files.includes(f)) e.files.push(f);
+      }
     }
     for (const k of ["services", "messages", "enums", "methods", "ipc_channels"]) merged.counts[k] += r.counts[k] ?? 0;
     merged.notes.push(...r.notes);

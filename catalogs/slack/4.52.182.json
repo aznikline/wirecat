@@ -1,0 +1,945 @@
+{
+ "generated_by": "wirecat extract-bundle-protos",
+ "sources": [
+  "magic-login-preload-entry-point.bundle.js",
+  "preload.bundle.js",
+  "net-log-window.bundle.js",
+  "boot.bundle.cjs",
+  "call-get-media-access-status-entry-point.bundle.cjs",
+  "call-get-windows-notifier-state-entry-point.bundle.cjs",
+  "898.bundle.cjs",
+  "component-preload-entry-point.bundle.js",
+  "child-preload-entry-point.bundle.js",
+  "call-get-windows-focus-assist-entry-point.bundle.cjs",
+  "settings-editor.bundle.js",
+  "basic-auth-view.bundle.js",
+  "call-get-macos-notification-state-entry-point.bundle.cjs",
+  "main.bundle.cjs",
+  "index.js",
+  "browser.js",
+  "index.js",
+  "index.js",
+  "index.js",
+  "conversion.js",
+  "clang-format.js",
+  "check-napi.js",
+  "index.js",
+  "index.js",
+  "index.js",
+  "unorm.js",
+  "semver.js",
+  "semver.js",
+  "index.js",
+  "index.js",
+  "download.js",
+  "proxy.js",
+  "util.js",
+  "bin.js",
+  "index.js",
+  "detect-libc.js",
+  "detect-libc.js",
+  "string_decoder.js",
+  "index.js",
+  "index.js",
+  "index.js",
+  "index.js",
+  "base-theme.js",
+  "progress-bar.js",
+  "render-template.js",
+  "has-color.js",
+  "themes.js",
+  "index.js",
+  "wide-truncate.js",
+  "spin.js",
+  "error.js",
+  "plumbing.js",
+  "set-immediate.js",
+  "template-item.js",
+  "process.js",
+  "theme-set.js",
+  "set-interval.js",
+  "log.js",
+  "index.js",
+  "index.js",
+  "readable-browser.js",
+  "writable-browser.js",
+  "duplex-browser.js",
+  "passthrough.js",
+  "readable.js",
+  "writable.js",
+  "BufferList.js",
+  "stream.js",
+  "stream-browser.js",
+  "destroy.js",
+  "_stream_passthrough.js",
+  "_stream_transform.js",
+  "_stream_duplex.js",
+  "_stream_readable.js",
+  "_stream_writable.js",
+  "transform.js",
+  "duplex.js",
+  "tracker-base.js",
+  "tracker-stream.js",
+  "index.js",
+  "tracker.js",
+  "tracker-group.js",
+  "asset.js",
+  "log.js",
+  "index.js",
+  "error.js",
+  "rc.js",
+  "conversion.js",
+  "clang-format.js",
+  "check-napi.js",
+  "index.js",
+  "index.js",
+  "conversion.js",
+  "eslint-format.js",
+  "clang-format.js",
+  "check-napi.js",
+  "index.js",
+  "index.js",
+  "index.js",
+  "BufferList.js",
+  "bl.js",
+  "index.js",
+  "index.js",
+  "util.js",
+  "index.js",
+  "index.es.js",
+  "browser.js",
+  "index.js",
+  "deep-extend.js",
+  "filesystem.js",
+  "detect-libc.js",
+  "process.js",
+  "index.js",
+  "base64js.min.js",
+  "index.js",
+  "signals.js",
+  "index.js",
+  "promise.js",
+  "index.js",
+  "write-stream.js",
+  "retry.js",
+  "temp.js",
+  "bplistCreator.js",
+  "once.js",
+  "index.js",
+  "index.js",
+  "index.js",
+  "string_decoder.js",
+  "1to2.js",
+  "include_dirs.js",
+  "index.js",
+  "registry.js",
+  "index.js",
+  "conversion.js",
+  "clang-format.js",
+  "check-napi.js",
+  "index.js",
+  "index.js",
+  "inherits_browser.js",
+  "inherits.js",
+  "index.js",
+  "index.js",
+  "index.js",
+  "index.js",
+  "URL-impl.js",
+  "utils.js",
+  "url-state-machine.js",
+  "URL.js",
+  "public-api.js",
+  "index.js",
+  "pack.js",
+  "index.js",
+  "headers.js",
+  "extract.js",
+  "sandbox.js",
+  "index.js",
+  "index.js",
+  "index.js",
+  "index.js",
+  "index.js",
+  "is-property.js",
+  "immutable.js",
+  "mutable.js",
+  "index.js",
+  "index.js",
+  "index.js",
+  "index.js",
+  "node.js",
+  "browser.js",
+  "index.js",
+  "conversion.js",
+  "eslint-format.js",
+  "clang-format.js",
+  "check-napi.js",
+  "index.js",
+  "index.js",
+  "constants.js",
+  "readable_streambuffer.js",
+  "streambuffer.js",
+  "writable_streambuffer.js",
+  "prettify.js",
+  "sorter.js",
+  "index.js",
+  "index.js",
+  "index.js",
+  "index.js",
+  "index.js",
+  "promisify.js",
+  "index.js",
+  "min-version.js",
+  "outside.js",
+  "ltr.js",
+  "gtr.js",
+  "min-satisfying.js",
+  "simplify.js",
+  "to-comparators.js",
+  "max-satisfying.js",
+  "valid.js",
+  "subset.js",
+  "intersects.js",
+  "preload.js",
+  "semver.js",
+  "range.js",
+  "index.js",
+  "comparator.js",
+  "semver.js",
+  "constants.js",
+  "identifiers.js",
+  "parse-options.js",
+  "re.js",
+  "lrucache.js",
+  "debug.js",
+  "index.js",
+  "gt.js",
+  "sort.js",
+  "rsort.js",
+  "neq.js",
+  "gte.js",
+  "eq.js",
+  "lte.js",
+  "compare-build.js",
+  "patch.js",
+  "rcompare.js",
+  "clean.js",
+  "valid.js",
+  "satisfies.js",
+  "compare-loose.js",
+  "parse.js",
+  "minor.js",
+  "compare.js",
+  "coerce.js",
+  "inc.js",
+  "lt.js",
+  "diff.js",
+  "cmp.js",
+  "major.js",
+  "prerelease.js",
+  "index.js",
+  "parse-proxy-response.js",
+  "agent.js",
+  "nopt.js",
+  "nopt.js",
+  "nopt-lib.js",
+  "type-defs.js",
+  "debug.js",
+  "handle_gyp_opts.js",
+  "napi.js",
+  "s3_setup.js",
+  "compile.js",
+  "versioning.js",
+  "pre-binding.js",
+  "package.js",
+  "build.js",
+  "configure.js",
+  "clean.js",
+  "info.js",
+  "main.js",
+  "install.js",
+  "publish.js",
+  "reinstall.js",
+  "rebuild.js",
+  "node-pre-gyp.js",
+  "unpublish.js",
+  "reveal.js",
+  "ensure-sdk.js",
+  "index.js",
+  "constants.js",
+  "index.js",
+  "constants.js",
+  "index.js",
+  "index.js",
+  "require.js",
+  "formats.js",
+  "index.js",
+  "min-version.js",
+  "outside.js",
+  "ltr.js",
+  "gtr.js",
+  "min-satisfying.js",
+  "simplify.js",
+  "to-comparators.js",
+  "max-satisfying.js",
+  "valid.js",
+  "subset.js",
+  "intersects.js",
+  "preload.js",
+  "semver.js",
+  "range.js",
+  "index.js",
+  "comparator.js",
+  "semver.js",
+  "constants.js",
+  "identifiers.js",
+  "parse-options.js",
+  "re.js",
+  "lrucache.js",
+  "debug.js",
+  "index.js",
+  "gt.js",
+  "sort.js",
+  "rsort.js",
+  "neq.js",
+  "gte.js",
+  "eq.js",
+  "lte.js",
+  "compare-build.js",
+  "patch.js",
+  "rcompare.js",
+  "clean.js",
+  "valid.js",
+  "satisfies.js",
+  "compare-loose.js",
+  "parse.js",
+  "minor.js",
+  "compare.js",
+  "coerce.js",
+  "inc.js",
+  "lt.js",
+  "diff.js",
+  "cmp.js",
+  "major.js",
+  "prerelease.js",
+  "index.js",
+  "getNextTarget.js",
+  "index.js",
+  "index.js",
+  "index.js",
+  "index.js",
+  "index.js",
+  "index.js",
+  "index.js",
+  "image-size.js",
+  "gif.js",
+  "webp.js",
+  "tiff.js",
+  "icns.js",
+  "ico.js",
+  "dds.js",
+  "cur.js",
+  "svg.js",
+  "bmp.js",
+  "png.js",
+  "psd.js",
+  "jpg.js",
+  "types.js",
+  "detector.js",
+  "index.js",
+  "readUInt.js",
+  "signals.js",
+  "index.js",
+  "browser.js",
+  "signals.js",
+  "index.js",
+  "browser.js",
+  "base-theme.js",
+  "progress-bar.js",
+  "render-template.js",
+  "has-color.js",
+  "themes.js",
+  "index.js",
+  "wide-truncate.js",
+  "spin.js",
+  "error.js",
+  "plumbing.js",
+  "set-immediate.js",
+  "template-item.js",
+  "process.js",
+  "theme-set.js",
+  "set-interval.js",
+  "index.js",
+  "log.js",
+  "index.js",
+  "index.js",
+  "index.js",
+  "readShebang.js",
+  "escape.js",
+  "resolveCommand.js",
+  "parse.js",
+  "enoent.js",
+  "index.js",
+  "chownr.js",
+  "index.js",
+  "index.js",
+  "index.js",
+  "align.js",
+  "bindings.js",
+  "index.js",
+  "index.js",
+  "text.js",
+  "text.js",
+  "index.js",
+  "index.js",
+  "index.js",
+  "index.js",
+  "index.js",
+  "index.js",
+  "buffer-stream.js",
+  "index.js",
+  "index.js",
+  "stdio.js",
+  "errname.js",
+  "jsonpointer.js",
+  "wrappy.js",
+  "index.js",
+  "ini.js",
+  "index.js",
+  "utils.js",
+  "cli.js",
+  "browser.js",
+  "index.js",
+  "index.js",
+  "conversions.js",
+  "index.js",
+  "index.js",
+  "index.js",
+  "index.js",
+  "normalize-windows-path.js",
+  "strip-trailing-slashes.js",
+  "large-numbers.js",
+  "get-write-flag.js",
+  "types.js",
+  "read-entry.js",
+  "warn-method.js",
+  "options.js",
+  "update.js",
+  "process-umask.js",
+  "pack.js",
+  "index.js",
+  "create.js",
+  "header.js",
+  "normalize-unicode.js",
+  "list.js",
+  "make-command.js",
+  "winchars.js",
+  "parse.js",
+  "replace.js",
+  "extract.js",
+  "pax.js",
+  "symlink-error.js",
+  "cwd-error.js",
+  "path-reservations.js",
+  "mode-fix.js",
+  "mkdir.js",
+  "write-entry.js",
+  "strip-absolute-path.js",
+  "index.min.js",
+  "unpack.js",
+  "normalize-windows-path.js",
+  "strip-trailing-slashes.js",
+  "large-numbers.js",
+  "get-write-flag.js",
+  "types.js",
+  "read-entry.js",
+  "warn-method.js",
+  "options.js",
+  "update.js",
+  "process-umask.js",
+  "pack.js",
+  "index.js",
+  "create.js",
+  "header.js",
+  "normalize-unicode.js",
+  "list.js",
+  "make-command.js",
+  "winchars.js",
+  "parse.js",
+  "replace.js",
+  "extract.js",
+  "pax.js",
+  "symlink-error.js",
+  "cwd-error.js",
+  "path-reservations.js",
+  "mode-fix.js",
+  "mkdir.js",
+  "write-entry.js",
+  "strip-absolute-path.js",
+  "index.min.js",
+  "unpack.js",
+  "index.js",
+  "index.js",
+  "bin.js",
+  "index.js",
+  "browser.js",
+  "index.js",
+  "index.js",
+  "windows.js",
+  "mode.js",
+  "which.js",
+  "index.js",
+  "readable-browser.js",
+  "errors-browser.js",
+  "readable.js",
+  "errors.js",
+  "stream.js",
+  "stream-browser.js",
+  "from-browser.js",
+  "destroy.js",
+  "from.js",
+  "async_iterator.js",
+  "state.js",
+  "buffer_list.js",
+  "end-of-stream.js",
+  "pipeline.js",
+  "_stream_passthrough.js",
+  "_stream_transform.js",
+  "_stream_duplex.js",
+  "_stream_readable.js",
+  "_stream_writable.js",
+  "experimentalWarning.js",
+  "index.js",
+  "tracker-base.js",
+  "tracker-stream.js",
+  "index.js",
+  "tracker.js",
+  "tracker-group.js",
+  "index.js",
+  "index.js",
+  "index.js",
+  "index.js",
+  "node.js",
+  "common.js",
+  "browser.js",
+  "index.js"
+ ],
+ "counts": {
+  "services": 0,
+  "messages": 0,
+  "enums": 0,
+  "methods": 0,
+  "ipc_channels": 12
+ },
+ "services": {},
+ "messages": {},
+ "enums": {},
+ "ipc": {
+  "channels": {
+   "redux-action": {
+    "sends": 3,
+    "invokes": 0,
+    "listeners": 3,
+    "handlers": 3,
+    "sites": [
+     "ipcMain.on",
+     "ipcRenderer.on",
+     "ipcRenderer.send"
+    ]
+   },
+   "${U.I0.WindowIdRequest}-${e}": {
+    "sends": 0,
+    "invokes": 0,
+    "listeners": 1,
+    "handlers": 0,
+    "sites": [
+     "ipcRenderer.once"
+    ]
+   },
+   "did-finish-load": {
+    "sends": 0,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 1,
+    "sites": [
+     "webContents.once"
+    ]
+   },
+   "will-redirect": {
+    "sends": 0,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 1,
+    "sites": [
+     "webContents.on"
+    ]
+   },
+   "will-navigate": {
+    "sends": 0,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 2,
+    "sites": [
+     "webContents.on"
+    ]
+   },
+   "will-prevent-unload": {
+    "sends": 0,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 1,
+    "sites": [
+     "webContents.on"
+    ]
+   },
+   "did-navigate-in-page": {
+    "sends": 0,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 1,
+    "sites": [
+     "webContents.on"
+    ]
+   },
+   "audio-state-changed": {
+    "sends": 0,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 1,
+    "sites": [
+     "webContents.on"
+    ]
+   },
+   "did-stop-loading": {
+    "sends": 0,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 1,
+    "sites": [
+     "webContents.once"
+    ]
+   },
+   "${ns.WindowIdRequest}-${a.idRequestChannel}": {
+    "sends": 1,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 0,
+    "sites": [
+     "webContents.send"
+    ]
+   }
+  },
+  "exposed_globals": [
+   "__SENTRY_IPC__",
+   "slackPlatform",
+   "process",
+   "desktop"
+  ]
+ },
+ "endpoints": {
+  "urls": {
+   "http://www.w3.org/2000/svg": 16,
+   "https://sentry.io/welcome/": 2,
+   "http://localhost:8969/stream": 2,
+   "https://browser.sentry-cdn.com": 2,
+   "http://dogs.are.great": 2,
+   "http://www.example.com": 5,
+   "https://REDACTED@dummy.dsn/12345": 5,
+   "https://REDACTED@slack-gov.com/apps/sentryproxy/5277886": 3,
+   "https://REDACTED@slack.com/apps/sentryproxy/5277886": 3,
+   "https://slack.com": 3,
+   "https://app.slack.com": 3,
+   "https://a.slack-edge.com": 3,
+   "https://b.slack-edge.com": 3,
+   "https://spellcheck.slack-edge-gov.com/dictionaries_v2/": 1,
+   "https://spellcheck.slack-edge.com/dictionaries_v2/": 1,
+   "https://spellcheck.slack-edge.mil/dictionaries_v2/": 1,
+   "https://toolbelt.tinyspeck.com": 1,
+   "https://dev.slack.com": 1,
+   "https://slackb-mil-dev.com": 1,
+   "https://slackb.mil": 1,
+   "https://slackb-gov-dev.com": 1,
+   "https://slackb-gov.com": 1,
+   "https://dev.slackb.com": 1,
+   "https://slackb.com": 1,
+   "https://sentry.io/organizations/tinyspeck/discover/results/": 1,
+   "https://clients2.google.com/service/update2/crx": 2,
+   "https://update.googleapis.com/service/update2/json": 1,
+   "https://auth.tinyspeck.com/slauth_login": 1,
+   "http://localhost:9411/api/v2/spans": 1,
+   "https://f.a.k/e": 1,
+   "https://github.com/nodejs/require-in-the-middle/issues": 1,
+   "https://github.com/": 1,
+   "https://mapbox-node-pre-gyp-public-testing-bucket.s3.us-east-1.amazonaws.com": 1
+  },
+  "hosts": {
+   "www.w3.org": {
+    "urls": [
+     "http://www.w3.org/2000/svg"
+    ],
+    "files": [
+     "preload.bundle.js",
+     "net-log-window.bundle.js",
+     "component-preload-entry-point.bundle.js",
+     "settings-editor.bundle.js",
+     "basic-auth-view.bundle.js"
+    ]
+   },
+   "sentry.io": {
+    "urls": [
+     "https://sentry.io/welcome/",
+     "https://sentry.io/organizations/tinyspeck/discover/results/"
+    ],
+    "files": [
+     "preload.bundle.js",
+     "component-preload-entry-point.bundle.js",
+     "main.bundle.cjs"
+    ]
+   },
+   "localhost": {
+    "urls": [
+     "http://localhost:8969/stream",
+     "http://localhost:9411/api/v2/spans"
+    ],
+    "files": [
+     "preload.bundle.js",
+     "component-preload-entry-point.bundle.js",
+     "main.bundle.cjs"
+    ]
+   },
+   "browser.sentry-cdn.com": {
+    "urls": [
+     "https://browser.sentry-cdn.com"
+    ],
+    "files": [
+     "preload.bundle.js",
+     "component-preload-entry-point.bundle.js"
+    ]
+   },
+   "dogs.are.great": {
+    "urls": [
+     "http://dogs.are.great"
+    ],
+    "files": [
+     "preload.bundle.js",
+     "component-preload-entry-point.bundle.js"
+    ]
+   },
+   "www.example.com": {
+    "urls": [
+     "http://www.example.com"
+    ],
+    "files": [
+     "preload.bundle.js",
+     "net-log-window.bundle.js",
+     "component-preload-entry-point.bundle.js",
+     "settings-editor.bundle.js",
+     "basic-auth-view.bundle.js"
+    ]
+   },
+   "dummy.dsn": {
+    "urls": [
+     "https://REDACTED@dummy.dsn/12345"
+    ],
+    "files": [
+     "preload.bundle.js",
+     "net-log-window.bundle.js",
+     "component-preload-entry-point.bundle.js",
+     "settings-editor.bundle.js",
+     "basic-auth-view.bundle.js"
+    ]
+   },
+   "slack-gov.com": {
+    "urls": [
+     "https://REDACTED@slack-gov.com/apps/sentryproxy/5277886"
+    ],
+    "files": [
+     "preload.bundle.js",
+     "component-preload-entry-point.bundle.js",
+     "main.bundle.cjs"
+    ]
+   },
+   "slack.com": {
+    "urls": [
+     "https://REDACTED@slack.com/apps/sentryproxy/5277886",
+     "https://slack.com"
+    ],
+    "files": [
+     "preload.bundle.js",
+     "component-preload-entry-point.bundle.js",
+     "main.bundle.cjs"
+    ]
+   },
+   "app.slack.com": {
+    "urls": [
+     "https://app.slack.com"
+    ],
+    "files": [
+     "preload.bundle.js",
+     "component-preload-entry-point.bundle.js",
+     "main.bundle.cjs"
+    ]
+   },
+   "a.slack-edge.com": {
+    "urls": [
+     "https://a.slack-edge.com"
+    ],
+    "files": [
+     "preload.bundle.js",
+     "component-preload-entry-point.bundle.js",
+     "main.bundle.cjs"
+    ]
+   },
+   "b.slack-edge.com": {
+    "urls": [
+     "https://b.slack-edge.com"
+    ],
+    "files": [
+     "preload.bundle.js",
+     "component-preload-entry-point.bundle.js",
+     "main.bundle.cjs"
+    ]
+   },
+   "spellcheck.slack-edge-gov.com": {
+    "urls": [
+     "https://spellcheck.slack-edge-gov.com/dictionaries_v2/"
+    ],
+    "files": [
+     "main.bundle.cjs"
+    ]
+   },
+   "spellcheck.slack-edge.com": {
+    "urls": [
+     "https://spellcheck.slack-edge.com/dictionaries_v2/"
+    ],
+    "files": [
+     "main.bundle.cjs"
+    ]
+   },
+   "spellcheck.slack-edge.mil": {
+    "urls": [
+     "https://spellcheck.slack-edge.mil/dictionaries_v2/"
+    ],
+    "files": [
+     "main.bundle.cjs"
+    ]
+   },
+   "toolbelt.tinyspeck.com": {
+    "urls": [
+     "https://toolbelt.tinyspeck.com"
+    ],
+    "files": [
+     "main.bundle.cjs"
+    ]
+   },
+   "dev.slack.com": {
+    "urls": [
+     "https://dev.slack.com"
+    ],
+    "files": [
+     "main.bundle.cjs"
+    ]
+   },
+   "slackb-mil-dev.com": {
+    "urls": [
+     "https://slackb-mil-dev.com"
+    ],
+    "files": [
+     "main.bundle.cjs"
+    ]
+   },
+   "slackb.mil": {
+    "urls": [
+     "https://slackb.mil"
+    ],
+    "files": [
+     "main.bundle.cjs"
+    ]
+   },
+   "slackb-gov-dev.com": {
+    "urls": [
+     "https://slackb-gov-dev.com"
+    ],
+    "files": [
+     "main.bundle.cjs"
+    ]
+   },
+   "slackb-gov.com": {
+    "urls": [
+     "https://slackb-gov.com"
+    ],
+    "files": [
+     "main.bundle.cjs"
+    ]
+   },
+   "dev.slackb.com": {
+    "urls": [
+     "https://dev.slackb.com"
+    ],
+    "files": [
+     "main.bundle.cjs"
+    ]
+   },
+   "slackb.com": {
+    "urls": [
+     "https://slackb.com"
+    ],
+    "files": [
+     "main.bundle.cjs"
+    ]
+   },
+   "clients2.google.com": {
+    "urls": [
+     "https://clients2.google.com/service/update2/crx"
+    ],
+    "files": [
+     "main.bundle.cjs"
+    ]
+   },
+   "update.googleapis.com": {
+    "urls": [
+     "https://update.googleapis.com/service/update2/json"
+    ],
+    "files": [
+     "main.bundle.cjs"
+    ]
+   },
+   "auth.tinyspeck.com": {
+    "urls": [
+     "https://auth.tinyspeck.com/slauth_login"
+    ],
+    "files": [
+     "main.bundle.cjs"
+    ]
+   },
+   "f.a.k": {
+    "urls": [
+     "https://f.a.k/e"
+    ],
+    "files": [
+     "main.bundle.cjs"
+    ]
+   },
+   "github.com": {
+    "urls": [
+     "https://github.com/nodejs/require-in-the-middle/issues",
+     "https://github.com/"
+    ],
+    "files": [
+     "main.bundle.cjs",
+     "index.js"
+    ]
+   },
+   "mapbox-node-pre-gyp-public-testing-bucket.s3.us-east-1.amazonaws.com": {
+    "urls": [
+     "https://mapbox-node-pre-gyp-public-testing-bucket.s3.us-east-1.amazonaws.com"
+    ],
+    "files": [
+     "s3_setup.js"
+    ]
+   }
+  }
+ },
+ "notes": []
+}

@@ -232291,8 +232291,8 @@
    "http://www.example.com": 2,
    "https://github.com/getcursor/cursor/issues/new": 4,
    "https://github.com/getcursor/cursor/": 8,
-   "https://80ec2259ebfad12d8aa2afe6eb4f6dd5@metrics.cursor.sh/4508016051945472": 3,
-   "https://0a7b82d23ca5f4635708bc8e9957e4bd@o4504648565915648.ingest.us.sentry.io/4509635758522369": 3,
+   "https://REDACTED@metrics.cursor.sh/4508016051945472": 3,
+   "https://REDACTED@o4504648565915648.ingest.us.sentry.io/4509635758522369": 3,
    "https://cursor.com/docs/configuration/worktrees": 2,
    "https://cursor.com/docs/integrations/github#ip-allow-list-configuration": 2,
    "https://api.origin.cursor.com/mcp/readonly": 2,
@@ -232368,8 +232368,8 @@
    "https://sentry.io/welcome/": 2,
    "https://browser.sentry-cdn.com": 2,
    "http://localhost:8969/stream": 4,
-   "https://o447951.ingest.sentry.io/api/4509632503087104/envelope/?sentry_version=7&sentry_key=c1dfb07d783ad5325c245c1fd3725390&sentry_client=sentry.javascript.browser%2F1.33.7": 2,
-   "https://12345@dummy.dsn/12345": 2,
+   "https://o447951.ingest.sentry.io/api/4509632503087104/envelope/?sentry_version=7&sentry_key=REDACTED&sentry_client=sentry.javascript.browser%2F1.33.7": 2,
+   "https://REDACTED@dummy.dsn/12345": 2,
    "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.activeComment.d.ts": 4,
    "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.aiRelatedInformation.d.ts": 4,
    "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.aiTextSearchProvider.d.ts": 4,
@@ -232633,540 +232633,1035 @@
    "https://cursor.com/contact-sales?source=agents": 1
   },
   "hosts": {
-   "www.w3.org": [
-    "http://www.w3.org/2000/svg",
-    "http://www.w3.org/1999/xhtml",
-    "http://www.w3.org/1998/Math/MathML",
-    "http://www.w3.org/1999/xlink",
-    "http://www.w3.org/XML/1998/namespace",
-    "http://www.w3.org/2000/xmlns/",
-    "http://www.w3.org/2001/XMLSchema#decimal",
-    "http://www.w3.org/2001/XMLSchema#integer",
-    "http://www.w3.org/2001/XMLSchema#boolean",
-    "http://www.w3.org/2001/XMLSchema#byte",
-    "http://www.w3.org/2001/XMLSchema#hexBinary",
-    "http://www.w3.org/2001/XMLSchema#double",
-    "http://www.w3.org/2001/XMLSchema#float",
-    "http://www.w3.org/2001/XMLSchema#int",
-    "http://www.w3.org/2001/XMLSchema#long",
-    "http://www.w3.org/2001/XMLSchema#short",
-    "http://www.w3.org/2001/XMLSchema#string"
-   ],
-   "base-ui.com": [
-    "https://base-ui.com/r/invalid-render-prop",
-    "https://base-ui.com/production-error"
-   ],
-   "example.com": [
-    "http://example.com",
-    "https://example.com/mcp",
-    "https://example.com/test-mcp-server",
-    "https://example.com"
-   ],
-   "www.ibm.com": [
-    "http://www.ibm.com/data/dtd/v11/ibmxhtml1-transitional.dtd"
-   ],
-   "github.com": [
-    "https://github.com/syntax-tree/hast-util-to-jsx-runtime",
-    "https://github.com/org/repo/pull/1",
-    "https://github.com/getcursor/cursor/issues/new",
-    "https://github.com/getcursor/cursor/",
-    "https://github.com/test/repo/pull/123",
-    "https://github.com/microsoft/vscode/issues/155179",
-    "https://github.com",
-    "https://github.com/getcursor/cursor/issues",
-    "https://github.com/apps/cursor/installations/new"
-   ],
-   "www.eclipse.org": [
-    "http://www.eclipse.org/elk/ElkGraph",
-    "http://www.eclipse.org/emf/2002/Ecore",
-    "http://www.eclipse.org/emf/2003/XMLType"
-   ],
-   "org": [
-    "http:///org/eclipse/emf/ecore/util/ExtendedMetaData"
-   ],
-   "fonts.googleapis.com": [
-    "https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&amp;display=swap'"
-   ],
-   "mermaid-node-link.invalid": [
-    "https://mermaid-node-link.invalid/"
-   ],
-   "safe-href.invalid": [
-    "https://safe-href.invalid/"
-   ],
-   "slack.com": [
-    "https://slack.com/marketplace/A08SKDT6QUW-cursor",
-    "https://slack.com/app_redirect"
-   ],
-   "s.io": [
-    "http://s.io"
-   ],
-   "www.example.com": [
-    "http://www.example.com"
-   ],
-   "metrics.cursor.sh": [
-    "https://80ec2259ebfad12d8aa2afe6eb4f6dd5@metrics.cursor.sh/4508016051945472"
-   ],
-   "o4504648565915648.ingest.us.sentry.io": [
-    "https://0a7b82d23ca5f4635708bc8e9957e4bd@o4504648565915648.ingest.us.sentry.io/4509635758522369"
-   ],
-   "cursor.com": [
-    "https://cursor.com/docs/configuration/worktrees",
-    "https://cursor.com/docs/integrations/github#ip-allow-list-configuration",
-    "https://cursor.com",
-    "https://cursor.com/download/bot",
-    "https://cursor.com/automations/new",
-    "https://cursor.com/docs/plugins",
-    "https://cursor.com/docs/mcp",
-    "https://cursor.com/docs/skills",
-    "https://cursor.com/docs/agent/subagents",
-    "https://cursor.com/docs/rules",
-    "https://cursor.com/docs/agent/chat/commands",
-    "https://cursor.com/docs/hooks",
-    "https://cursor.com/docs/skills#frontmatter-fields",
-    "https://cursor.com/docs/agent/terminal",
-    "https://cursor.com/docs/bugbot",
-    "https://cursor.com/docs/agent/review#agent-review",
-    "https://cursor.com/docs/account/pricing",
-    "https://cursor.com/docs/models",
-    "https://cursor.com/dashboard/cloud-agents#environments",
-    "https://cursor.com/onboard",
-    "https://cursor.com/docs/cloud-agent#how-to-use",
-    "https://cursor.com/environment-json-dockerfile.md",
-    "https://cursor.com/docs",
-    "https://cursor.com/docs/agent/security/run-modes",
-    "https://cursor.com/dashboard",
-    "https://cursor.com/dashboard/analytics",
-    "https://cursor.com/dashboard/spending?modal=plan-selection",
-    "https://cursor.com/download/bot?download=1",
-    "https://cursor.com/codebase",
-    "https://cursor.com/downloads",
-    "https://cursor.com/glass-toast-preview-dark.png",
-    "https://cursor.com/glass-toast-preview-light.png",
-    "https://cursor.com/privacy",
-    "https://cursor.com/security",
-    "https://cursor.com/docs/cloud-agents",
-    "https://cursor.com/pricing",
-    "https://cursor.com/glass-modal-preview-light.svg",
-    "https://cursor.com/mobile-launch-in-app-ad-modal-dark.png",
-    "https://cursor.com/mobile-launch-in-app-ad-modal-light.png",
-    "https://cursor.com/docs/cloud-agent",
-    "https://cursor.com/dashboard/cloud-agents",
-    "https://cursor.com/changelog",
-    "https://cursor.com/dashboard?tab=integrations",
-    "https://cursor.com/help/account-and-billing/profiles",
-    "https://cursor.com/docs/cloud-agent/setup",
-    "https://cursor.com/mobile",
-    "https://cursor.com/dashboard/cloud-agents#team-secrets",
-    "https://cursor.com/docs/cloud-agent/security-network#secret-protection",
-    "https://cursor.com/dashboard/cloud-agents#my-security",
-    "https://cursor.com/dashboard/cloud-agents#team-security",
-    "https://cursor.com/docs/origin/cli",
-    "https://cursor.com/docs/cloud-agent/automations",
-    "https://cursor.com/bot/onboarding",
-    "https://cursor.com/contact-sales?source=agents"
-   ],
-   "api.origin.cursor.com": [
-    "https://api.origin.cursor.com/mcp/readonly",
-    "https://api.origin.cursor.com"
-   ],
-   "www.googleapis.com": [
-    "https://www.googleapis.com/auth/gmail.readonly",
-    "https://www.googleapis.com/auth/gmail.compose",
-    "https://www.googleapis.com/auth/gmail.modify",
-    "https://www.googleapis.com/auth/drive.readonly",
-    "https://www.googleapis.com/auth/drive.file",
-    "https://www.googleapis.com/auth/calendar.events",
-    "https://www.googleapis.com/auth/calendar.calendarlist.readonly",
-    "https://www.googleapis.com/auth/calendar.events.readonly",
-    "https://www.googleapis.com/auth/calendar.events.freebusy",
-    "https://www.googleapis.com/auth/documents",
-    "https://www.googleapis.com/auth/spreadsheets",
-    "https://www.googleapis.com/auth/presentations"
-   ],
-   "localhost": [
-    "http://localhost:8787/callback",
-    "https://localhost:",
-    "http://localhost:4000",
-    "http://localhost:3000/sse",
-    "http://localhost:8969/stream",
-    "http://localhost:3001",
-    "https://localhost:8000/",
-    "http://localhost:1234"
-   ],
-   "review.cursor.com": [
-    "https://review.cursor.com"
-   ],
-   "app.graphite.com": [
-    "https://app.graphite.com"
-   ],
-   "www.google.com": [
-    "https://www.google.com/s2/favicons?"
-   ],
-   "json-schema.org": [
-    "https://json-schema.org/draft/2020-12/schema",
-    "http://json-schema.org/draft-07/schema#",
-    "http://json-schema.org/draft-04/schema#",
-    "https://json-schema.org/draft-07/schema"
-   ],
-   "api2.cursor.sh": [
-    "https://api2.cursor.sh"
-   ],
-   "api3.cursor.sh": [
-    "https://api3.cursor.sh"
-   ],
-   "api4.cursor.sh": [
-    "https://api4.cursor.sh"
-   ],
-   "repo42.cursor.sh": [
-    "https://repo42.cursor.sh"
-   ],
-   "api.origin-staging.cursor.com": [
-    "https://api.origin-staging.cursor.com"
-   ],
-   "agent.api5.cursor.sh": [
-    "https://agent.api5.cursor.sh"
-   ],
-   "agentn.api5.cursor.sh": [
-    "https://agentn.api5.cursor.sh"
-   ],
-   "agent-gcpp-uswest.api5.cursor.sh": [
-    "https://agent-gcpp-uswest.api5.cursor.sh"
-   ],
-   "agentn-gcpp-uswest.api5.cursor.sh": [
-    "https://agentn-gcpp-uswest.api5.cursor.sh"
-   ],
-   "agentn-gcpp-eucentral.api5.cursor.sh": [
-    "https://agentn-gcpp-eucentral.api5.cursor.sh"
-   ],
-   "agentn-gcpp-apsoutheast.api5.cursor.sh": [
-    "https://agentn-gcpp-apsoutheast.api5.cursor.sh"
-   ],
-   "agent-link.invalid": [
-    "https://agent-link.invalid/"
-   ],
-   "prodregistryv2.org": [
-    "https://prodregistryv2.org/v1"
-   ],
-   "featureassets.org": [
-    "https://featureassets.org/v1"
-   ],
-   "api.statsigcdn.com": [
-    "https://api.statsigcdn.com/v1"
-   ],
-   "statsigapi.net": [
-    "https://statsigapi.net/v1/sdk_exception"
-   ],
-   "cloudflare-dns.com": [
-    "https://cloudflare-dns.com/dns-query"
-   ],
-   "code.visualstudio.com": [
-    "https://code.visualstudio.com/docs/terminal/shell-integration",
-    "https://code.visualstudio.com/docs/editor/integrated-terminal#_shell-integration",
-    "https://code.visualstudio.com/docs/editor/extension-marketplace#_the-extension-signature-cannot-be-verified-by-vs-code",
-    "https://code.visualstudio.com/docs/editor/accessibility#_terminal-accessibility",
-    "https://code.visualstudio.com/docs/editor/tasks#_defining-a-problem-matcher",
-    "https://code.visualstudio.com/docs/editor/accessibility#_screen-readers",
-    "https://code.visualstudio.com/docs/remote/tunnels"
-   ],
-   "staging.cursor.sh": [
-    "https://staging.cursor.sh"
-   ],
-   "dev-staging.cursor.sh": [
-    "https://dev-staging.cursor.sh"
-   ],
-   "www.notion.so": [
-    "https://www.notion.so/images/notion-logo-block-main.svg",
-    "https://www.notion.so/cursorai/Ryo-s-Journal-161da74ef045007ac1bf36660e08e4a4"
-   ],
-   "mcp.notion.com": [
-    "https://mcp.notion.com/mcp"
-   ],
-   "review.stg.cursor.com": [
-    "https://review.stg.cursor.com"
-   ],
-   "staging.cursor.com": [
-    "https://staging.cursor.com"
-   ],
-   "api.openai.com": [
-    "https://api.openai.com/v1"
-   ],
-   "git-scm.com": [
-    "https://git-scm.com/downloads"
-   ],
-   "inference.tesla.com": [
-    "https://inference.tesla.com"
-   ],
-   "tokens.bottlerocket.tesla.com": [
-    "https://tokens.bottlerocket.tesla.com/personal-tokens/"
-   ],
-   "api.github.com": [
-    "https://api.github.com/graphql"
-   ],
-   "aka.ms": [
-    "https://aka.ms/vscode-troubleshoot-terminal-launch",
-    "https://aka.ms/allow-vscode-popup",
-    "https://aka.ms/vscode-web-extensions-guide",
-    "https://aka.ms/vscode-remote",
-    "https://aka.ms/vscode-remote/faq/old-linux",
-    "https://aka.ms/vscode-profiles-help",
-    "https://aka.ms/vscode-workspace-trust",
-    "https://aka.ms/vscode-faq-old-macOS",
-    "https://aka.ms/vscode-extension-security",
-    "https://aka.ms/vscode-verify-publisher",
-    "https://aka.ms/vscode-platform-specific-extensions",
-    "https://aka.ms/vscode-extension-bisect",
-    "https://aka.ms/vscode-insiders",
-    "https://aka.ms/vscode-server-doc"
-   ],
-   "$1": [
-    "https://$1/"
-   ],
-   "sentry.io": [
-    "https://sentry.io/welcome/"
-   ],
-   "browser.sentry-cdn.com": [
-    "https://browser.sentry-cdn.com"
-   ],
-   "o447951.ingest.sentry.io": [
-    "https://o447951.ingest.sentry.io/api/4509632503087104/envelope/?sentry_version=7&sentry_key=c1dfb07d783ad5325c245c1fd3725390&sentry_client=sentry.javascript.browser%2F1.33.7"
-   ],
-   "dummy.dsn": [
-    "https://12345@dummy.dsn/12345"
-   ],
-   "raw.githubusercontent.com": [
-    "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.activeComment.d.ts",
-    "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.aiRelatedInformation.d.ts",
-    "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.aiTextSearchProvider.d.ts",
-    "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.authLearnMore.d.ts",
-    "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.authSession.d.ts",
-    "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.canonicalUriProvider.d.ts",
-    "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.chatContextProvider.d.ts",
-    "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.chatEditing.d.ts",
-    "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.chatParticipantAdditions.d.ts",
-    "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.chatParticipantPrivate.d.ts",
-    "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.chatProvider.d.ts",
-    "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.chatReferenceBinaryData.d.ts",
-    "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.chatReferenceDiagnostic.d.ts",
-    "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.chatSessionsProvider.d.ts",
-    "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.chatStatusItem.d.ts",
-    "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.chatTab.d.ts",
-    "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.codeActionAI.d.ts",
-    "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.codeActionRanges.d.ts",
-    "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.codiconDecoration.d.ts",
-    "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.commentReactor.d.ts",
-    "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.commentReveal.d.ts",
-    "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.commentThreadApplicability.d.ts",
-    "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.commentingRangeHint.d.ts",
-    "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.commentsDraftState.d.ts",
-    "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.contribAccessibilityHelpContent.d.ts",
-    "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.contribChatParticipantDetection.d.ts",
-    "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.contribCommentEditorActionsMenu.d.ts",
-    "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.contribCommentPeekContext.d.ts",
-    "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.contribCommentThreadAdditionalMenu.d.ts",
-    "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.contribCommentsViewThreadMenus.d.ts",
-    "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.contribDebugCreateConfiguration.d.ts",
-    "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.contribDiffEditorGutterToolBarMenus.d.ts",
-    "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.contribEditSessions.d.ts",
-    "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.contribEditorContentMenu.d.ts",
-    "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.contribLabelFormatterWorkspaceTooltip.d.ts",
-    "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.contribMenuBarHome.d.ts",
-    "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.contribMergeEditorMenus.d.ts",
-    "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.contribMultiDiffEditorMenus.d.ts",
-    "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.contribNotebookStaticPreloads.d.ts",
-    "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.contribRemoteHelp.d.ts",
-    "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.contribShareMenu.d.ts",
-    "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.contribSourceControlHistoryItemMenu.d.ts",
-    "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.contribSourceControlHistoryTitleMenu.d.ts",
-    "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.contribSourceControlInputBoxMenu.d.ts",
-    "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.contribSourceControlTitleMenu.d.ts",
-    "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.contribStatusBarItems.d.ts",
-    "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.contribViewContainerTitle.d.ts",
-    "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.contribViewsRemote.d.ts",
-    "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.contribViewsWelcome.d.ts",
-    "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.control.d.ts",
-    "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.cursor.d.ts",
-    "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.cursorAgentHost.d.ts",
-    "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.cursorNoDeps.d.ts",
-    "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.cursorPseudoterminal.d.ts",
-    "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.cursorPublic.d.ts",
-    "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.cursorTracing.d.ts",
-    "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.customEditorMove.d.ts",
-    "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.debugVisualization.d.ts",
-    "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.defaultChatParticipant.d.ts",
-    "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.diffCommand.d.ts",
-    "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.diffContentOptions.d.ts",
-    "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.documentFiltersExclusive.d.ts",
-    "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.editSessionIdentityProvider.d.ts",
-    "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.editorHoverVerbosityLevel.d.ts",
-    "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.editorInsets.d.ts",
-    "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.embeddings.d.ts",
-    "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.extensionRuntime.d.ts",
-    "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.extensionsAny.d.ts",
-    "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.externalUriOpener.d.ts",
-    "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.fileSearchProvider.d.ts",
-    "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.fileSearchProvider2.d.ts",
-    "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.findFiles2.d.ts",
-    "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.findTextInFiles.d.ts",
-    "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.findTextInFiles2.d.ts",
-    "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.fsChunks.d.ts",
-    "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.idToken.d.ts",
-    "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.inlineCompletionsAdditions.d.ts",
-    "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.inlineEdit.d.ts",
-    "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.interactive.d.ts",
-    "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.interactiveWindow.d.ts",
-    "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.ipc.d.ts",
-    "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.languageModelCapabilities.d.ts",
-    "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.languageModelSystem.d.ts",
-    "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.languageModelThinkingPart.d.ts",
-    "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.languageModelToolResultAudience.d.ts",
-    "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.languageModelToolsForAgent.d.ts",
-    "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.languageStatusText.d.ts",
-    "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.mappedEditsProvider.d.ts",
-    "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.markdownAlertSyntax.d.ts",
-    "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.mcpConfigurationProvider.d.ts",
-    "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.multiDocumentHighlightProvider.d.ts",
-    "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.nativeWindowHandle.d.ts",
-    "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.newSymbolNamesProvider.d.ts",
-    "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.notebookCellExecution.d.ts",
-    "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.notebookCellExecutionState.d.ts",
-    "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.notebookControllerAffinityHidden.d.ts",
-    "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.notebookDeprecated.d.ts",
-    "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.notebookExecution.d.ts",
-    "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.notebookKernelSource.d.ts",
-    "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.notebookLiveShare.d.ts",
-    "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.notebookMessaging.d.ts",
-    "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.notebookMime.d.ts",
-    "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.notebookReplDocument.d.ts",
-    "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.notebookVariableProvider.d.ts",
-    "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.portsAttributes.d.ts",
-    "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.profileContentHandlers.d.ts",
-    "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.quickDiffProvider.d.ts",
-    "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.quickPickItemTooltip.d.ts",
-    "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.quickPickSortByLabel.d.ts",
-    "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.remoteCodingAgents.d.ts",
-    "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.resolvers.d.ts",
-    "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.scmActionButton.d.ts",
-    "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.scmHistoryProvider.d.ts",
-    "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.scmMultiDiffEditor.d.ts",
-    "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.scmRemotes.d.ts",
-    "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.scmSelectedProvider.d.ts",
-    "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.scmTextDocument.d.ts",
-    "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.scmValidation.d.ts",
-    "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.shareProvider.d.ts",
-    "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.speech.d.ts",
-    "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.statusBarItemTooltip.d.ts",
-    "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.tabInputMultiDiff.d.ts",
-    "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.tabInputTextMerge.d.ts",
-    "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.taskPresentationGroup.d.ts",
-    "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.taskProblemMatcherStatus.d.ts",
-    "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.telemetry.d.ts",
-    "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.terminalCompletionProvider.d.ts",
-    "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.terminalDataWriteEvent.d.ts",
-    "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.terminalDimensions.d.ts",
-    "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.terminalExecuteCommandEvent.d.ts",
-    "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.terminalQuickFixProvider.d.ts",
-    "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.terminalSelection.d.ts",
-    "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.terminalShellEnv.d.ts",
-    "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.testObserver.d.ts",
-    "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.testRelatedCode.d.ts",
-    "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.textDocumentTextLength.d.ts",
-    "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.textEditorDiffInformation.d.ts",
-    "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.textSearchComplete2.d.ts",
-    "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.textSearchProvider.d.ts",
-    "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.textSearchProvider2.d.ts",
-    "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.timeline.d.ts",
-    "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.tokenInformation.d.ts",
-    "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.treeItemMarkdownLabel.d.ts",
-    "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.treeViewActiveItem.d.ts",
-    "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.treeViewMarkdownMessage.d.ts",
-    "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.treeViewReveal.d.ts",
-    "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.tunnelFactory.d.ts",
-    "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.tunnels.d.ts",
-    "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.valueSelectionInQuickPick.d.ts",
-    "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.workspaceTrust.d.ts"
-   ],
-   "microsoft.com": [
-    "https://microsoft.com",
-    "https://microsoft.com:8080",
-    "https://microsoft.com/foo",
-    "https://microsoft.com/foo/bar",
-    "https://microsoft.com/foobar",
-    "https://microsoft.com/bar"
-   ],
-   "*.microsoft.com": [
-    "https://*.microsoft.com"
-   ],
-   "192.168.0.1": [
-    "http://192.168.0.1"
-   ],
-   "192.168.0.*": [
-    "http://192.168.0.*"
-   ],
-   "changelog.cursor.com": [
-    "https://changelog.cursor.com",
-    "https://changelog.cursor.com/?nightly=true"
-   ],
-   "marketplace.cursorapi.com": [
-    "https://marketplace.cursorapi.com/",
-    "https://marketplace.cursorapi.com"
-   ],
-   "open-vsx.org": [
-    "https://open-vsx.org"
-   ],
-   "go.microsoft.com": [
-    "https://go.microsoft.com/fwlink/?linkid=868264",
-    "https://go.microsoft.com/fwlink/?linkid=867693",
-    "https://go.microsoft.com/fwlink/?linkid=853977",
-    "https://go.microsoft.com/fwlink/?linkid=830387",
-    "https://go.microsoft.com/fwlink/?linkid=851010",
-    "https://go.microsoft.com/fwlink/?linkid=2025315",
-    "https://go.microsoft.com/fwlink/?linkid=2149667",
-    "https://go.microsoft.com/fwlink/?linkid=2190713",
-    "https://go.microsoft.com/fwlink/?linkid=2239490"
-   ],
-   "www.cursor.com": [
-    "https://www.cursor.com/how-to-install-extension",
-    "https://www.cursor.com/downloads",
-    "https://www.cursor.com/marketplace",
-    "https://www.cursor.com/agents/mcp/oauth/callback"
-   ],
-   "prod.authentication.cursor.sh": [
-    "https://prod.authentication.cursor.sh"
-   ],
-   "downloads.cursor.com": [
-    "https://downloads.cursor.com"
-   ],
-   "cursor-cdn.com": [
-    "https://cursor-cdn.com"
-   ],
-   "platform.openai.com": [
-    "https://platform.openai.com/account/api-keys"
-   ],
-   "console.anthropic.com": [
-    "https://console.anthropic.com/settings/keys"
-   ],
-   "aistudio.google.com": [
-    "https://aistudio.google.com/app/apikey"
-   ],
-   "pytorch.org": [
-    "https://pytorch.org/docs/page",
-    "https://pytorch.org/docs/"
-   ],
-   "go": [
-    "http://go/debugdata"
-   ],
-   "react.dev": [
-    "https://react.dev/errors/"
-   ],
-   "apps.apple.com": [
-    "https://apps.apple.com/app/cursor/id6767085653"
-   ],
-   "foo.bar": [
-    "https://foo.bar"
-   ],
-   "x.ai": [
-    "https://x.ai/bot"
-   ]
+   "www.w3.org": {
+    "urls": [
+     "http://www.w3.org/2000/svg",
+     "http://www.w3.org/1999/xhtml",
+     "http://www.w3.org/1998/Math/MathML",
+     "http://www.w3.org/1999/xlink",
+     "http://www.w3.org/XML/1998/namespace",
+     "http://www.w3.org/2000/xmlns/",
+     "http://www.w3.org/2001/XMLSchema#decimal",
+     "http://www.w3.org/2001/XMLSchema#integer",
+     "http://www.w3.org/2001/XMLSchema#boolean",
+     "http://www.w3.org/2001/XMLSchema#byte",
+     "http://www.w3.org/2001/XMLSchema#hexBinary",
+     "http://www.w3.org/2001/XMLSchema#double",
+     "http://www.w3.org/2001/XMLSchema#float",
+     "http://www.w3.org/2001/XMLSchema#int",
+     "http://www.w3.org/2001/XMLSchema#long",
+     "http://www.w3.org/2001/XMLSchema#short",
+     "http://www.w3.org/2001/XMLSchema#string"
+    ],
+    "files": [
+     "workbench.anysphere-ui-automations.js",
+     "workbench.desktop.main.js",
+     "esm-client-production.js",
+     "workbench.glass.main.js"
+    ]
+   },
+   "base-ui.com": {
+    "urls": [
+     "https://base-ui.com/r/invalid-render-prop",
+     "https://base-ui.com/production-error"
+    ],
+    "files": [
+     "workbench.anysphere-ui-automations.js",
+     "workbench.desktop.main.js",
+     "workbench.glass.main.js"
+    ]
+   },
+   "example.com": {
+    "urls": [
+     "http://example.com",
+     "https://example.com/mcp",
+     "https://example.com/test-mcp-server",
+     "https://example.com"
+    ],
+    "files": [
+     "workbench.anysphere-ui-automations.js",
+     "workbench.desktop.main.js",
+     "workbench.glass.main.js"
+    ]
+   },
+   "www.ibm.com": {
+    "urls": [
+     "http://www.ibm.com/data/dtd/v11/ibmxhtml1-transitional.dtd"
+    ],
+    "files": [
+     "workbench.anysphere-ui-automations.js",
+     "workbench.desktop.main.js",
+     "workbench.glass.main.js"
+    ]
+   },
+   "github.com": {
+    "urls": [
+     "https://github.com/syntax-tree/hast-util-to-jsx-runtime",
+     "https://github.com/org/repo/pull/1",
+     "https://github.com/getcursor/cursor/issues/new",
+     "https://github.com/getcursor/cursor/",
+     "https://github.com/test/repo/pull/123",
+     "https://github.com/microsoft/vscode/issues/155179",
+     "https://github.com",
+     "https://github.com/getcursor/cursor/issues",
+     "https://github.com/apps/cursor/installations/new"
+    ],
+    "files": [
+     "workbench.anysphere-ui-automations.js",
+     "workbench.desktop.main.js",
+     "workbench.glass.main.js",
+     "extensionHostProcess.js",
+     "extensionHostWorkerMain.js"
+    ]
+   },
+   "www.eclipse.org": {
+    "urls": [
+     "http://www.eclipse.org/elk/ElkGraph",
+     "http://www.eclipse.org/emf/2002/Ecore",
+     "http://www.eclipse.org/emf/2003/XMLType"
+    ],
+    "files": [
+     "workbench.anysphere-ui-automations.js",
+     "workbench.desktop.main.js",
+     "workbench.glass.main.js"
+    ]
+   },
+   "org": {
+    "urls": [
+     "http:///org/eclipse/emf/ecore/util/ExtendedMetaData"
+    ],
+    "files": [
+     "workbench.anysphere-ui-automations.js",
+     "workbench.desktop.main.js",
+     "workbench.glass.main.js"
+    ]
+   },
+   "fonts.googleapis.com": {
+    "urls": [
+     "https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&amp;display=swap'"
+    ],
+    "files": [
+     "workbench.anysphere-ui-automations.js",
+     "workbench.desktop.main.js",
+     "workbench.glass.main.js"
+    ]
+   },
+   "mermaid-node-link.invalid": {
+    "urls": [
+     "https://mermaid-node-link.invalid/"
+    ],
+    "files": [
+     "workbench.anysphere-ui-automations.js",
+     "workbench.desktop.main.js",
+     "workbench.glass.main.js"
+    ]
+   },
+   "safe-href.invalid": {
+    "urls": [
+     "https://safe-href.invalid/"
+    ],
+    "files": [
+     "workbench.anysphere-ui-automations.js",
+     "workbench.desktop.main.js",
+     "workbench.glass.main.js"
+    ]
+   },
+   "slack.com": {
+    "urls": [
+     "https://slack.com/marketplace/A08SKDT6QUW-cursor",
+     "https://slack.com/app_redirect"
+    ],
+    "files": [
+     "workbench.anysphere-ui-automations.js"
+    ]
+   },
+   "s.io": {
+    "urls": [
+     "http://s.io"
+    ],
+    "files": [
+     "workbench.desktop.main.js",
+     "workbench.glass.main.js"
+    ]
+   },
+   "www.example.com": {
+    "urls": [
+     "http://www.example.com"
+    ],
+    "files": [
+     "workbench.desktop.main.js",
+     "workbench.glass.main.js"
+    ]
+   },
+   "metrics.cursor.sh": {
+    "urls": [
+     "https://REDACTED@metrics.cursor.sh/4508016051945472"
+    ],
+    "files": [
+     "workbench.desktop.main.js",
+     "workbench.glass.main.js",
+     "extensionHostProcess.js"
+    ]
+   },
+   "o4504648565915648.ingest.us.sentry.io": {
+    "urls": [
+     "https://REDACTED@o4504648565915648.ingest.us.sentry.io/4509635758522369"
+    ],
+    "files": [
+     "workbench.desktop.main.js",
+     "workbench.glass.main.js",
+     "extensionHostProcess.js"
+    ]
+   },
+   "cursor.com": {
+    "urls": [
+     "https://cursor.com/docs/configuration/worktrees",
+     "https://cursor.com/docs/integrations/github#ip-allow-list-configuration",
+     "https://cursor.com",
+     "https://cursor.com/download/bot",
+     "https://cursor.com/automations/new",
+     "https://cursor.com/docs/plugins",
+     "https://cursor.com/docs/mcp",
+     "https://cursor.com/docs/skills",
+     "https://cursor.com/docs/agent/subagents",
+     "https://cursor.com/docs/rules",
+     "https://cursor.com/docs/agent/chat/commands",
+     "https://cursor.com/docs/hooks",
+     "https://cursor.com/docs/skills#frontmatter-fields",
+     "https://cursor.com/docs/agent/terminal",
+     "https://cursor.com/docs/bugbot",
+     "https://cursor.com/docs/agent/review#agent-review",
+     "https://cursor.com/docs/account/pricing",
+     "https://cursor.com/docs/models",
+     "https://cursor.com/dashboard/cloud-agents#environments",
+     "https://cursor.com/onboard",
+     "https://cursor.com/docs/cloud-agent#how-to-use",
+     "https://cursor.com/environment-json-dockerfile.md",
+     "https://cursor.com/docs",
+     "https://cursor.com/docs/agent/security/run-modes",
+     "https://cursor.com/dashboard",
+     "https://cursor.com/dashboard/analytics",
+     "https://cursor.com/dashboard/spending?modal=plan-selection",
+     "https://cursor.com/download/bot?download=1",
+     "https://cursor.com/codebase",
+     "https://cursor.com/downloads",
+     "https://cursor.com/glass-toast-preview-dark.png",
+     "https://cursor.com/glass-toast-preview-light.png",
+     "https://cursor.com/privacy",
+     "https://cursor.com/security",
+     "https://cursor.com/docs/cloud-agents",
+     "https://cursor.com/pricing",
+     "https://cursor.com/glass-modal-preview-light.svg",
+     "https://cursor.com/mobile-launch-in-app-ad-modal-dark.png",
+     "https://cursor.com/mobile-launch-in-app-ad-modal-light.png",
+     "https://cursor.com/docs/cloud-agent",
+     "https://cursor.com/dashboard/cloud-agents",
+     "https://cursor.com/changelog",
+     "https://cursor.com/dashboard?tab=integrations",
+     "https://cursor.com/help/account-and-billing/profiles",
+     "https://cursor.com/docs/cloud-agent/setup",
+     "https://cursor.com/mobile",
+     "https://cursor.com/dashboard/cloud-agents#team-secrets",
+     "https://cursor.com/docs/cloud-agent/security-network#secret-protection",
+     "https://cursor.com/dashboard/cloud-agents#my-security",
+     "https://cursor.com/dashboard/cloud-agents#team-security",
+     "https://cursor.com/docs/origin/cli",
+     "https://cursor.com/docs/cloud-agent/automations",
+     "https://cursor.com/bot/onboarding",
+     "https://cursor.com/contact-sales?source=agents"
+    ],
+    "files": [
+     "workbench.desktop.main.js",
+     "workbench.glass.main.js"
+    ]
+   },
+   "api.origin.cursor.com": {
+    "urls": [
+     "https://api.origin.cursor.com/mcp/readonly",
+     "https://api.origin.cursor.com"
+    ],
+    "files": [
+     "workbench.desktop.main.js",
+     "workbench.glass.main.js"
+    ]
+   },
+   "www.googleapis.com": {
+    "urls": [
+     "https://www.googleapis.com/auth/gmail.readonly",
+     "https://www.googleapis.com/auth/gmail.compose",
+     "https://www.googleapis.com/auth/gmail.modify",
+     "https://www.googleapis.com/auth/drive.readonly",
+     "https://www.googleapis.com/auth/drive.file",
+     "https://www.googleapis.com/auth/calendar.events",
+     "https://www.googleapis.com/auth/calendar.calendarlist.readonly",
+     "https://www.googleapis.com/auth/calendar.events.readonly",
+     "https://www.googleapis.com/auth/calendar.events.freebusy",
+     "https://www.googleapis.com/auth/documents",
+     "https://www.googleapis.com/auth/spreadsheets",
+     "https://www.googleapis.com/auth/presentations"
+    ],
+    "files": [
+     "workbench.desktop.main.js",
+     "workbench.glass.main.js"
+    ]
+   },
+   "localhost": {
+    "urls": [
+     "http://localhost:8787/callback",
+     "https://localhost:",
+     "http://localhost:4000",
+     "http://localhost:3000/sse",
+     "http://localhost:8969/stream",
+     "http://localhost:3001",
+     "https://localhost:8000/",
+     "http://localhost:1234"
+    ],
+    "files": [
+     "workbench.desktop.main.js",
+     "workbench.glass.main.js"
+    ]
+   },
+   "review.cursor.com": {
+    "urls": [
+     "https://review.cursor.com"
+    ],
+    "files": [
+     "workbench.desktop.main.js",
+     "workbench.glass.main.js"
+    ]
+   },
+   "app.graphite.com": {
+    "urls": [
+     "https://app.graphite.com"
+    ],
+    "files": [
+     "workbench.desktop.main.js",
+     "workbench.glass.main.js"
+    ]
+   },
+   "www.google.com": {
+    "urls": [
+     "https://www.google.com/s2/favicons?"
+    ],
+    "files": [
+     "workbench.desktop.main.js",
+     "workbench.glass.main.js"
+    ]
+   },
+   "json-schema.org": {
+    "urls": [
+     "https://json-schema.org/draft/2020-12/schema",
+     "http://json-schema.org/draft-07/schema#",
+     "http://json-schema.org/draft-04/schema#",
+     "https://json-schema.org/draft-07/schema"
+    ],
+    "files": [
+     "workbench.desktop.main.js",
+     "workbench.glass.main.js",
+     "extensionHostProcess.js",
+     "extensionHostWorkerMain.js"
+    ]
+   },
+   "api2.cursor.sh": {
+    "urls": [
+     "https://api2.cursor.sh"
+    ],
+    "files": [
+     "workbench.desktop.main.js",
+     "workbench.glass.main.js"
+    ]
+   },
+   "api3.cursor.sh": {
+    "urls": [
+     "https://api3.cursor.sh"
+    ],
+    "files": [
+     "workbench.desktop.main.js",
+     "workbench.glass.main.js"
+    ]
+   },
+   "api4.cursor.sh": {
+    "urls": [
+     "https://api4.cursor.sh"
+    ],
+    "files": [
+     "workbench.desktop.main.js",
+     "workbench.glass.main.js"
+    ]
+   },
+   "repo42.cursor.sh": {
+    "urls": [
+     "https://repo42.cursor.sh"
+    ],
+    "files": [
+     "workbench.desktop.main.js",
+     "workbench.glass.main.js"
+    ]
+   },
+   "api.origin-staging.cursor.com": {
+    "urls": [
+     "https://api.origin-staging.cursor.com"
+    ],
+    "files": [
+     "workbench.desktop.main.js",
+     "workbench.glass.main.js"
+    ]
+   },
+   "agent.api5.cursor.sh": {
+    "urls": [
+     "https://agent.api5.cursor.sh"
+    ],
+    "files": [
+     "workbench.desktop.main.js",
+     "workbench.glass.main.js"
+    ]
+   },
+   "agentn.api5.cursor.sh": {
+    "urls": [
+     "https://agentn.api5.cursor.sh"
+    ],
+    "files": [
+     "workbench.desktop.main.js",
+     "workbench.glass.main.js"
+    ]
+   },
+   "agent-gcpp-uswest.api5.cursor.sh": {
+    "urls": [
+     "https://agent-gcpp-uswest.api5.cursor.sh"
+    ],
+    "files": [
+     "workbench.desktop.main.js",
+     "workbench.glass.main.js"
+    ]
+   },
+   "agentn-gcpp-uswest.api5.cursor.sh": {
+    "urls": [
+     "https://agentn-gcpp-uswest.api5.cursor.sh"
+    ],
+    "files": [
+     "workbench.desktop.main.js",
+     "workbench.glass.main.js"
+    ]
+   },
+   "agentn-gcpp-eucentral.api5.cursor.sh": {
+    "urls": [
+     "https://agentn-gcpp-eucentral.api5.cursor.sh"
+    ],
+    "files": [
+     "workbench.desktop.main.js",
+     "workbench.glass.main.js"
+    ]
+   },
+   "agentn-gcpp-apsoutheast.api5.cursor.sh": {
+    "urls": [
+     "https://agentn-gcpp-apsoutheast.api5.cursor.sh"
+    ],
+    "files": [
+     "workbench.desktop.main.js",
+     "workbench.glass.main.js"
+    ]
+   },
+   "agent-link.invalid": {
+    "urls": [
+     "https://agent-link.invalid/"
+    ],
+    "files": [
+     "workbench.desktop.main.js",
+     "workbench.glass.main.js"
+    ]
+   },
+   "prodregistryv2.org": {
+    "urls": [
+     "https://prodregistryv2.org/v1"
+    ],
+    "files": [
+     "workbench.desktop.main.js",
+     "workbench.glass.main.js"
+    ]
+   },
+   "featureassets.org": {
+    "urls": [
+     "https://featureassets.org/v1"
+    ],
+    "files": [
+     "workbench.desktop.main.js",
+     "workbench.glass.main.js"
+    ]
+   },
+   "api.statsigcdn.com": {
+    "urls": [
+     "https://api.statsigcdn.com/v1"
+    ],
+    "files": [
+     "workbench.desktop.main.js",
+     "workbench.glass.main.js"
+    ]
+   },
+   "statsigapi.net": {
+    "urls": [
+     "https://statsigapi.net/v1/sdk_exception"
+    ],
+    "files": [
+     "workbench.desktop.main.js",
+     "workbench.glass.main.js"
+    ]
+   },
+   "cloudflare-dns.com": {
+    "urls": [
+     "https://cloudflare-dns.com/dns-query"
+    ],
+    "files": [
+     "workbench.desktop.main.js",
+     "workbench.glass.main.js"
+    ]
+   },
+   "code.visualstudio.com": {
+    "urls": [
+     "https://code.visualstudio.com/docs/terminal/shell-integration",
+     "https://code.visualstudio.com/docs/editor/integrated-terminal#_shell-integration",
+     "https://code.visualstudio.com/docs/editor/extension-marketplace#_the-extension-signature-cannot-be-verified-by-vs-code",
+     "https://code.visualstudio.com/docs/editor/accessibility#_terminal-accessibility",
+     "https://code.visualstudio.com/docs/editor/tasks#_defining-a-problem-matcher",
+     "https://code.visualstudio.com/docs/editor/accessibility#_screen-readers",
+     "https://code.visualstudio.com/docs/remote/tunnels"
+    ],
+    "files": [
+     "workbench.desktop.main.js",
+     "workbench.glass.main.js"
+    ]
+   },
+   "staging.cursor.sh": {
+    "urls": [
+     "https://staging.cursor.sh"
+    ],
+    "files": [
+     "workbench.desktop.main.js",
+     "workbench.glass.main.js"
+    ]
+   },
+   "dev-staging.cursor.sh": {
+    "urls": [
+     "https://dev-staging.cursor.sh"
+    ],
+    "files": [
+     "workbench.desktop.main.js",
+     "workbench.glass.main.js"
+    ]
+   },
+   "www.notion.so": {
+    "urls": [
+     "https://www.notion.so/images/notion-logo-block-main.svg",
+     "https://www.notion.so/cursorai/Ryo-s-Journal-161da74ef045007ac1bf36660e08e4a4"
+    ],
+    "files": [
+     "workbench.desktop.main.js",
+     "workbench.glass.main.js"
+    ]
+   },
+   "mcp.notion.com": {
+    "urls": [
+     "https://mcp.notion.com/mcp"
+    ],
+    "files": [
+     "workbench.desktop.main.js",
+     "workbench.glass.main.js"
+    ]
+   },
+   "review.stg.cursor.com": {
+    "urls": [
+     "https://review.stg.cursor.com"
+    ],
+    "files": [
+     "workbench.desktop.main.js",
+     "workbench.glass.main.js"
+    ]
+   },
+   "staging.cursor.com": {
+    "urls": [
+     "https://staging.cursor.com"
+    ],
+    "files": [
+     "workbench.desktop.main.js",
+     "workbench.glass.main.js"
+    ]
+   },
+   "api.openai.com": {
+    "urls": [
+     "https://api.openai.com/v1"
+    ],
+    "files": [
+     "workbench.desktop.main.js",
+     "workbench.glass.main.js"
+    ]
+   },
+   "git-scm.com": {
+    "urls": [
+     "https://git-scm.com/downloads"
+    ],
+    "files": [
+     "workbench.desktop.main.js",
+     "workbench.glass.main.js"
+    ]
+   },
+   "inference.tesla.com": {
+    "urls": [
+     "https://inference.tesla.com"
+    ],
+    "files": [
+     "workbench.desktop.main.js",
+     "workbench.glass.main.js"
+    ]
+   },
+   "tokens.bottlerocket.tesla.com": {
+    "urls": [
+     "https://tokens.bottlerocket.tesla.com/personal-tokens/"
+    ],
+    "files": [
+     "workbench.desktop.main.js",
+     "workbench.glass.main.js"
+    ]
+   },
+   "api.github.com": {
+    "urls": [
+     "https://api.github.com/graphql"
+    ],
+    "files": [
+     "workbench.desktop.main.js",
+     "workbench.glass.main.js"
+    ]
+   },
+   "aka.ms": {
+    "urls": [
+     "https://aka.ms/vscode-troubleshoot-terminal-launch",
+     "https://aka.ms/allow-vscode-popup",
+     "https://aka.ms/vscode-web-extensions-guide",
+     "https://aka.ms/vscode-remote",
+     "https://aka.ms/vscode-remote/faq/old-linux",
+     "https://aka.ms/vscode-profiles-help",
+     "https://aka.ms/vscode-workspace-trust",
+     "https://aka.ms/vscode-faq-old-macOS",
+     "https://aka.ms/vscode-extension-security",
+     "https://aka.ms/vscode-verify-publisher",
+     "https://aka.ms/vscode-platform-specific-extensions",
+     "https://aka.ms/vscode-extension-bisect",
+     "https://aka.ms/vscode-insiders",
+     "https://aka.ms/vscode-server-doc"
+    ],
+    "files": [
+     "workbench.desktop.main.js",
+     "workbench.glass.main.js"
+    ]
+   },
+   "$1": {
+    "urls": [
+     "https://$1/"
+    ],
+    "files": [
+     "workbench.desktop.main.js",
+     "workbench.glass.main.js"
+    ]
+   },
+   "sentry.io": {
+    "urls": [
+     "https://sentry.io/welcome/"
+    ],
+    "files": [
+     "workbench.desktop.main.js",
+     "workbench.glass.main.js"
+    ]
+   },
+   "browser.sentry-cdn.com": {
+    "urls": [
+     "https://browser.sentry-cdn.com"
+    ],
+    "files": [
+     "workbench.desktop.main.js",
+     "workbench.glass.main.js"
+    ]
+   },
+   "o447951.ingest.sentry.io": {
+    "urls": [
+     "https://o447951.ingest.sentry.io/api/4509632503087104/envelope/?sentry_version=7&sentry_key=REDACTED&sentry_client=sentry.javascript.browser%2F1.33.7"
+    ],
+    "files": [
+     "workbench.desktop.main.js",
+     "workbench.glass.main.js"
+    ]
+   },
+   "dummy.dsn": {
+    "urls": [
+     "https://REDACTED@dummy.dsn/12345"
+    ],
+    "files": [
+     "workbench.desktop.main.js",
+     "workbench.glass.main.js"
+    ]
+   },
+   "raw.githubusercontent.com": {
+    "urls": [
+     "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.activeComment.d.ts",
+     "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.aiRelatedInformation.d.ts",
+     "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.aiTextSearchProvider.d.ts",
+     "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.authLearnMore.d.ts",
+     "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.authSession.d.ts",
+     "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.canonicalUriProvider.d.ts",
+     "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.chatContextProvider.d.ts",
+     "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.chatEditing.d.ts",
+     "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.chatParticipantAdditions.d.ts",
+     "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.chatParticipantPrivate.d.ts",
+     "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.chatProvider.d.ts",
+     "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.chatReferenceBinaryData.d.ts",
+     "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.chatReferenceDiagnostic.d.ts",
+     "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.chatSessionsProvider.d.ts",
+     "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.chatStatusItem.d.ts",
+     "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.chatTab.d.ts",
+     "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.codeActionAI.d.ts",
+     "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.codeActionRanges.d.ts",
+     "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.codiconDecoration.d.ts",
+     "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.commentReactor.d.ts",
+     "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.commentReveal.d.ts",
+     "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.commentThreadApplicability.d.ts",
+     "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.commentingRangeHint.d.ts",
+     "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.commentsDraftState.d.ts",
+     "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.contribAccessibilityHelpContent.d.ts",
+     "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.contribChatParticipantDetection.d.ts",
+     "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.contribCommentEditorActionsMenu.d.ts",
+     "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.contribCommentPeekContext.d.ts",
+     "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.contribCommentThreadAdditionalMenu.d.ts",
+     "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.contribCommentsViewThreadMenus.d.ts",
+     "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.contribDebugCreateConfiguration.d.ts",
+     "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.contribDiffEditorGutterToolBarMenus.d.ts",
+     "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.contribEditSessions.d.ts",
+     "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.contribEditorContentMenu.d.ts",
+     "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.contribLabelFormatterWorkspaceTooltip.d.ts",
+     "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.contribMenuBarHome.d.ts",
+     "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.contribMergeEditorMenus.d.ts",
+     "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.contribMultiDiffEditorMenus.d.ts",
+     "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.contribNotebookStaticPreloads.d.ts",
+     "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.contribRemoteHelp.d.ts",
+     "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.contribShareMenu.d.ts",
+     "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.contribSourceControlHistoryItemMenu.d.ts",
+     "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.contribSourceControlHistoryTitleMenu.d.ts",
+     "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.contribSourceControlInputBoxMenu.d.ts",
+     "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.contribSourceControlTitleMenu.d.ts",
+     "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.contribStatusBarItems.d.ts",
+     "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.contribViewContainerTitle.d.ts",
+     "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.contribViewsRemote.d.ts",
+     "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.contribViewsWelcome.d.ts",
+     "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.control.d.ts",
+     "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.cursor.d.ts",
+     "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.cursorAgentHost.d.ts",
+     "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.cursorNoDeps.d.ts",
+     "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.cursorPseudoterminal.d.ts",
+     "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.cursorPublic.d.ts",
+     "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.cursorTracing.d.ts",
+     "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.customEditorMove.d.ts",
+     "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.debugVisualization.d.ts",
+     "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.defaultChatParticipant.d.ts",
+     "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.diffCommand.d.ts",
+     "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.diffContentOptions.d.ts",
+     "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.documentFiltersExclusive.d.ts",
+     "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.editSessionIdentityProvider.d.ts",
+     "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.editorHoverVerbosityLevel.d.ts",
+     "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.editorInsets.d.ts",
+     "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.embeddings.d.ts",
+     "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.extensionRuntime.d.ts",
+     "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.extensionsAny.d.ts",
+     "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.externalUriOpener.d.ts",
+     "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.fileSearchProvider.d.ts",
+     "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.fileSearchProvider2.d.ts",
+     "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.findFiles2.d.ts",
+     "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.findTextInFiles.d.ts",
+     "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.findTextInFiles2.d.ts",
+     "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.fsChunks.d.ts",
+     "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.idToken.d.ts",
+     "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.inlineCompletionsAdditions.d.ts",
+     "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.inlineEdit.d.ts",
+     "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.interactive.d.ts",
+     "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.interactiveWindow.d.ts",
+     "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.ipc.d.ts",
+     "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.languageModelCapabilities.d.ts",
+     "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.languageModelSystem.d.ts",
+     "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.languageModelThinkingPart.d.ts",
+     "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.languageModelToolResultAudience.d.ts",
+     "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.languageModelToolsForAgent.d.ts",
+     "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.languageStatusText.d.ts",
+     "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.mappedEditsProvider.d.ts",
+     "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.markdownAlertSyntax.d.ts",
+     "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.mcpConfigurationProvider.d.ts",
+     "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.multiDocumentHighlightProvider.d.ts",
+     "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.nativeWindowHandle.d.ts",
+     "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.newSymbolNamesProvider.d.ts",
+     "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.notebookCellExecution.d.ts",
+     "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.notebookCellExecutionState.d.ts",
+     "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.notebookControllerAffinityHidden.d.ts",
+     "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.notebookDeprecated.d.ts",
+     "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.notebookExecution.d.ts",
+     "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.notebookKernelSource.d.ts",
+     "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.notebookLiveShare.d.ts",
+     "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.notebookMessaging.d.ts",
+     "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.notebookMime.d.ts",
+     "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.notebookReplDocument.d.ts",
+     "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.notebookVariableProvider.d.ts",
+     "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.portsAttributes.d.ts",
+     "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.profileContentHandlers.d.ts",
+     "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.quickDiffProvider.d.ts",
+     "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.quickPickItemTooltip.d.ts",
+     "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.quickPickSortByLabel.d.ts",
+     "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.remoteCodingAgents.d.ts",
+     "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.resolvers.d.ts",
+     "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.scmActionButton.d.ts",
+     "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.scmHistoryProvider.d.ts",
+     "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.scmMultiDiffEditor.d.ts",
+     "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.scmRemotes.d.ts",
+     "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.scmSelectedProvider.d.ts",
+     "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.scmTextDocument.d.ts",
+     "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.scmValidation.d.ts",
+     "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.shareProvider.d.ts",
+     "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.speech.d.ts",
+     "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.statusBarItemTooltip.d.ts",
+     "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.tabInputMultiDiff.d.ts",
+     "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.tabInputTextMerge.d.ts",
+     "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.taskPresentationGroup.d.ts",
+     "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.taskProblemMatcherStatus.d.ts",
+     "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.telemetry.d.ts",
+     "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.terminalCompletionProvider.d.ts",
+     "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.terminalDataWriteEvent.d.ts",
+     "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.terminalDimensions.d.ts",
+     "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.terminalExecuteCommandEvent.d.ts",
+     "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.terminalQuickFixProvider.d.ts",
+     "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.terminalSelection.d.ts",
+     "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.terminalShellEnv.d.ts",
+     "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.testObserver.d.ts",
+     "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.testRelatedCode.d.ts",
+     "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.textDocumentTextLength.d.ts",
+     "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.textEditorDiffInformation.d.ts",
+     "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.textSearchComplete2.d.ts",
+     "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.textSearchProvider.d.ts",
+     "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.textSearchProvider2.d.ts",
+     "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.timeline.d.ts",
+     "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.tokenInformation.d.ts",
+     "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.treeItemMarkdownLabel.d.ts",
+     "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.treeViewActiveItem.d.ts",
+     "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.treeViewMarkdownMessage.d.ts",
+     "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.treeViewReveal.d.ts",
+     "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.tunnelFactory.d.ts",
+     "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.tunnels.d.ts",
+     "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.valueSelectionInQuickPick.d.ts",
+     "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.workspaceTrust.d.ts"
+    ],
+    "files": [
+     "workbench.desktop.main.js",
+     "workbench.glass.main.js",
+     "extensionHostProcess.js",
+     "extensionHostWorkerMain.js"
+    ]
+   },
+   "microsoft.com": {
+    "urls": [
+     "https://microsoft.com",
+     "https://microsoft.com:8080",
+     "https://microsoft.com/foo",
+     "https://microsoft.com/foo/bar",
+     "https://microsoft.com/foobar",
+     "https://microsoft.com/bar"
+    ],
+    "files": [
+     "workbench.desktop.main.js",
+     "workbench.glass.main.js"
+    ]
+   },
+   "*.microsoft.com": {
+    "urls": [
+     "https://*.microsoft.com"
+    ],
+    "files": [
+     "workbench.desktop.main.js",
+     "workbench.glass.main.js"
+    ]
+   },
+   "192.168.0.1": {
+    "urls": [
+     "http://192.168.0.1"
+    ],
+    "files": [
+     "workbench.desktop.main.js",
+     "workbench.glass.main.js"
+    ]
+   },
+   "192.168.0.*": {
+    "urls": [
+     "http://192.168.0.*"
+    ],
+    "files": [
+     "workbench.desktop.main.js",
+     "workbench.glass.main.js"
+    ]
+   },
+   "changelog.cursor.com": {
+    "urls": [
+     "https://changelog.cursor.com",
+     "https://changelog.cursor.com/?nightly=true"
+    ],
+    "files": [
+     "workbench.desktop.main.js",
+     "workbench.glass.main.js"
+    ]
+   },
+   "marketplace.cursorapi.com": {
+    "urls": [
+     "https://marketplace.cursorapi.com/",
+     "https://marketplace.cursorapi.com"
+    ],
+    "files": [
+     "workbench.desktop.main.js",
+     "workbench.glass.main.js"
+    ]
+   },
+   "open-vsx.org": {
+    "urls": [
+     "https://open-vsx.org"
+    ],
+    "files": [
+     "workbench.desktop.main.js",
+     "workbench.glass.main.js"
+    ]
+   },
+   "go.microsoft.com": {
+    "urls": [
+     "https://go.microsoft.com/fwlink/?linkid=868264",
+     "https://go.microsoft.com/fwlink/?linkid=867693",
+     "https://go.microsoft.com/fwlink/?linkid=853977",
+     "https://go.microsoft.com/fwlink/?linkid=830387",
+     "https://go.microsoft.com/fwlink/?linkid=851010",
+     "https://go.microsoft.com/fwlink/?linkid=2025315",
+     "https://go.microsoft.com/fwlink/?linkid=2149667",
+     "https://go.microsoft.com/fwlink/?linkid=2190713",
+     "https://go.microsoft.com/fwlink/?linkid=2239490"
+    ],
+    "files": [
+     "workbench.desktop.main.js",
+     "workbench.glass.main.js"
+    ]
+   },
+   "www.cursor.com": {
+    "urls": [
+     "https://www.cursor.com/how-to-install-extension",
+     "https://www.cursor.com/downloads",
+     "https://www.cursor.com/marketplace",
+     "https://www.cursor.com/agents/mcp/oauth/callback"
+    ],
+    "files": [
+     "workbench.desktop.main.js",
+     "workbench.glass.main.js"
+    ]
+   },
+   "prod.authentication.cursor.sh": {
+    "urls": [
+     "https://prod.authentication.cursor.sh"
+    ],
+    "files": [
+     "workbench.desktop.main.js",
+     "workbench.glass.main.js"
+    ]
+   },
+   "downloads.cursor.com": {
+    "urls": [
+     "https://downloads.cursor.com"
+    ],
+    "files": [
+     "workbench.desktop.main.js",
+     "workbench.glass.main.js"
+    ]
+   },
+   "cursor-cdn.com": {
+    "urls": [
+     "https://cursor-cdn.com"
+    ],
+    "files": [
+     "workbench.desktop.main.js",
+     "workbench.glass.main.js"
+    ]
+   },
+   "platform.openai.com": {
+    "urls": [
+     "https://platform.openai.com/account/api-keys"
+    ],
+    "files": [
+     "workbench.desktop.main.js",
+     "workbench.glass.main.js"
+    ]
+   },
+   "console.anthropic.com": {
+    "urls": [
+     "https://console.anthropic.com/settings/keys"
+    ],
+    "files": [
+     "workbench.desktop.main.js",
+     "workbench.glass.main.js"
+    ]
+   },
+   "aistudio.google.com": {
+    "urls": [
+     "https://aistudio.google.com/app/apikey"
+    ],
+    "files": [
+     "workbench.desktop.main.js",
+     "workbench.glass.main.js"
+    ]
+   },
+   "pytorch.org": {
+    "urls": [
+     "https://pytorch.org/docs/page",
+     "https://pytorch.org/docs/"
+    ],
+    "files": [
+     "workbench.desktop.main.js",
+     "workbench.glass.main.js"
+    ]
+   },
+   "go": {
+    "urls": [
+     "http://go/debugdata"
+    ],
+    "files": [
+     "workbench.desktop.main.js",
+     "workbench.glass.main.js"
+    ]
+   },
+   "react.dev": {
+    "urls": [
+     "https://react.dev/errors/"
+    ],
+    "files": [
+     "esm-client-production.js",
+     "chunk-P2RW5VJE.js"
+    ]
+   },
+   "apps.apple.com": {
+    "urls": [
+     "https://apps.apple.com/app/cursor/id6767085653"
+    ],
+    "files": [
+     "workbench.glass.main.js"
+    ]
+   },
+   "foo.bar": {
+    "urls": [
+     "https://foo.bar"
+    ],
+    "files": [
+     "workbench.glass.main.js"
+    ]
+   },
+   "x.ai": {
+    "urls": [
+     "https://x.ai/bot"
+    ],
+    "files": [
+     "workbench.glass.main.js"
+    ]
+   }
   }
  },
  "notes": [
