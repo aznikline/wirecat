@@ -794,6 +794,36 @@ message AuthenticatedOriginViewer {
   AuthenticatedOriginViewer.Profile profile = 2;
   AuthenticatedOriginViewer.GateAttributes gate = 3;
   AuthenticatedOriginViewer.ReviewPolicy policy = 4;
+  message Identity {
+    string auth_id = 1;
+    string public_user_id = 2;
+    repeated string origin_author_ids = 3;
+  }
+  message Profile {
+    optional string email = 1;
+    optional string first_name = 2;
+    optional string last_name = 3;
+    optional string avatar_url = 4;
+  }
+  message GateAttributes {
+    optional int32 team_id = 1;
+    optional string created_at_iso = 2;
+    bool is_enterprise_user = 3;
+    optional string email_domain_type = 4;
+    optional string country = 5;
+    optional int64 organization_id = 6;
+    optional string organization_public_id = 7;
+    optional bool is_team_admin = 8;
+  }
+  message ReviewPolicy {
+    AuthenticatedOriginViewer.OriginDisabledState origin_disabled = 1;
+  }
+  enum OriginDisabledState {
+    ORIGIN_DISABLED_STATE_UNSPECIFIED = 0;
+    ORIGIN_DISABLED_STATE_NOT_DISABLED = 1;
+    ORIGIN_DISABLED_STATE_DISABLED = 2;
+    ORIGIN_DISABLED_STATE_UNAVAILABLE = 3;
+  }
 }
 
 message GetRepoResponse {
@@ -4104,6 +4134,16 @@ message MergeQueueViewNode {
   repeated uint64 change_numbers = 6;
   repeated uint64 assumed_change_numbers = 7;
   repeated CheckRunGroup check_run_groups = 8;
+  enum State {
+    STATE_UNSPECIFIED = 0;
+    STATE_PREPARING = 1;
+    STATE_CONFLICT = 2;
+    STATE_RUNNING = 3;
+    STATE_GREEN = 4;
+    STATE_RED = 5;
+    STATE_CANCELLING = 6;
+    STATE_CANCELLED = 7;
+  }
 }
 
 message MergeQueueViewLand {
@@ -4130,6 +4170,15 @@ message MergeQueueEntryStatus {
   optional string tested_sha = 4;
   optional string failure = 5;
   optional string eviction_reason = 6;
+  enum Kind {
+    KIND_UNSPECIFIED = 0;
+    KIND_QUEUED = 1;
+    KIND_VALIDATING = 2;
+    KIND_MERGING = 3;
+    KIND_MERGED = 4;
+    KIND_EVICTED = 5;
+    KIND_CANCELLED = 6;
+  }
 }
 
 message GetChangeStackPageDataRequest {
@@ -4945,6 +4994,14 @@ message ChangeCodeowner {
   oneof identity {
     ChangeCodeowner.User user = 2;
     ChangeCodeowner.Group group = 3;
+  }
+  message User {
+    string login = 1;
+  }
+  message Group {
+    string organization_slug = 1;
+    string group_slug = 2;
+    string group_public_id = 3;
   }
 }
 

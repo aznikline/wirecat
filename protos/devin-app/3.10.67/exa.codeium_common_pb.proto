@@ -5,7 +5,6 @@ syntax = "proto3";
 package exa.codeium_common_pb;
 
 import "exa.index_pb.proto";
-import "exa.seat_management_pb.GetUserNotificationsResponse.proto";
 import "exa.seat_management_pb.proto";
 import "exa.user_analytics_pb.proto";
 import "google.protobuf.DescriptorProto.proto";
@@ -710,6 +709,19 @@ message PartnerProviderStatus {
     exa.seat_management_pb.DeleteGroupRequest error = 4;
     exa.seat_management_pb.DeleteGroupResponse not_eligible = 5;
   }
+  message Active {
+    string info = 1;
+  }
+  message Inactive {
+  }
+  message NotActivated {
+  }
+  message Error {
+    string message = 1;
+    bool enabled = 2;
+  }
+  message NotEligible {
+  }
 }
 
 message UserPartnerProvider {
@@ -1269,6 +1281,25 @@ message KnowledgeBaseScopeItem {
 message DOMTree {
   exa.seat_management_pb.FlexCreditChronicleEntry root = 1;
   uint32 num_nodes = 2;
+  message BoundingBox {
+    float x = 1;
+    float y = 2;
+    float width = 3;
+    float height = 4;
+  }
+  message DOMNode {
+    repeated exa.seat_management_pb.FlexCreditChronicleEntry children = 1;
+    string tag_name = 2;
+    string id = 3;
+    repeated string class_names = 4;
+    string text_content = 5;
+    exa.seat_management_pb.GetWrapped2024Response bbox = 6;
+    string aria_label = 7;
+    string title = 8;
+    string alt = 9;
+    string placeholder = 10;
+    string href = 11;
+  }
 }
 
 message RecipeScopeItem {
@@ -1846,6 +1877,10 @@ message TextData {
 message MarkdownChunk {
   repeated google.protobuf.ListValue headers = 1;
   string text = 2;
+  message MarkdownHeader {
+    exa.user_analytics_pb.GetBigQueryAnalyticsRequest type = 1;
+    string text = 2;
+  }
 }
 
 message TerminalShellCommandHeader {

@@ -357,6 +357,10 @@ message GetChatMessageRequest {
   repeated string workspace_uris = 13;
   string chat_model_name = 14;
   google.protobuf.SourceCodeInfo.Location enterprise_chat_model_config = 15;
+  message EnterpriseExternalModelConfig {
+    int32 max_output_tokens = 2;
+    int32 max_input_tokens = 3;
+  }
 }
 
 message RawGetChatMessageRequest {

@@ -485,6 +485,11 @@ message NetworkPolicy {
   repeated string deny = 3;
   repeated string allow = 4;
   optional NetworkPolicyLoggingConfig logging = 5;
+  enum DefaultAction {
+    DEFAULT_ACTION_UNSPECIFIED = 0;
+    DEFAULT_ACTION_ALLOW = 1;
+    DEFAULT_ACTION_DENY = 2;
+  }
 }
 
 message SandboxPolicy {
@@ -502,6 +507,17 @@ message SandboxPolicy {
   optional bool skip_statsig_defaults = 13;
   SandboxPolicy.ReadBoundaryMode read_boundary = 14;
   repeated string additional_read_paths = 15;
+  enum Type {
+    TYPE_UNSPECIFIED = 0;
+    TYPE_INSECURE_NONE = 1;
+    TYPE_WORKSPACE_READWRITE = 2;
+    TYPE_WORKSPACE_READONLY = 3;
+  }
+  enum ReadBoundaryMode {
+    READ_BOUNDARY_MODE_UNSPECIFIED = 0;
+    READ_BOUNDARY_MODE_SYSTEM = 1;
+    READ_BOUNDARY_MODE_WORKSPACE = 2;
+  }
 }
 
 message Range {
@@ -537,12 +553,39 @@ message ShellCommandParsingResult {
   bool has_command_substitution = 4;
   optional bool all_redirects_are_dev_null = 5;
   repeated ShellCommandParsingResult.Redirect redirects = 6;
+  message ExecutableCommandArg {
+    string type = 1;
+    string value = 2;
+  }
+  message ExecutableCommand {
+    string name = 1;
+    repeated ShellCommandParsingResult.ExecutableCommandArg args = 2;
+    string full_text = 3;
+  }
+  message Redirect {
+    string operator = 1;
+    repeated uint32 destination_fds = 2;
+    string target_node_type = 3;
+    optional string target_text = 4;
+  }
 }
 
 message CommandClassifierResult {
   repeated CommandClassifierResult.ClassifiedCommand commands = 1;
   CommandClassifierResult.SuggestedSandboxMode suggested_sandbox_mode = 2;
   bool classification_failed = 3;
+  message ClassifiedCommand {
+    string name = 1;
+    repeated string arguments = 2;
+    optional string suggested_allowlist_entry = 3;
+    repeated string subcommand_tokens = 4;
+  }
+  enum SuggestedSandboxMode {
+    SUGGESTED_SANDBOX_MODE_UNSPECIFIED = 0;
+    SUGGESTED_SANDBOX_MODE_SANDBOX = 1;
+    SUGGESTED_SANDBOX_MODE_NO_SANDBOX = 2;
+    SUGGESTED_SANDBOX_MODE_UNDETERMINED = 3;
+  }
 }
 
 message ShellOutputNotificationConfig {
@@ -564,6 +607,10 @@ message ForceBackgroundShellResult {
 message ShellHookApprovalRequirement {
   ShellHookApprovalRequirement.Kind kind = 1;
   optional string reason = 2;
+  enum Kind {
+    KIND_UNSPECIFIED = 0;
+    KIND_FORCE_PROMPT = 1;
+  }
 }
 
 message ShellArgs {
@@ -850,6 +897,12 @@ message AppliedAgentChange {
   optional string after_content = 4;
   optional string error = 5;
   optional string message_for_model = 6;
+  enum ChangeType {
+    CHANGE_TYPE_UNSPECIFIED = 0;
+    CHANGE_TYPE_CREATED = 1;
+    CHANGE_TYPE_MODIFIED = 2;
+    CHANGE_TYPE_DELETED = 3;
+  }
 }
 
 message ApplyAgentDiffError {
@@ -894,6 +947,12 @@ message GenerateImageRequestResponse {
   oneof result {
     GenerateImageRequestResponse.Approved approved = 1;
     GenerateImageRequestResponse.Rejected rejected = 2;
+  }
+  message Approved {
+    string description = 1;
+  }
+  message Rejected {
+    string reason = 1;
   }
 }
 
@@ -1038,6 +1097,10 @@ message LsDirectoryTreeNode {
   bool children_were_processed = 4;
   map<string, int32> full_subtree_extension_counts = 5;
   int32 num_files = 6;
+  message File {
+    string name = 1;
+    optional TerminalMetadata terminal_metadata = 2;
+  }
 }
 
 message LsError {
@@ -1059,6 +1122,12 @@ message TerminalMetadata {
   repeated TerminalMetadata.Command last_commands = 2;
   optional int64 last_modified_ms = 3;
   optional TerminalMetadata.Command current_command = 4;
+  message Command {
+    string command = 1;
+    optional int32 exit_code = 2;
+    optional int64 timestamp_ms = 3;
+    optional int64 duration_ms = 4;
+  }
 }
 
 message Coordinate {
@@ -1907,6 +1976,14 @@ message ListMcpResourcesExecResult {
     ListMcpResourcesError error = 2;
     ListMcpResourcesRejected rejected = 3;
   }
+  message McpResource {
+    string uri = 1;
+    optional string name = 2;
+    optional string description = 3;
+    optional string mime_type = 4;
+    string server = 5;
+    map<string, string> annotations = 6;
+  }
 }
 
 message ListMcpResourcesSuccess {
@@ -2102,6 +2179,12 @@ message WebSearchRequestResponse {
     WebSearchRequestResponse.Approved approved = 1;
     WebSearchRequestResponse.Rejected rejected = 2;
   }
+  message Approved {
+    string reason = 1;
+  }
+  message Rejected {
+    string reason = 1;
+  }
 }
 
 message ListMcpResourcesToolCall {
@@ -2124,6 +2207,16 @@ message AskQuestionArgs {
   repeated AskQuestionArgs.Question questions = 2;
   bool run_async = 5;
   string async_original_tool_call_id = 6;
+  message Question {
+    string id = 1;
+    string prompt = 2;
+    repeated AskQuestionArgs.Option options = 3;
+    bool allow_multiple = 4;
+  }
+  message Option {
+    string id = 1;
+    string label = 2;
+  }
 }
 
 message AskQuestionAsync {
@@ -2146,6 +2239,11 @@ message AskQuestionResult {
 
 message AskQuestionSuccess {
   repeated AskQuestionSuccess.Answer answers = 1;
+  message Answer {
+    string question_id = 1;
+    repeated string selected_option_ids = 2;
+    string freeform_text = 3;
+  }
 }
 
 message AskQuestionError {
@@ -2225,6 +2323,12 @@ message SwitchModeRequestResponse {
   oneof result {
     SwitchModeRequestResponse.Approved approved = 1;
     SwitchModeRequestResponse.Rejected rejected = 2;
+  }
+  message Approved {
+    string reason = 1;
+  }
+  message Rejected {
+    string reason = 1;
   }
 }
 
@@ -2382,6 +2486,12 @@ message WebFetchRequestResponse {
   oneof result {
     WebFetchRequestResponse.Approved approved = 1;
     WebFetchRequestResponse.Rejected rejected = 2;
+  }
+  message Approved {
+    string reason = 1;
+  }
+  message Rejected {
+    string reason = 1;
   }
 }
 
@@ -2545,6 +2655,12 @@ message McpAuthRequestResponse {
   oneof result {
     McpAuthRequestResponse.Approved approved = 1;
     McpAuthRequestResponse.Rejected rejected = 2;
+  }
+  message Approved {
+    string reason = 1;
+  }
+  message Rejected {
+    string reason = 1;
   }
 }
 
@@ -3267,6 +3383,15 @@ message ConnectScmRequestResponse {
     ConnectScmRequestResponse.Rejected rejected = 2;
     ConnectScmRequestResponse.Failed failed = 3;
   }
+  message Approved {
+    string reason = 1;
+  }
+  message Rejected {
+    string reason = 1;
+  }
+  message Failed {
+    string error = 1;
+  }
 }
 
 message ConversationSearchArgs {
@@ -3812,6 +3937,10 @@ message RecentlyAddedPlugin {
   repeated RecentlyAddedPlugin.CapabilityDescriptor rules = 6;
   repeated RecentlyAddedPlugin.CapabilityDescriptor commands = 7;
   repeated string mcp_servers = 8;
+  message CapabilityDescriptor {
+    string name = 1;
+    string description = 2;
+  }
 }
 
 message MatchedInstalledPlugin {
@@ -3837,6 +3966,14 @@ message SelectedImage {
     SelectedImage.BlobIdWithData blob_id_with_data = 9;
     PromptUploadRef prompt_upload_ref = 10;
   }
+  message BlobIdWithData {
+    bytes blob_id = 1;
+    bytes data = 2;
+  }
+  message Dimension {
+    int32 width = 1;
+    int32 height = 2;
+  }
 }
 
 message PromptUploadRef {
@@ -3854,6 +3991,10 @@ message SelectedDocument {
     SelectedDocument.BlobIdWithData blob_id_with_data = 9;
     PromptUploadRef prompt_upload_ref = 10;
   }
+  message BlobIdWithData {
+    bytes blob_id = 1;
+    bytes data = 2;
+  }
 }
 
 message SelectedVideo {
@@ -3868,6 +4009,17 @@ message SelectedVideo {
     bytes data = 8;
     SelectedVideo.BlobIdWithData blob_id_with_data = 9;
     SelectedVideo.SignedUrl signed_url = 11;
+  }
+  message BlobIdWithData {
+    bytes blob_id = 1;
+    bytes data = 2;
+  }
+  message SignedUrl {
+    string url = 1;
+    string key = 2;
+    int64 expires_at_unix_ms = 3;
+    int64 refresh_after_unix_ms = 4;
+    string conversation_id = 5;
   }
 }
 
@@ -4143,6 +4295,53 @@ message InvocationContext {
     InvocationContext.MicrosoftTeamsThread microsoft_teams_thread = 4;
     bytes blob_id = 10;
   }
+  message SlackThread {
+    string thread = 1;
+    optional string channel_name = 2;
+    optional string channel_purpose = 3;
+    optional string channel_topic = 4;
+    optional string sender_name = 5;
+    optional string sender_id = 6;
+    optional string sender_type = 7;
+    optional bool is_directly_addressed = 8;
+  }
+  message MicrosoftTeamsThread {
+    string thread = 1;
+    optional string channel_name = 2;
+    optional string team_name = 3;
+    optional string channel_description = 4;
+    optional string team_description = 5;
+  }
+  message GithubPR {
+    string title = 1;
+    string description = 2;
+    string comments = 3;
+    optional string ci_failures = 4;
+  }
+  message IdeState {
+    repeated InvocationContext.IdeState.File visible_files = 1;
+    repeated InvocationContext.IdeState.File recently_viewed_files = 2;
+    repeated InvocationContext.IdeState.ViewedPullRequest currently_viewed_prs = 3;
+    message File {
+      string path = 1;
+      optional string relative_path = 2;
+      optional InvocationContext.IdeState.File.CursorPosition cursor_position = 3;
+      int32 total_lines = 4;
+      optional string active_command = 5;
+      message CursorPosition {
+        int32 line = 1;
+        string text = 2;
+      }
+    }
+    message ViewedPullRequest {
+      int32 number = 1;
+      string url = 2;
+      optional string title = 3;
+      optional string folder_path = 4;
+      optional string summary_json = 5;
+      optional string description = 6;
+    }
+  }
 }
 
 message ApiKeyCredentials {
@@ -4173,6 +4372,10 @@ message RequestedModel {
     ApiKeyCredentials api_key_credentials = 4;
     AzureCredentials azure_credentials = 5;
     BedrockCredentials bedrock_credentials = 6;
+  }
+  message ModelParameterValue {
+    string id = 1;
+    string value = 2;
   }
 }
 
@@ -4783,6 +4986,14 @@ message UserMessage {
   optional bool turn_steer = 24;
   optional uint64 started_at_ms = 25;
   optional uint64 completed_at_ms = 26;
+  message SimulatedMessageMetadata {
+    optional string title = 1;
+    optional string task_id = 2;
+    optional string fsd_finding_action = 3;
+    optional string url = 4;
+    optional SubscriptionSource subscription_source = 5;
+    optional SubscriptionEventDisplay subscription_event_display = 6;
+  }
 }
 
 message AssistantMessage {
@@ -6615,6 +6826,10 @@ message LocalAgentMailboxEntry {
 
 message StreamLocalAgentMailboxRequest {
   repeated StreamLocalAgentMailboxRequest.ConversationCursor conversations = 1;
+  message ConversationCursor {
+    string conversation_id = 1;
+    string after_offset = 2;
+  }
 }
 
 message LocalAgentMailboxDelivery {
@@ -7563,6 +7778,12 @@ message Frame {
   bytes data = 3;
   Frame.Kind kind = 4;
   string error = 5;
+  enum Kind {
+    KIND_UNSPECIFIED = 0;
+    KIND_REQUEST = 1;
+    KIND_RESPONSE = 2;
+    KIND_ERROR = 3;
+  }
 }
 
 message Empty {

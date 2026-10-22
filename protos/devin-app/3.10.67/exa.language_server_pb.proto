@@ -149,6 +149,30 @@ message HandleStreamingTabV2Response {
     google.protobuf.FieldOptions.EditionDefault tab_jump = 8;
     google.protobuf.OneofOptions noop = 9;
   }
+  message Diff {
+    string path = 1;
+    uint64 selection_start_line = 2;
+    uint64 selection_end_line = 3;
+    exa.diff_action_pb.CharacterDiff character_diff = 4;
+    exa.codeium_common_pb.DocumentPosition cursor_position = 5;
+    string old_str = 6;
+    Unresolved_R.UnifiedDiff unified_diff = 9;
+    oneof render_info {
+      google.protobuf.MessageOptions side_hint_render = 7;
+      google.protobuf.FieldOptions inline_hint_render = 8;
+    }
+    message SideHintRender {
+    }
+    message InlineHintRender {
+    }
+  }
+  message TabJump {
+    string path = 1;
+    exa.codeium_common_pb.DocumentPosition jump_position = 2;
+    bool is_import = 3;
+  }
+  message NoOp {
+  }
 }
 
 message UploadRecentCommandsRequest {
@@ -1088,6 +1112,9 @@ message GenerateCodeMapResponse {
     exa.seat_management_pb.UpdateCodeiumAccessRequest success = 2;
     string status = 3;
   }
+  message Success {
+    string code_map_json = 1;
+  }
 }
 
 message BranchCascadeAndGenerateCodeMapRequest {
@@ -1103,6 +1130,10 @@ message BranchCascadeAndGenerateCodeMapResponse {
     string updates_json = 1;
     exa.seat_management_pb.UpdateCliAccessResponse success = 2;
     string status = 3;
+  }
+  message Success {
+    string code_map_json = 1;
+    string new_cascade_id = 2;
   }
 }
 

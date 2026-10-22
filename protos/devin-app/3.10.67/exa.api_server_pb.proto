@@ -1754,6 +1754,19 @@ message DeployWindsurfJSAppRequest {
     google.protobuf.StringValue deployment_metadata = 1;
     google.protobuf.BytesValue file_chunk = 2;
   }
+  message DeploymentMetadata {
+    exa.codeium_common_pb.Metadata metadata = 1;
+    string project_path = 2;
+    string subdomain_name = 3;
+    string framework = 4;
+    Unresolved_C.proto3.getEnumType_b.DeploymentProvider_ deployment_provider = 5;
+    string project_id = 6;
+    exa.codeium_common_pb.DeployTarget deploy_target = 7;
+  }
+  message DeploymentFileChunk {
+    string file_path = 1;
+    bytes file_contents = 2;
+  }
 }
 
 message DeployWindsurfJSAppResponse {
@@ -1829,6 +1842,15 @@ message GetWindsurfJSAppsResponse {
   int32 unclaimed_apps_used = 1;
   int32 unclaimed_apps_limit = 2;
   repeated exa.seat_management_pb.AddExtraFlexCreditsInternalRequest apps = 3;
+  message WindsurfJSApp {
+    string app_url = 1;
+    Unresolved_C.proto3.getEnumType_b.DeploymentProvider_ deployment_provider = 2;
+    bool is_claimed = 3;
+    string claim_url = 4;
+    google.protobuf.Timestamp expiration_time = 5;
+    string project_id = 6;
+    string provider_team_slug = 7;
+  }
 }
 
 message GetWindsurfJSAppDeploymentStatusesByProjectIdRequest {
@@ -1838,6 +1860,11 @@ message GetWindsurfJSAppDeploymentStatusesByProjectIdRequest {
 
 message GetWindsurfJSAppDeploymentStatusesByProjectIdResponse {
   repeated exa.seat_management_pb.GetOneTimeAuthTokenResponse deployment_statuses = 1;
+  message WindsurfDeploymentStatus {
+    exa.codeium_common_pb.WindsurfDeployment deployment = 1;
+    Unresolved_C.proto3.getEnumType_b.DeploymentBuildStatus_ build_status = 2;
+    string build_error = 3;
+  }
 }
 
 message GetWindsurfJSAppDeploymentRequest {
@@ -1869,6 +1896,15 @@ message CreateTrajectoryShareStreamRequest {
   oneof request {
     exa.seat_management_pb.GetSetUserApiProviderKeysResponse initial = 1;
     exa.seat_management_pb.SetUserApiProviderKeyRequest chunk = 2;
+  }
+  message Initial {
+    exa.codeium_common_pb.Metadata metadata = 1;
+    Unresolved_C.proto3.getEnumType_E.TrajectoryShareStatus_ share_status = 2;
+    string trajectory_id = 3;
+    int32 num_chunks = 4;
+  }
+  message Chunk {
+    string chunk = 1;
   }
 }
 
@@ -2119,6 +2155,17 @@ message GetTabResponse {
     exa.seat_management_pb.GetQuotaUsageInternalRequest missing_information = 3;
     exa.seat_management_pb.GetQuotaUsageInternalResponse streaming_completion_v2 = 4;
   }
+  message PreResponse {
+    string prompt = 1;
+    string request_id = 2;
+    exa.codeium_common_pb.ModelFeatures model_features = 3;
+    map<string, uint64> uris_to_hashes = 5;
+    exa.seat_management_pb.GetOverageBalanceInternalResponse cache_info_v2 = 6;
+  }
+  message MissingInformation {
+    repeated string uris = 1;
+    optional int64 start_step = 2;
+  }
 }
 
 message DeltaTab {
@@ -2130,6 +2177,19 @@ message DeltaTab {
     exa.seat_management_pb.ResetQuotaUsageInternalRequest delta_supercomplete = 4;
     exa.seat_management_pb.ResetQuotaUsageInternalResponse delta_tab_jump = 5;
     exa.seat_management_pb.GetOverageBalanceInternalRequest delta_noop = 6;
+  }
+  message DeltaSupercomplete {
+    uint64 start_line = 1;
+    uint64 end_line = 2;
+    string delta_old_str = 3;
+    string delta_new_str = 4;
+    bool is_import = 5;
+    exa.codeium_common_pb.DocumentPosition cursor_position = 6;
+  }
+  message DeltaTabJump {
+    exa.codeium_common_pb.DocumentPosition cursor_position = 1;
+  }
+  message DeltaNoop {
   }
 }
 

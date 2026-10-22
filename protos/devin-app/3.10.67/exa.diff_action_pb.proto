@@ -4,11 +4,16 @@ syntax = "proto3";
 
 package exa.diff_action_pb;
 
+import "google.protobuf.proto";
 import "google.rpc.proto";
 import "google/protobuf/wrappers.proto";
 
 message UnifiedDiff {
   repeated google.protobuf.Int64Value lines = 3;
+  message UnifiedDiffLine {
+    string text = 1;
+    google.protobuf.ExtensionRangeOptions type = 2;
+  }
 }
 
 message DiffBlock {

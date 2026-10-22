@@ -2858,6 +2858,13 @@ message GetDiffRequest {
   bool compute_patch_id = 12;
   optional bool return_head_sha = 13;
   optional int32 max_response_bytes = 14;
+  enum OutputFormat {
+    OUTPUT_FORMAT_UNSPECIFIED = 0;
+    OUTPUT_FORMAT_NAME_STATUS = 1;
+    OUTPUT_FORMAT_NAME_STATUS_AND_NUMSTAT = 2;
+    OUTPUT_FORMAT_FILE_DIFFS = 3;
+    OUTPUT_FORMAT_DIFFS_WITH_BEFORE_AND_AFTER = 4;
+  }
 }
 
 message GetDiffResponse {
@@ -2866,6 +2873,11 @@ message GetDiffResponse {
   optional string patch_id = 3;
   optional string head_sha = 4;
   optional bool has_uncommitted_changes = 5;
+  message SubmoduleDiff {
+    string relative_path = 1;
+    GitDiff diff = 2;
+    bool errored = 3;
+  }
 }
 
 message SimplestRange {
@@ -2881,6 +2893,11 @@ message ComputeLinesDiffOriginalAndModified {
 message GitDiff {
   repeated FileDiff diffs = 1;
   GitDiff.DiffType diff_type = 2;
+  enum DiffType {
+    DIFF_TYPE_UNSPECIFIED = 0;
+    DIFF_TYPE_DIFF_TO_HEAD = 1;
+    DIFF_TYPE_DIFF_FROM_BRANCH_TO_MAIN = 2;
+  }
 }
 
 message FileDiff {
@@ -2892,6 +2909,14 @@ message FileDiff {
   optional string before_file_contents = 6;
   optional string after_file_contents = 7;
   optional bool is_generated = 8;
+  message Chunk {
+    string content = 1;
+    repeated string lines = 2;
+    int32 old_start = 3;
+    int32 old_lines = 4;
+    int32 new_start = 5;
+    int32 new_lines = 6;
+  }
 }
 
 message SimpleRange {
@@ -2916,6 +2941,24 @@ message CmdKDebugInfo {
   string branch_notes_rich = 12;
   string base_branch_name = 13;
   string base_branch_commit_id = 14;
+  message UnsavedFiles {
+    string relative_workspace_path = 1;
+    string contents = 2;
+  }
+  message OpenEditor {
+    string relative_workspace_path = 1;
+    int32 editor_group_index = 2;
+    int32 editor_group_id = 3;
+    bool is_active = 4;
+  }
+  message CppFileDiffHistory {
+    string file_name = 1;
+    repeated string diff_history = 2;
+  }
+  message PastThought {
+    string text = 1;
+    double time_in_unix_seconds = 2;
+  }
 }
 
 message CursorRange {
@@ -2940,6 +2983,9 @@ message CodeBlock {
   repeated DetailedLine detailed_lines = 8;
   optional int32 file_contents_length = 9;
   FileGit file_git_context = 10;
+  message Signatures {
+    repeated CursorRange ranges = 1;
+  }
 }
 
 message GitCommit {
@@ -2964,6 +3010,17 @@ message Diagnostic {
   CursorRange range = 2;
   Diagnostic.DiagnosticSeverity severity = 3;
   repeated Diagnostic.RelatedInformation related_information = 4;
+  message RelatedInformation {
+    string message = 1;
+    CursorRange range = 2;
+  }
+  enum DiagnosticSeverity {
+    DIAGNOSTIC_SEVERITY_UNSPECIFIED = 0;
+    DIAGNOSTIC_SEVERITY_ERROR = 1;
+    DIAGNOSTIC_SEVERITY_WARNING = 2;
+    DIAGNOSTIC_SEVERITY_INFORMATION = 3;
+    DIAGNOSTIC_SEVERITY_HINT = 4;
+  }
 }
 
 message Lint {
@@ -2998,6 +3055,12 @@ message CurrentFileInfo {
   bool rely_on_filesync = 18;
   string workspace_root_path = 19;
   optional string line_ending = 20;
+  message NotebookCell {
+    string api_key = 1;
+    string base_url = 2;
+    string deployment = 3;
+    bool use_azure = 4;
+  }
 }
 
 message AzureState {
@@ -3030,6 +3093,10 @@ message CloudAgentModelSelection {
   string model_id = 1;
   repeated CloudAgentModelSelection.ParameterValue parameters = 2;
   optional bool max_mode = 3;
+  message ParameterValue {
+    string id = 1;
+    string value = 2;
+  }
 }
 
 message ModelInfo {
@@ -3043,6 +3110,10 @@ message DataframeInfo {
   repeated DataframeInfo.Column columns = 6;
   int32 row_count = 7;
   string index_column = 8;
+  message Column {
+    string key = 1;
+    string type = 2;
+  }
 }
 
 message LinterError {
@@ -3096,6 +3167,12 @@ message MCPInstructions {
 message PureMessage {
   PureMessage.MessageType message_type = 1;
   string content = 2;
+  enum MessageType {
+    MESSAGE_TYPE_UNSPECIFIED = 0;
+    MESSAGE_TYPE_SYSTEM = 1;
+    MESSAGE_TYPE_USER = 2;
+    MESSAGE_TYPE_ASSISTANT = 3;
+  }
 }
 
 message DocumentSymbol {
@@ -3106,6 +3183,41 @@ message DocumentSymbol {
   DocumentSymbol.Range range = 6;
   DocumentSymbol.Range selection_range = 7;
   repeated DocumentSymbol children = 8;
+  message Range {
+    int32 start_line_number = 1;
+    int32 start_column = 2;
+    int32 end_line_number = 3;
+    int32 end_column = 4;
+  }
+  enum SymbolKind {
+    SYMBOL_KIND_UNSPECIFIED = 0;
+    SYMBOL_KIND_FILE = 1;
+    SYMBOL_KIND_MODULE = 2;
+    SYMBOL_KIND_NAMESPACE = 3;
+    SYMBOL_KIND_PACKAGE = 4;
+    SYMBOL_KIND_CLASS = 5;
+    SYMBOL_KIND_METHOD = 6;
+    SYMBOL_KIND_PROPERTY = 7;
+    SYMBOL_KIND_FIELD = 8;
+    SYMBOL_KIND_CONSTRUCTOR = 9;
+    SYMBOL_KIND_ENUM = 10;
+    SYMBOL_KIND_INTERFACE = 11;
+    SYMBOL_KIND_FUNCTION = 12;
+    SYMBOL_KIND_VARIABLE = 13;
+    SYMBOL_KIND_CONSTANT = 14;
+    SYMBOL_KIND_STRING = 15;
+    SYMBOL_KIND_NUMBER = 16;
+    SYMBOL_KIND_BOOLEAN = 17;
+    SYMBOL_KIND_ARRAY = 18;
+    SYMBOL_KIND_OBJECT = 19;
+    SYMBOL_KIND_KEY = 20;
+    SYMBOL_KIND_NULL = 21;
+    SYMBOL_KIND_ENUM_MEMBER = 22;
+    SYMBOL_KIND_STRUCT = 23;
+    SYMBOL_KIND_EVENT = 24;
+    SYMBOL_KIND_OPERATOR = 25;
+    SYMBOL_KIND_TYPE_PARAMETER = 26;
+  }
 }
 
 message HoverDetails {
@@ -3132,6 +3244,66 @@ message ErrorDetails {
   ErrorDetails.Error error = 1;
   CustomErrorDetails details = 2;
   optional bool is_expected = 3;
+  enum Error {
+    ERROR_UNSPECIFIED = 0;
+    ERROR_BAD_API_KEY = 1;
+    ERROR_BAD_USER_API_KEY = 42;
+    ERROR_NOT_LOGGED_IN = 2;
+    ERROR_INVALID_AUTH_ID = 3;
+    ERROR_NOT_HIGH_ENOUGH_PERMISSIONS = 4;
+    ERROR_AGENT_REQUIRES_LOGIN = 18;
+    ERROR_BAD_MODEL_NAME = 5;
+    ERROR_NOT_FOUND = 39;
+    ERROR_DEPRECATED = 40;
+    ERROR_USER_NOT_FOUND = 6;
+    ERROR_FREE_USER_RATE_LIMIT_EXCEEDED = 7;
+    ERROR_PRO_USER_RATE_LIMIT_EXCEEDED = 8;
+    ERROR_FREE_USER_USAGE_LIMIT = 9;
+    ERROR_PRO_USER_USAGE_LIMIT = 10;
+    ERROR_RESOURCE_EXHAUSTED = 41;
+    ERROR_AUTH_TOKEN_NOT_FOUND = 11;
+    ERROR_AUTH_TOKEN_EXPIRED = 12;
+    ERROR_OPENAI = 13;
+    ERROR_OPENAI_RATE_LIMIT_EXCEEDED = 14;
+    ERROR_MAX_TOKENS = 20;
+    ERROR_PRO_USER_ONLY = 23;
+    ERROR_USER_ABORTED_REQUEST = 21;
+    ERROR_TIMEOUT = 25;
+    ERROR_GENERIC_RATE_LIMIT_EXCEEDED = 22;
+    ERROR_GPT_4_VISION_PREVIEW_RATE_LIMIT = 28;
+    ERROR_CUSTOM_MESSAGE = 29;
+    ERROR_OUTDATED_CLIENT = 30;
+    ERROR_CLAUDE_IMAGE_TOO_LARGE = 31;
+    ERROR_FILE_NOT_FOUND = 33;
+    ERROR_API_KEY_RATE_LIMIT = 34;
+    ERROR_DEBOUNCED = 35;
+    ERROR_BAD_REQUEST = 36;
+    ERROR_REPOSITORY_SERVICE_REPOSITORY_IS_NOT_INITIALIZED = 37;
+    ERROR_UNAUTHORIZED = 38;
+    ERROR_CONVERSATION_TOO_LONG = 43;
+    ERROR_USAGE_PRICING_REQUIRED = 44;
+    ERROR_USAGE_PRICING_REQUIRED_CHANGEABLE = 45;
+    ERROR_GITHUB_NO_USER_CREDENTIALS = 46;
+    ERROR_GITHUB_USER_NO_ACCESS = 47;
+    ERROR_GITHUB_APP_NO_ACCESS = 48;
+    ERROR_GITHUB_MULTIPLE_OWNERS = 49;
+    ERROR_RATE_LIMITED = 50;
+    ERROR_RATE_LIMITED_CHANGEABLE = 51;
+    ERROR_CUSTOM = 52;
+    ERROR_HOOKS_BLOCKED = 53;
+    ERROR_SUSPICIOUS_USAGE_BLOCKED = 54;
+    ERROR_EXTENSION_HOST_TIMEOUT = 55;
+    ERROR_NETWORK_ERROR = 56;
+    ERROR_PROVIDER_ERROR = 57;
+    ERROR_MODEL_BLOCKED = 58;
+    ERROR_INTERNAL = 59;
+    ERROR_MAX_MODE_REQUIRED = 60;
+    ERROR_MODEL_NO_LONGER_SUPPORTED = 61;
+    ERROR_PRICING_WARNING = 62;
+    ERROR_SLOW_POOL = 63;
+    ERROR_UNSUPPORTED_REGION = 64;
+    ERROR_ACCOUNT_CLOSED = 65;
+  }
 }
 
 message CustomErrorDetails {
@@ -3207,6 +3379,10 @@ message SwitchModelAction {
   optional string suggested_model = 1;
   repeated SwitchModelAction.ModelParameterValue parameters = 2;
   optional bool max_mode = 3;
+  message ModelParameterValue {
+    string id = 1;
+    string value = 2;
+  }
 }
 
 message ConfigureSpendLimitAction {
@@ -3222,6 +3398,10 @@ message ImageProto {
   ImageProto.Dimension dimension = 2;
   string uuid = 3;
   optional string task_specific_description = 4;
+  message Dimension {
+    int32 width = 1;
+    int32 height = 2;
+  }
 }
 
 message ChatQuote {
@@ -3292,6 +3472,16 @@ message CodeChunk {
   optional CodeChunk.Intent intent = 6;
   optional bool is_final_version = 7;
   optional bool is_first_version = 8;
+  enum Intent {
+    INTENT_UNSPECIFIED = 0;
+    INTENT_COMPOSER_FILE = 1;
+    INTENT_COMPRESSED_COMPOSER_FILE = 2;
+  }
+  enum SummarizationStrategy {
+    SUMMARIZATION_STRATEGY_NONE_UNSPECIFIED = 0;
+    SUMMARIZATION_STRATEGY_SUMMARIZED = 1;
+    SUMMARIZATION_STRATEGY_EMBEDDED = 2;
+  }
 }
 
 message RCPCallFrame {
@@ -3342,6 +3532,126 @@ message ComposerCapabilityRequest {
     ComposerCapabilityRequest.DecomposerCapability decomposer = 13;
     ComposerCapabilityRequest.CursorRulesCapability cursor_rules = 14;
   }
+  message ToolSchema {
+    ComposerCapabilityRequest.ToolType type = 1;
+    string name = 2;
+    map<string, ComposerCapabilityRequest.SchemaProperty> properties = 3;
+    repeated string required = 4;
+  }
+  message SchemaProperty {
+    string type = 1;
+    optional string description = 2;
+  }
+  message LoopOnLintsCapability {
+    repeated LinterErrors linter_errors = 1;
+    optional string custom_instructions = 2;
+  }
+  message LoopOnTestsCapability {
+    repeated string test_names = 1;
+    optional string custom_instructions = 2;
+  }
+  message MegaPlannerCapability {
+    optional string custom_instructions = 1;
+  }
+  message LoopOnCommandCapability {
+    string command = 1;
+    optional string custom_instructions = 2;
+    optional string output = 3;
+    optional int32 exit_code = 4;
+  }
+  message ToolCallCapability {
+    optional string custom_instructions = 1;
+    repeated ComposerCapabilityRequest.ToolSchema tool_schemas = 2;
+    repeated string relevant_files = 3;
+    repeated string files_in_context = 4;
+    repeated string semantic_search_files = 5;
+  }
+  message DiffReviewCapability {
+    optional string custom_instructions = 1;
+    repeated ComposerCapabilityRequest.DiffReviewCapability.SimpleFileDiff diffs = 2;
+    message SimpleFileDiff {
+      string relative_workspace_path = 1;
+      repeated ComposerCapabilityRequest.DiffReviewCapability.SimpleFileDiff.Chunk chunks = 3;
+      message Chunk {
+        repeated string old_lines = 1;
+        repeated string new_lines = 2;
+        Unresolved__5 old_range = 3;
+        Unresolved__5 new_range = 4;
+      }
+    }
+  }
+  message DecomposerCapability {
+    optional string custom_instructions = 1;
+  }
+  message ContextPickingCapability {
+    optional string custom_instructions = 1;
+    repeated string potential_context_files = 2;
+    repeated CodeChunk potential_context_code_chunks = 3;
+    repeated string files_in_context = 4;
+  }
+  message EditTrailCapability {
+    optional string custom_instructions = 1;
+  }
+  message AutoContextCapability {
+    optional string custom_instructions = 1;
+    repeated string additional_files = 2;
+  }
+  message ContextPlannerCapability {
+    optional string custom_instructions = 1;
+    repeated CodeChunk attached_code_chunks = 2;
+  }
+  message RememberThisCapability {
+    optional string custom_instructions = 1;
+    string memory = 2;
+  }
+  message CursorRulesCapability {
+    optional string custom_instructions = 1;
+  }
+  enum ComposerCapabilityType {
+    COMPOSER_CAPABILITY_TYPE_UNSPECIFIED = 0;
+    COMPOSER_CAPABILITY_TYPE_LOOP_ON_LINTS = 1;
+    COMPOSER_CAPABILITY_TYPE_LOOP_ON_TESTS = 2;
+    COMPOSER_CAPABILITY_TYPE_MEGA_PLANNER = 3;
+    COMPOSER_CAPABILITY_TYPE_LOOP_ON_COMMAND = 4;
+    COMPOSER_CAPABILITY_TYPE_TOOL_CALL = 5;
+    COMPOSER_CAPABILITY_TYPE_DIFF_REVIEW = 6;
+    COMPOSER_CAPABILITY_TYPE_CONTEXT_PICKING = 7;
+    COMPOSER_CAPABILITY_TYPE_EDIT_TRAIL = 8;
+    COMPOSER_CAPABILITY_TYPE_AUTO_CONTEXT = 9;
+    COMPOSER_CAPABILITY_TYPE_CONTEXT_PLANNER = 10;
+    COMPOSER_CAPABILITY_TYPE_DIFF_HISTORY = 11;
+    COMPOSER_CAPABILITY_TYPE_REMEMBER_THIS = 12;
+    COMPOSER_CAPABILITY_TYPE_DECOMPOSER = 13;
+    COMPOSER_CAPABILITY_TYPE_USES_CODEBASE = 14;
+    COMPOSER_CAPABILITY_TYPE_TOOL_FORMER = 15;
+    COMPOSER_CAPABILITY_TYPE_CURSOR_RULES = 16;
+    COMPOSER_CAPABILITY_TYPE_TOKEN_COUNTER = 17;
+    COMPOSER_CAPABILITY_TYPE_USAGE_DATA = 18;
+    COMPOSER_CAPABILITY_TYPE_CHIMES = 19;
+    COMPOSER_CAPABILITY_TYPE_CODE_DECAY_TRACKER = 20;
+    COMPOSER_CAPABILITY_TYPE_BACKGROUND_COMPOSER = 21;
+    COMPOSER_CAPABILITY_TYPE_SUMMARIZATION = 22;
+    COMPOSER_CAPABILITY_TYPE_AI_CODE_TRACKING = 23;
+    COMPOSER_CAPABILITY_TYPE_QUEUING = 24;
+    COMPOSER_CAPABILITY_TYPE_MEMORIES = 25;
+    COMPOSER_CAPABILITY_TYPE_RCP_LOGS = 26;
+    COMPOSER_CAPABILITY_TYPE_KNOWLEDGE_FETCH = 27;
+    COMPOSER_CAPABILITY_TYPE_SLACK_INTEGRATION = 28;
+    COMPOSER_CAPABILITY_TYPE_SUB_COMPOSER = 29;
+    COMPOSER_CAPABILITY_TYPE_THINKING = 30;
+    COMPOSER_CAPABILITY_TYPE_CONTEXT_WINDOW = 31;
+    COMPOSER_CAPABILITY_TYPE_ONLINE_METRICS = 32;
+    COMPOSER_CAPABILITY_TYPE_NOTIFICATIONS = 33;
+    COMPOSER_CAPABILITY_TYPE_SPEC = 34;
+    COMPOSER_CAPABILITY_TYPE_BROWSER_AGENT = 35;
+  }
+  enum ToolType {
+    TOOL_TYPE_UNSPECIFIED = 0;
+    TOOL_TYPE_ADD_FILE_TO_CONTEXT = 1;
+    TOOL_TYPE_ITERATE = 3;
+    TOOL_TYPE_REMOVE_FILE_FROM_CONTEXT = 4;
+    TOOL_TYPE_SEMANTIC_SEARCH_CODEBASE = 5;
+  }
 }
 
 message ComposerCapabilityContext {
@@ -3349,6 +3659,38 @@ message ComposerCapabilityContext {
     ComposerCapabilityContext.SlackIntegrationContext slack_integration = 27;
     ComposerCapabilityContext.GithubPRContext github_pr = 28;
     ComposerCapabilityContext.MicrosoftTeamsIntegrationContext microsoft_teams_integration = 29;
+  }
+  message SlackIntegrationContext {
+    string thread = 1;
+    optional string channel_name = 2;
+    optional string channel_purpose = 3;
+    optional string channel_topic = 4;
+    optional string sender_name = 5;
+    optional string sender_id = 6;
+    optional string sender_type = 7;
+    optional bool is_directly_addressed = 8;
+  }
+  message MicrosoftTeamsIntegrationContext {
+    string thread = 1;
+    optional string channel_name = 2;
+    optional string team_name = 3;
+    optional string channel_description = 4;
+    optional string team_description = 5;
+  }
+  message GithubPRContext {
+    string title = 1;
+    string description = 2;
+    string comments = 3;
+    optional string ci_failures = 4;
+    ComposerCapabilityContext.GithubPRContext.CodeTourContext code_tour_context = 5;
+    message CodeTourContext {
+      string change_id = 1;
+      string head_sha = 2;
+      optional string current_revision_id = 3;
+      optional string visible_section_id = 4;
+      optional string visible_step_id = 5;
+      optional string path_scope_prefix = 6;
+    }
   }
 }
 
@@ -3383,6 +3725,35 @@ message ListenExperimentalIndexResponse {
     ListenExperimentalIndexResponse.ChooseItem choose = 4;
     ListenExperimentalIndexResponse.SummarizeItem summarize = 5;
     ListenExperimentalIndexResponse.ErrorItem error = 6;
+  }
+  message ReadyItem {
+    string index_id = 1;
+    ListenExperimentalIndexRequest request = 2;
+  }
+  message RegisterItem {
+    RegisterFileToIndexResponse response = 1;
+    RegisterFileToIndexRequest request = 2;
+    string req_uuid = 3;
+  }
+  message ChooseItem {
+    ChooseCodeReferencesResponse response = 1;
+    ChooseCodeReferencesRequest request = 2;
+    string req_uuid = 3;
+  }
+  message SummarizeItem {
+    SummarizeWithReferencesResponse response = 1;
+    SummarizeWithReferencesRequest request = 2;
+    string req_uuid = 3;
+  }
+  message ErrorItem {
+    string message = 1;
+    int32 status_code = 2;
+    string req_uuid = 6;
+    oneof request {
+      RegisterFileToIndexRequest register = 3;
+      ChooseCodeReferencesRequest choose = 4;
+      SummarizeWithReferencesRequest summarize = 5;
+    }
   }
 }
 
@@ -3430,12 +3801,28 @@ message ChooseCodeReferencesRequest {
     ChooseCodeReferencesRequest.FileRequest file = 2;
     ChooseCodeReferencesRequest.NodeRequest node = 3;
   }
+  message FileRequest {
+    string file_id = 1;
+  }
+  message NodeRequest {
+    string node_id = 1;
+  }
 }
 
 message ChooseCodeReferencesResponse {
   oneof response {
     ChooseCodeReferencesResponse.FileResponse file = 1;
     ChooseCodeReferencesResponse.NodeResponse node = 2;
+  }
+  message NodeResponse {
+    string node_id = 1;
+    repeated CodeSymbolWithAction actions = 2;
+    bool skipped = 3;
+    repeated string dependencies = 4;
+  }
+  message FileResponse {
+    string file_id = 1;
+    repeated ChooseCodeReferencesResponse.NodeResponse node_responses = 2;
   }
 }
 
@@ -3460,6 +3847,12 @@ message SummarizeWithReferencesResponse {
     SummarizeWithReferencesResponse.Success success = 1;
     SummarizeWithReferencesResponse.Dependency dependency = 2;
   }
+  message Success {
+    string summary = 1;
+  }
+  message Dependency {
+    repeated string nodes = 2;
+  }
 }
 
 message RequestReceivedResponse {
@@ -3478,6 +3871,12 @@ message IndexFileData {
   string stage = 3;
   int32 order = 4;
   repeated IndexFileData.NodeData nodes = 5;
+  message NodeData {
+    string node_id = 1;
+    string stage = 2;
+    string content = 3;
+    string summary = 4;
+  }
 }
 
 message SerializedContextNode {
@@ -3536,12 +3935,22 @@ message CodeSymbolWithAction {
   int32 symbol_end_column = 4;
   CodeSymbolWithAction.CodeSymbolAction action = 5;
   string symbol = 6;
+  enum CodeSymbolAction {
+    CODE_SYMBOL_ACTION_UNSPECIFIED = 0;
+    CODE_SYMBOL_ACTION_GO_TO_DEFINITION = 1;
+    CODE_SYMBOL_ACTION_GO_TO_IMPLEMENTATION = 2;
+    CODE_SYMBOL_ACTION_REFERENCES = 3;
+  }
 }
 
 message GetHighLevelFolderDescriptionRequest {
   repeated GetHighLevelFolderDescriptionRequest.Readme readmes = 1;
   repeated string top_level_relative_workspace_paths = 2;
   string workspace_root_path = 4;
+  message Readme {
+    string relative_workspace_path = 1;
+    string contents = 2;
+  }
 }
 
 message GetHighLevelFolderDescriptionResponse {
@@ -3571,6 +3980,13 @@ message FastRepoInitHandshakeRequest {
 message FastRepoInitHandshakeResponse {
   FastRepoInitHandshakeResponse.Status status = 1;
   string repo_name = 2;
+  enum Status {
+    STATUS_UNSPECIFIED = 0;
+    STATUS_UP_TO_DATE = 1;
+    STATUS_OUT_OF_SYNC = 2;
+    STATUS_FAILURE = 3;
+    STATUS_EMPTY = 4;
+  }
 }
 
 message LocalCodebaseFileInfo {
@@ -3603,11 +4019,24 @@ message RepositoryCodebaseInfo {
   RepositoryCodebaseInfo.Status status = 2;
   QueryOnlyRepositoryInfo query_only_similar_repo = 3;
   string copy_task_handle = 4;
+  enum Status {
+    STATUS_UNSPECIFIED = 0;
+    STATUS_UP_TO_DATE = 1;
+    STATUS_OUT_OF_SYNC = 2;
+    STATUS_EMPTY = 3;
+    STATUS_EMPTY_WITH_COPY_AVAILABLE = 4;
+    STATUS_COPY_IN_PROGRESS = 5;
+  }
 }
 
 message FastRepoInitHandshakeV2Response {
   FastRepoInitHandshakeV2Response.Status status = 1;
   repeated RepositoryCodebaseInfo codebases = 2;
+  enum Status {
+    STATUS_UNSPECIFIED = 0;
+    STATUS_FAILURE = 1;
+    STATUS_SUCCESS = 2;
+  }
 }
 
 message RepositoryCodebaseSyncStatus {
@@ -3624,6 +4053,11 @@ message RepositoryCodebaseSyncStatus {
   int32 failed_subtree_count = 11;
   int32 total_subtree_count = 12;
   bool hit_iteration_limit = 13;
+  enum Status {
+    STATUS_UNSPECIFIED = 0;
+    STATUS_SUCCESS = 1;
+    STATUS_FAILURE = 2;
+  }
 }
 
 message FastRepoSyncCompleteRequest {
@@ -3645,6 +4079,9 @@ message SyncMerkleSubtreeResponse {
     bool match = 1;
     SyncMerkleSubtreeResponse.Mismatch mismatch = 2;
   }
+  message Mismatch {
+    repeated PartialPathItem children = 1;
+  }
 }
 
 message ClientRepositoryInfo {
@@ -3664,6 +4101,16 @@ message SyncMerkleSubtreeV2Response {
     bool match = 1;
     SyncMerkleSubtreeV2Response.Mismatch mismatch = 2;
   }
+  message Mismatch {
+    repeated PartialPathItem children = 1;
+  }
+  message PartialPathResult {
+    oneof result {
+      bool match = 1;
+      SyncMerkleSubtreeV2Response.Mismatch mismatch = 2;
+      bool response_size_limit_exceeded = 3;
+    }
+  }
 }
 
 message FastUpdateFileRequest {
@@ -3674,10 +4121,27 @@ message FastUpdateFileRequest {
     PartialPathItem directory = 2;
     FastUpdateFileRequest.LocalFile local_file = 3;
   }
+  message LocalFile {
+    Unresolved__pe file = 1;
+    string hash = 2;
+    string unencrypted_relative_workspace_path = 3;
+  }
+  enum UpdateType {
+    UPDATE_TYPE_UNSPECIFIED = 0;
+    UPDATE_TYPE_ADD = 1;
+    UPDATE_TYPE_DELETE = 2;
+    UPDATE_TYPE_MODIFY = 3;
+  }
 }
 
 message FastUpdateFileResponse {
   FastUpdateFileResponse.Status status = 1;
+  enum Status {
+    STATUS_UNSPECIFIED = 0;
+    STATUS_SUCCESS = 1;
+    STATUS_FAILURE = 2;
+    STATUS_EXPECTED_FAILURE = 3;
+  }
 }
 
 message FastUpdateFileV2Request {
@@ -3690,10 +4154,36 @@ message FastUpdateFileV2Request {
     PartialPathItem directory = 3;
     FastUpdateFileV2Request.LocalFile local_file = 4;
   }
+  message LocalFile {
+    Unresolved__pe file = 1;
+    string hash = 2;
+    string unencrypted_relative_workspace_path = 3;
+  }
+  message FileUpdate {
+    repeated PartialPathItem ancestor_spline = 3;
+    FastUpdateFileV2Request.UpdateType update_type = 4;
+    oneof partial_path {
+      PartialPathItem directory = 1;
+      FastUpdateFileV2Request.LocalFile local_file = 2;
+    }
+  }
+  enum UpdateType {
+    UPDATE_TYPE_UNSPECIFIED = 0;
+    UPDATE_TYPE_ADD = 1;
+    UPDATE_TYPE_DELETE = 2;
+    UPDATE_TYPE_MODIFY = 3;
+    UPDATE_TYPE_BATCH = 4;
+  }
 }
 
 message FastUpdateFileV2Response {
   FastUpdateFileV2Response.Status status = 1;
+  enum Status {
+    STATUS_UNSPECIFIED = 0;
+    STATUS_SUCCESS = 1;
+    STATUS_FAILURE = 2;
+    STATUS_EXPECTED_FAILURE = 3;
+  }
 }
 
 message GetUploadLimitsRequest {
@@ -3727,10 +4217,20 @@ message GetEmbeddingsRequest {
 
 message GetEmbeddingsResponse {
   repeated GetEmbeddingsResponse.Embedding embeddings = 2;
+  message Embedding {
+    repeated float embedding = 1;
+  }
 }
 
 message RemoveRepositoryResponse {
   RemoveRepositoryResponse.Status status = 1;
+  enum Status {
+    STATUS_UNSPECIFIED = 0;
+    STATUS_NOT_FOUND = 1;
+    STATUS_NOT_AUTHORIZED = 2;
+    STATUS_STARTED = 3;
+    STATUS_SUCCESS = 4;
+  }
 }
 
 message SearchRepositoryRequest {
@@ -3774,12 +4274,24 @@ message SemSearchRequest {
 message CodeResultWithClassificationInfo {
   CodeResult code_result = 1;
   optional CodeResultWithClassificationInfo.LineNumberClassification line_number_classification = 2;
+  message LineNumberClassification {
+    DetailedLine detailed_line = 1;
+    string query_computed_for = 2;
+    repeated string matched_strings = 3;
+    SimpleRange highlight_range = 4;
+  }
 }
 
 message SemSearchResponse {
   SearchRepositoryResponse response = 1;
   optional SemSearchResponse.SemSearchMetadata metadata = 2;
   repeated CodeResultWithClassificationInfo code_results = 3;
+  message SemSearchMetadata {
+    optional string query_embedding_model = 1;
+    optional int32 server_side_latency_ms = 2;
+    optional int32 embed_latency_ms = 3;
+    optional int32 knn_latency_ms = 4;
+  }
 }
 
 message NodeResult {
@@ -3818,6 +4330,22 @@ message GetCopyStatusResponse {
   float percent_done = 2;
   string error_message = 3;
   optional GetCopyStatusResponse.CompletedStatus completed_status = 4;
+  enum Phase {
+    PHASE_UNSPECIFIED = 0;
+    PHASE_INITIALIZING = 1;
+    PHASE_COPYING = 2;
+    PHASE_COMPLETED = 3;
+    PHASE_CREATING_SEARCH_FILTERS = 4;
+    PHASE_COPYING_SEARCH_STATE = 5;
+    PHASE_COPYING_TREE_STATE = 6;
+    PHASE_SYNCING_COPY = 7;
+  }
+  enum CompletedStatus {
+    COMPLETED_STATUS_UNSPECIFIED = 0;
+    COMPLETED_STATUS_UP_TO_DATE = 1;
+    COMPLETED_STATUS_OUT_OF_SYNC = 2;
+    COMPLETED_STATUS_FAILURE = 3;
+  }
 }
 
 message IndexedFile {
@@ -3859,6 +4387,13 @@ message RepoHistoryInitHandshakeResponse {
   optional string copy_candidate_nonce = 3;
   repeated string copy_candidates = 4;
   optional string error_message = 5;
+  enum Status {
+    STATUS_UNSPECIFIED = 0;
+    STATUS_FAILURE = 1;
+    STATUS_SUCCESS = 2;
+    STATUS_TEST_CANDIDATES = 3;
+    STATUS_NO_INDEXING = 4;
+  }
 }
 
 message RepoHistorySyncOneRequest {
@@ -3869,10 +4404,31 @@ message RepoHistorySyncOneRequest {
 
 message RepoHistorySyncOneResponse {
   RepoHistorySyncOneResponse.Status status = 1;
+  enum Status {
+    STATUS_UNSPECIFIED = 0;
+    STATUS_SUCCESS = 1;
+    STATUS_FAILURE = 2;
+    STATUS_PARTIAL_SUCCESS = 3;
+    STATUS_NOT_INDEXING = 4;
+  }
 }
 
 message RepoHistorySyncCompleteRequest {
   repeated RepoHistorySyncCompleteRequest.SyncedHistory synced_histories = 1;
+  message SyncedHistory {
+    string history_id = 1;
+    RepoHistorySyncCompleteRequest.Status status = 2;
+    optional string last_indexed_commit = 3;
+    optional string last_indexed_commit_secret = 4;
+    optional uint32 last_indexed_commit_generation = 5;
+  }
+  enum Status {
+    STATUS_UNSPECIFIED = 0;
+    STATUS_SUCCESS = 1;
+    STATUS_FAILURE = 2;
+    STATUS_TOTAL_FAILURE = 3;
+    STATUS_INTERRUPTED = 4;
+  }
 }
 
 message RepoHistorySyncCompleteResponse {
@@ -3896,6 +4452,17 @@ message PRDiffChunkPointer {
 message SearchPRHistoryResponse {
   repeated SearchPRHistoryResponse.PRSearchResult results = 1;
   optional uint32 git_height = 2;
+  message PRSearchResult {
+    string commit_hash = 1;
+    float score = 2;
+    repeated PRDiffChunkPointer diff_chunks = 3;
+    optional string title = 4;
+    optional string summary = 5;
+    optional uint32 pr_number = 6;
+    optional string author = 7;
+    optional string date = 8;
+    repeated string changed_files = 9;
+  }
 }
 
 message RemoveRepoHistoryRequest {
@@ -3904,6 +4471,13 @@ message RemoveRepoHistoryRequest {
 
 message RemoveRepoHistoryResponse {
   RemoveRepoHistoryResponse.Status status = 1;
+  enum Status {
+    STATUS_UNSPECIFIED = 0;
+    STATUS_NOT_FOUND = 1;
+    STATUS_NOT_AUTHORIZED = 2;
+    STATUS_PARTIAL_SUCCESS = 3;
+    STATUS_SUCCESS = 4;
+  }
 }
 
 message GetPRIndexingStatusRequest {
@@ -3919,6 +4493,13 @@ message GetPRIndexingStatusResponse {
   optional float indexing_rate = 6;
   optional int64 last_updated_timestamp = 7;
   optional uint32 index_version = 8;
+  enum Status {
+    STATUS_UNSPECIFIED = 0;
+    STATUS_EMPTY = 1;
+    STATUS_SYNCING = 2;
+    STATUS_SYNCED = 3;
+    STATUS_PARTIAL = 4;
+  }
 }
 
 message ReapplyParams {
@@ -3964,6 +4545,12 @@ message ToolResultError {
   oneof error_details {
     ToolResultError.EditFileError edit_file_error_details = 5;
     ToolResultError.SearchReplaceError search_replace_error_details = 6;
+  }
+  message EditFileError {
+    int32 num_lines_in_file_before_edit = 1;
+  }
+  message SearchReplaceError {
+    int32 num_lines_in_file_before_edit = 1;
   }
 }
 
@@ -4104,6 +4691,15 @@ message ToolResultAttachments {
   bool should_show_todo_write_reminder = 4;
   ToolResultAttachments.TodoReminderType todo_reminder_type = 5;
   optional ToolResultAttachments.DiscoveryBudgetReminder discovery_budget_reminder = 6;
+  message DiscoveryBudgetReminder {
+    int32 discovery_rounds_remaining = 1;
+    optional string discovery_effort = 2;
+  }
+  enum TodoReminderType {
+    TODO_REMINDER_TYPE_UNSPECIFIED = 0;
+    TODO_REMINDER_TYPE_EVERY_10_TURNS = 1;
+    TODO_REMINDER_TYPE_AFTER_EDIT = 2;
+  }
 }
 
 message StreamedBackPartialToolCall {
@@ -4247,6 +4843,12 @@ message EditFileV2Params {
     EditFileV2Params.StreamingEditText text = 4;
     EditFileV2Params.StreamingEditCode code = 5;
   }
+  message StreamingEditText {
+    string text = 1;
+  }
+  message StreamingEditCode {
+    string code = 1;
+  }
 }
 
 message EditFileV2Result {
@@ -4326,6 +4928,45 @@ message EditFileResult {
   optional bool should_eagerly_process_lints = 15;
   optional HumanReview human_review_v2 = 16;
   optional bool were_all_new_linter_errors_resolved_by_this_edit = 17;
+  message FileDiff {
+    repeated EditFileResult.FileDiff.ChunkDiff chunks = 1;
+    EditFileResult.FileDiff.Editor editor = 2;
+    bool hit_timeout = 3;
+    message ChunkDiff {
+      string diff_string = 1;
+      int32 old_start = 2;
+      int32 new_start = 3;
+      int32 old_lines = 4;
+      int32 new_lines = 5;
+      int32 lines_removed = 6;
+      int32 lines_added = 7;
+    }
+    enum Editor {
+      EDITOR_UNSPECIFIED = 0;
+      EDITOR_AI = 1;
+      EDITOR_HUMAN = 2;
+    }
+  }
+  message RecoverableError {
+    EditFileResult.RecoverableError.RecoverableErrorType error_type = 1;
+    string model_message = 2;
+    enum RecoverableErrorType {
+      RECOVERABLE_ERROR_TYPE_UNSPECIFIED = 0;
+      RECOVERABLE_ERROR_TYPE_SEARCH_STRING_NOT_FOUND = 1;
+      RECOVERABLE_ERROR_TYPE_AMBIGUOUS_SEARCH_STRING = 2;
+    }
+  }
+  message EditFileHumanReview {
+    bool is_edit_accepted = 1;
+    string text_result = 2;
+    bool stop_and_get_new_user_input = 3;
+  }
+  message HumanFeedback {
+    string selected_option = 1;
+    string feedback_text = 2;
+    bool submit_feedback_as_new_message = 3;
+    string bubble_id = 4;
+  }
 }
 
 message HumanReview {
@@ -4351,6 +4992,9 @@ message ToolCallFileSearchResult {
   repeated ToolCallFileSearchResult.File files = 1;
   optional bool limit_hit = 2;
   int32 num_results = 3;
+  message File {
+    string uri = 1;
+  }
 }
 
 message ListDirParams {
@@ -4360,6 +5004,14 @@ message ListDirParams {
 message ListDirResult {
   repeated ListDirResult.File files = 1;
   string directory_relative_workspace_path = 2;
+  message File {
+    string name = 1;
+    bool is_directory = 2;
+    optional int64 size = 3;
+    optional google.protobuf.Timestamp last_modified = 4;
+    optional int32 num_children = 5;
+    optional int32 num_lines = 6;
+  }
 }
 
 message ListDirStream {
@@ -4409,6 +5061,69 @@ message ReadFileStream {
 message RipgrepSearchParams {
   RipgrepSearchParams.ITextQueryBuilderOptionsProto options = 1;
   RipgrepSearchParams.IPatternInfoProto pattern_info = 2;
+  message IPatternInfoProto {
+    string pattern = 1;
+    optional bool is_reg_exp = 2;
+    optional bool is_word_match = 3;
+    optional string word_separators = 4;
+    optional bool is_multiline = 5;
+    optional bool is_unicode = 6;
+    optional bool is_case_sensitive = 7;
+    RipgrepSearchParams.IPatternInfoProto.INotebookPatternInfoProto notebook_info = 8;
+    optional bool pattern_was_escaped = 9;
+    message INotebookPatternInfoProto {
+      optional bool is_in_notebook_markdown_input = 1;
+      optional bool is_in_notebook_markdown_preview = 2;
+      optional bool is_in_notebook_cell_input = 3;
+      optional bool is_in_notebook_cell_output = 4;
+    }
+  }
+  message ITextQueryBuilderOptionsProto {
+    RipgrepSearchParams.ITextQueryBuilderOptionsProto.ITextSearchPreviewOptionsProto preview_options = 1;
+    optional string file_encoding = 2;
+    optional int32 surrounding_context = 3;
+    optional bool is_smart_case = 4;
+    RipgrepSearchParams.ITextQueryBuilderOptionsProto.INotebookSearchConfigProto notebook_search_config = 5;
+    RipgrepSearchParams.ITextQueryBuilderOptionsProto.ExcludePatternProto exclude_pattern = 6;
+    RipgrepSearchParams.ITextQueryBuilderOptionsProto.ISearchPathPatternBuilderProto include_pattern = 7;
+    optional bool expand_patterns = 8;
+    optional int32 max_results = 9;
+    optional int32 max_file_size = 10;
+    optional bool disregard_ignore_files = 11;
+    optional bool disregard_global_ignore_files = 12;
+    optional bool disregard_parent_ignore_files = 13;
+    optional bool disregard_exclude_settings = 14;
+    optional bool disregard_search_exclude_settings = 15;
+    optional bool ignore_symlinks = 16;
+    optional bool only_open_editors = 17;
+    optional bool only_file_scheme = 18;
+    optional string reason = 19;
+    RipgrepSearchParams.ITextQueryBuilderOptionsProto.ExtraFileResourcesProto extra_file_resources = 20;
+    message ExtraFileResourcesProto {
+      repeated string extra_file_resources = 1;
+    }
+    message ExcludePatternProto {
+      repeated RipgrepSearchParams.ITextQueryBuilderOptionsProto.ISearchPatternBuilderProto exclude_pattern = 1;
+    }
+    message ISearchPatternBuilderProto {
+      optional string uri = 1;
+      RipgrepSearchParams.ITextQueryBuilderOptionsProto.ISearchPathPatternBuilderProto pattern = 2;
+    }
+    message ISearchPathPatternBuilderProto {
+      optional string pattern = 1;
+      repeated string patterns = 2;
+    }
+    message ITextSearchPreviewOptionsProto {
+      int32 match_lines = 1;
+      int32 chars_per_line = 2;
+    }
+    message INotebookSearchConfigProto {
+      bool include_markup_input = 1;
+      bool include_markup_preview = 2;
+      bool include_code_input = 3;
+      bool include_output = 4;
+    }
+  }
 }
 
 message RipgrepSearchResult {
@@ -4423,6 +5138,95 @@ message RipgrepSearchResultInternal {
   oneof stats {
     RipgrepSearchResultInternal.IFileSearchStats file_search_stats = 5;
     RipgrepSearchResultInternal.ITextSearchStats text_search_stats = 6;
+  }
+  message IFileMatch {
+    string resource = 1;
+    repeated RipgrepSearchResultInternal.ITextSearchResult results = 2;
+  }
+  message ITextSearchResult {
+    oneof result {
+      RipgrepSearchResultInternal.ITextSearchMatch match = 1;
+      RipgrepSearchResultInternal.ITextSearchContext context = 2;
+    }
+  }
+  message ITextSearchMatch {
+    optional string uri = 1;
+    repeated RipgrepSearchResultInternal.ISearchRangeSetPairing range_locations = 2;
+    string preview_text = 3;
+    optional int32 webview_index = 4;
+    optional string cell_fragment = 5;
+  }
+  message ITextSearchContext {
+    optional string uri = 1;
+    string text = 2;
+    int32 line_number = 3;
+  }
+  message ISearchRangeSetPairing {
+    RipgrepSearchResultInternal.ISearchRange source = 1;
+    RipgrepSearchResultInternal.ISearchRange preview = 2;
+  }
+  message ISearchRange {
+    int32 start_line_number = 1;
+    int32 start_column = 2;
+    int32 end_line_number = 3;
+    int32 end_column = 4;
+  }
+  message ITextSearchCompleteMessage {
+    string text = 1;
+    RipgrepSearchResultInternal.TextSearchCompleteMessageType type = 2;
+    optional bool trusted = 3;
+  }
+  message IFileSearchStats {
+    bool from_cache = 1;
+    int32 result_count = 5;
+    RipgrepSearchResultInternal.IFileSearchStats.FileSearchProviderType type = 6;
+    optional int32 sorting_time = 7;
+    oneof detail_stats {
+      RipgrepSearchResultInternal.ISearchEngineStats search_engine_stats = 2;
+      RipgrepSearchResultInternal.ICachedSearchStats cached_search_stats = 3;
+      RipgrepSearchResultInternal.IFileSearchProviderStats file_search_provider_stats = 4;
+    }
+    enum FileSearchProviderType {
+      FILE_SEARCH_PROVIDER_TYPE_UNSPECIFIED = 0;
+      FILE_SEARCH_PROVIDER_TYPE_FILE_SEARCH_PROVIDER = 1;
+      FILE_SEARCH_PROVIDER_TYPE_SEARCH_PROCESS = 2;
+    }
+  }
+  message ITextSearchStats {
+    RipgrepSearchResultInternal.ITextSearchStats.TextSearchProviderType type = 1;
+    enum TextSearchProviderType {
+      TEXT_SEARCH_PROVIDER_TYPE_UNSPECIFIED = 0;
+      TEXT_SEARCH_PROVIDER_TYPE_TEXT_SEARCH_PROVIDER = 1;
+      TEXT_SEARCH_PROVIDER_TYPE_SEARCH_PROCESS = 2;
+      TEXT_SEARCH_PROVIDER_TYPE_AI_TEXT_SEARCH_PROVIDER = 3;
+    }
+  }
+  message ISearchEngineStats {
+    int32 file_walk_time = 1;
+    int32 directories_walked = 2;
+    int32 files_walked = 3;
+    int32 cmd_time = 4;
+    optional int32 cmd_result_count = 5;
+  }
+  message ICachedSearchStats {
+    bool cache_was_resolved = 1;
+    int32 cache_lookup_time = 2;
+    int32 cache_filter_time = 3;
+    int32 cache_entry_count = 4;
+  }
+  message IFileSearchProviderStats {
+    int32 provider_time = 1;
+    int32 post_process_time = 2;
+  }
+  enum TextSearchCompleteMessageType {
+    TEXT_SEARCH_COMPLETE_MESSAGE_TYPE_UNSPECIFIED = 0;
+    TEXT_SEARCH_COMPLETE_MESSAGE_TYPE_INFORMATION = 1;
+    TEXT_SEARCH_COMPLETE_MESSAGE_TYPE_WARNING = 2;
+  }
+  enum SearchCompletionExitCode {
+    SEARCH_COMPLETION_EXIT_CODE_UNSPECIFIED = 0;
+    SEARCH_COMPLETION_EXIT_CODE_NORMAL = 1;
+    SEARCH_COMPLETION_EXIT_CODE_NEW_SEARCH_STARTED = 2;
   }
 }
 
@@ -4442,6 +5246,11 @@ message MissingFile {
   string relative_workspace_path = 1;
   MissingFile.MissingReason missing_reason = 2;
   optional int32 num_lines = 3;
+  enum MissingReason {
+    MISSING_REASON_UNSPECIFIED = 0;
+    MISSING_REASON_TOO_LARGE = 1;
+    MISSING_REASON_NOT_FOUND = 2;
+  }
 }
 
 message Knowledge {
@@ -4577,6 +5386,12 @@ message AddUiStepParams {
   oneof step {
     AddUiStepParams.SearchResults search_results = 2;
   }
+  message SearchResult {
+    string relative_workspace_path = 1;
+  }
+  message SearchResults {
+    repeated AddUiStepParams.SearchResult search_results = 1;
+  }
 }
 
 message AddUiStepResult {
@@ -4645,6 +5460,10 @@ message GetProjectStructureParams {
 message GetProjectStructureResult {
   repeated GetProjectStructureResult.File files = 1;
   string root_workspace_path = 2;
+  message File {
+    string relative_workspace_path = 1;
+    string outline = 2;
+  }
 }
 
 message NewFileParams {
@@ -4675,6 +5494,14 @@ message MatchRange {
 message SemanticSearchResult {
   repeated SemanticSearchResult.Item results = 1;
   map<string, string> files = 2;
+  message Item {
+    string relative_workspace_path = 1;
+    float score = 2;
+    string content = 3;
+    SimpleRange range = 4;
+    optional string original_content = 5;
+    repeated DetailedLine detailed_lines = 6;
+  }
 }
 
 message SearchParams {
@@ -4690,6 +5517,10 @@ message SearchToolFileSearchResult {
   int32 num_matches = 2;
   repeated SearchToolFileSearchResult.Line potentially_relevant_lines = 3;
   bool cropped = 4;
+  message Line {
+    int32 line_number = 1;
+    string text = 2;
+  }
 }
 
 message SearchResult {
@@ -4811,6 +5642,11 @@ message EditParams {
   EditParams.FrontendEditType frontend_edit_type = 6;
   optional bool replace_whole_file = 7;
   optional bool auto_fix_all_linter_errors_in_file = 8;
+  enum FrontendEditType {
+    FRONTEND_EDIT_TYPE_UNSPECIFIED = 0;
+    FRONTEND_EDIT_TYPE_INLINE_DIFFS = 1;
+    FRONTEND_EDIT_TYPE_SIMPLE = 2;
+  }
 }
 
 message EditResult {
@@ -4820,6 +5656,19 @@ message EditResult {
   string file = 4;
   int32 file_total_lines = 5;
   repeated EditResult.Feedback structured_feedback = 6;
+  message RelatedInformation {
+    string message = 1;
+    int32 start_line_number = 2;
+    int32 end_line_number = 3;
+    string relative_workspace_path = 4;
+  }
+  message Feedback {
+    string message = 1;
+    string severity = 2;
+    int32 start_line_number = 3;
+    int32 end_line_number = 4;
+    repeated EditResult.RelatedInformation related_information = 5;
+  }
 }
 
 message AddTestParams {
@@ -4830,6 +5679,19 @@ message AddTestParams {
 
 message AddTestResult {
   repeated AddTestResult.Feedback feedback = 1;
+  message RelatedInformation {
+    string message = 1;
+    int32 start_line_number = 2;
+    int32 end_line_number = 3;
+    string relative_workspace_path = 4;
+  }
+  message Feedback {
+    string message = 1;
+    string severity = 2;
+    int32 start_line_number = 3;
+    int32 end_line_number = 4;
+    repeated AddTestResult.RelatedInformation related_information = 5;
+  }
 }
 
 message RunTestParams {
@@ -4847,6 +5709,10 @@ message GetTestsParams {
 
 message GetTestsResult {
   repeated GetTestsResult.Test tests = 1;
+  message Test {
+    string name = 1;
+    repeated string lines = 2;
+  }
 }
 
 message DeleteTestParams {
@@ -4872,6 +5738,10 @@ message GetSymbolsParams {
   string relative_workspace_path = 1;
   optional GetSymbolsParams.LineRange line_range = 2;
   bool include_children = 3;
+  message LineRange {
+    int32 start_line_number = 1;
+    int32 end_line_number_inclusive = 2;
+  }
 }
 
 message GetSymbolsResult {
@@ -4885,6 +5755,21 @@ message ShellCommandParsingResult {
   bool has_command_substitution = 4;
   optional bool all_redirects_are_dev_null = 5;
   repeated ShellCommandParsingResult.Redirect redirects = 6;
+  message ExecutableCommandArg {
+    string type = 1;
+    string value = 2;
+  }
+  message ExecutableCommand {
+    string name = 1;
+    repeated ShellCommandParsingResult.ExecutableCommandArg args = 2;
+    string full_text = 3;
+  }
+  message Redirect {
+    string operator = 1;
+    repeated uint32 destination_fds = 2;
+    string target_node_type = 3;
+    optional string target_text = 4;
+  }
 }
 
 message RunTerminalCommandV2Params {
@@ -4900,6 +5785,16 @@ message RunTerminalCommandV2Params {
   optional int64 file_output_threshold_bytes = 10;
   optional string command_description = 11;
   optional agent.v1.CommandClassifierResult classifier_result = 12;
+  message ExecutionOptions {
+    optional int32 timeout = 1;
+    optional bool skip_ai_check = 2;
+    optional int32 command_run_timeout_ms = 3;
+    optional int32 command_change_check_interval_ms = 4;
+    optional int32 ai_finish_check_max_attempts = 5;
+    optional int32 ai_finish_check_interval_ms = 6;
+    optional int32 delayer_interval_ms = 7;
+    optional bool ai_check_for_hangs = 8;
+  }
 }
 
 message OutputLocation {
@@ -4949,6 +5844,11 @@ message WebSearchResult {
   repeated WebSearchResult.WebReference references = 1;
   optional bool is_final = 2;
   optional bool rejected = 3;
+  message WebReference {
+    string title = 1;
+    string url = 2;
+    string chunk = 3;
+  }
 }
 
 message WebSearchStream {
@@ -4958,6 +5858,18 @@ message WebSearchStream {
 message MCPParams {
   repeated MCPParams.Tool tools = 1;
   optional int64 file_output_threshold_bytes = 2;
+  message Tool {
+    string name = 1;
+    string description = 2;
+    string parameters = 3;
+    string server_name = 4;
+    optional MCPParams.TranscriptDisplay transcript_display = 5;
+  }
+  message TranscriptDisplay {
+    string loading = 1;
+    string success = 2;
+    string error = 3;
+  }
 }
 
 message MCPResult {
@@ -4975,6 +5887,14 @@ message ListMcpResourcesParams {
 
 message ListMcpResourcesResult {
   repeated ListMcpResourcesResult.MCPResource resources = 1;
+  message MCPResource {
+    string uri = 1;
+    optional string name = 2;
+    optional string description = 3;
+    optional string mime_type = 4;
+    string server = 5;
+    map<string, string> annotations = 6;
+  }
 }
 
 message ReadMcpResourceParams {
@@ -5025,6 +5945,15 @@ message SearchSymbolsParams {
 message SearchSymbolsResult {
   repeated SearchSymbolsResult.SymbolMatch matches = 1;
   optional bool rejected = 2;
+  message SymbolMatch {
+    string name = 1;
+    string uri = 2;
+    Range range = 3;
+    string secondary_text = 4;
+    repeated MatchRange label_matches = 5;
+    repeated MatchRange description_matches = 6;
+    double score = 7;
+  }
 }
 
 message SearchSymbolsStream {
@@ -5168,6 +6097,14 @@ message FixLintsParams {
 
 message FixLintsResult {
   repeated FixLintsResult.FileResult file_results = 1;
+  message FileResult {
+    string file_path = 1;
+    EditFileResult.FileDiff diff = 2;
+    bool is_applied = 3;
+    bool apply_failed = 4;
+    optional string error = 5;
+    repeated LinterError linter_errors = 6;
+  }
 }
 
 message FixLintsStream {
@@ -5220,6 +6157,17 @@ message TaskResult {
   oneof result {
     TaskResult.CompletedTaskResult completed_task_result = 1;
     TaskResult.AsyncTaskResult async_task_result = 2;
+  }
+  message CompletedTaskResult {
+    string summary = 1;
+    repeated FixLintsResult.FileResult file_results = 2;
+    bool user_aborted = 3;
+    bool subagent_errored = 4;
+  }
+  message AsyncTaskResult {
+    string task_id = 1;
+    bool user_aborted = 2;
+    bool subagent_errored = 3;
   }
 }
 
@@ -5336,6 +6284,12 @@ message RipgrepRawSearchFilesResult {
   repeated RipgrepRawSearchFilesResult.FileEntry files_with_meta = 5;
   optional int32 head_limit_applied = 6;
   optional int32 offset_applied = 7;
+  message FileEntry {
+    string file = 1;
+    bool is_dirty = 2;
+    bool is_out_of_workspace = 3;
+    optional string absolute_path = 4;
+  }
 }
 
 message RipgrepRawSearchContentResult {
@@ -5374,6 +6328,10 @@ message AwaitTaskParams {
 message AwaitTaskResult {
   repeated AwaitTaskResult.TaskResultItem task_results = 1;
   repeated string missing_task_ids = 2;
+  message TaskResultItem {
+    string task_id = 1;
+    TaskResult.CompletedTaskResult result = 2;
+  }
 }
 
 message AwaitTaskStream {
@@ -5428,6 +6386,18 @@ message ListDirV2Params {
 
 message ListDirV2Result {
   ListDirV2Result.DirectoryTreeNode directory_tree_root = 1;
+  message DirectoryTreeNode {
+    string abs_path = 1;
+    repeated ListDirV2Result.DirectoryTreeNode children_dirs = 2;
+    repeated ListDirV2Result.DirectoryTreeNode.File children_files = 3;
+    bool children_were_processed = 4;
+    map<string, int32> full_subtree_extension_counts = 5;
+    int32 num_files = 6;
+    message File {
+      string name = 1;
+      optional agent.v1.TerminalMetadata terminal_metadata = 2;
+    }
+  }
 }
 
 message ListDirV2Stream {
@@ -5468,6 +6438,15 @@ message GlobFileSearchParams {
 
 message GlobFileSearchResult {
   repeated GlobFileSearchResult.Directory directories = 1;
+  message File {
+    string rel_path = 1;
+  }
+  message Directory {
+    string abs_path = 1;
+    repeated GlobFileSearchResult.File files = 2;
+    int32 total_files = 3;
+    bool ripgrep_truncated = 4;
+  }
 }
 
 message GlobFileSearchStream {
@@ -5542,6 +6521,17 @@ message CreatePlanResult {
     CreatePlanResult.Rejected rejected = 2;
     CreatePlanResult.Modified modified = 3;
   }
+  message Accepted {
+    repeated TodoItem final_todos = 1;
+  }
+  message Rejected {
+    string new_plan = 1;
+    repeated TodoItem final_todos = 2;
+  }
+  message Modified {
+    string new_plan = 1;
+    repeated TodoItem final_todos = 2;
+  }
 }
 
 message CreatePlanStream {
@@ -5586,11 +6576,26 @@ message AskQuestionParams {
   string title = 1;
   repeated AskQuestionParams.Question questions = 2;
   bool run_async = 3;
+  message Question {
+    string id = 1;
+    string prompt = 2;
+    repeated AskQuestionParams.Option options = 3;
+    bool allow_multiple = 4;
+  }
+  message Option {
+    string id = 1;
+    string label = 2;
+  }
 }
 
 message AskQuestionResult {
   repeated AskQuestionResult.Answer answers = 1;
   bool is_async = 2;
+  message Answer {
+    string question_id = 1;
+    repeated string selected_option_ids = 2;
+    optional string freeform_text = 3;
+  }
 }
 
 message AskQuestionStream {
@@ -5727,6 +6732,12 @@ message DocumentationQueryResponse {
   string doc_name = 2;
   repeated DocumentationChunk doc_chunks = 3;
   DocumentationQueryResponse.Status status = 4;
+  enum Status {
+    STATUS_UNSPECIFIED = 0;
+    STATUS_NOT_FOUND = 1;
+    STATUS_SUCCESS = 2;
+    STATUS_FAILURE = 3;
+  }
 }
 
 message SwTrackModelRequest {
@@ -5845,10 +6856,49 @@ message GetLintsForChangeRequest {
   repeated GetLintsForChangeRequest.File files = 1;
   bool include_quick_fixes = 2;
   bool do_not_use_in_prod_new_files_should_be_temporarily_created_for_increased_accuracy = 3;
+  message File {
+    string relative_workspace_path = 1;
+    string initial_content = 2;
+    string final_content = 3;
+    optional GetLintsForChangeRequest.File.RangeCollection get_all_lints_not_just_delta_lints_for_ranges_in_final_model = 4;
+    message RangeCollection {
+      repeated GetLintsForChangeRequest.File.IRange ranges = 1;
+    }
+    message IRange {
+      int32 start_line_number = 1;
+      int32 start_column = 2;
+      int32 end_line_number = 3;
+      int32 end_column = 4;
+    }
+  }
 }
 
 message GetLintsForChangeResponse {
   repeated GetLintsForChangeResponse.Lint lints = 1;
+  message Lint {
+    string message = 1;
+    string severity = 2;
+    string relative_workspace_path = 3;
+    int32 start_line_number_one_indexed = 4;
+    int32 start_column_one_indexed = 5;
+    int32 end_line_number_inclusive_one_indexed = 6;
+    int32 end_column_one_indexed = 7;
+    repeated GetLintsForChangeResponse.Lint.QuickFix quick_fixes = 9;
+    message QuickFix {
+      string message = 1;
+      string kind = 2;
+      bool is_preferred = 3;
+      repeated GetLintsForChangeResponse.Lint.QuickFix.Edit edits = 4;
+      message Edit {
+        string relative_workspace_path = 1;
+        string text = 2;
+        int32 start_line_number_one_indexed = 3;
+        int32 start_column_one_indexed = 4;
+        int32 end_line_number_inclusive_one_indexed = 5;
+        int32 end_column_one_indexed = 6;
+      }
+    }
+  }
 }
 
 message StreamReplayChatRequest {
@@ -5917,6 +6967,10 @@ message ConversationSummaryStrategy {
   oneof strategy {
     string plain_text_summary = 1;
     ConversationSummaryStrategy.ArbitrarySummaryPlusToolResultTruncation arbitrary_summary_plus_tool_result_truncation = 2;
+  }
+  message ArbitrarySummaryPlusToolResultTruncation {
+    ConversationSummary arbitrary_summary = 1;
+    int32 tool_result_truncation_length = 2;
   }
 }
 
@@ -6102,6 +7156,54 @@ message StreamUnifiedChatRequest {
   optional string best_of_n_group_id = 91;
   optional bool try_use_best_of_n_promotion = 92;
   optional string agent_transcripts_folder = 93;
+  message RedDiff {
+    string relative_workspace_path = 1;
+    repeated SimplestRange red_ranges = 2;
+    repeated SimplestRange red_ranges_reversed = 3;
+    string start_hash = 4;
+    string end_hash = 5;
+  }
+  message RecentEdits {
+    repeated StreamUnifiedChatRequest.RecentEdits.CodeBlockInfo code_block_info = 1;
+    repeated Unresolved__Ns final_file_values = 2;
+    optional string edits_belong_to_composer_generation_uuid = 3;
+    message CodeBlockInfo {
+      string relative_workspace_path = 1;
+      optional string content_before = 2;
+      optional string content_after = 3;
+      optional string generation_uuid = 4;
+      optional int32 version = 5;
+    }
+    message FileInfo {
+      string relative_workspace_path = 1;
+      string content = 2;
+    }
+  }
+  message CodeSearchResult {
+    repeated CodeResult results = 1;
+    repeated Unresolved__pe all_files = 2;
+  }
+  message FullFileCmdKOptions {
+    string file_path = 1;
+  }
+  message CurrentPlan {
+    string content = 1;
+    string name = 2;
+  }
+  enum UnifiedMode {
+    UNIFIED_MODE_UNSPECIFIED = 0;
+    UNIFIED_MODE_CHAT = 1;
+    UNIFIED_MODE_AGENT = 2;
+    UNIFIED_MODE_EDIT = 3;
+    UNIFIED_MODE_CUSTOM = 4;
+    UNIFIED_MODE_PLAN = 5;
+    UNIFIED_MODE_DEBUG = 6;
+  }
+  enum ThinkingLevel {
+    THINKING_LEVEL_UNSPECIFIED = 0;
+    THINKING_LEVEL_MEDIUM = 1;
+    THINKING_LEVEL_HIGH = 2;
+  }
 }
 
 message ContextPiece {
@@ -6152,6 +7254,24 @@ message StreamUnifiedChatResponse {
   optional string model_provider_request_json = 35;
   optional StreamedBackToolCallV2 tool_call_v2 = 36;
   optional ConversationMessage.ThinkingStyle thinking_style = 37;
+  message UsedCode {
+    repeated CodeResult code_results = 1;
+  }
+  message ChunkIdentity {
+    string file_name = 1;
+    int32 start_line = 2;
+    int32 end_line = 3;
+    string text = 4;
+    ChunkType chunk_type = 5;
+  }
+  message FinalToolResult {
+    string tool_call_id = 1;
+    ClientSideToolV2Result result = 2;
+  }
+  message ImageDescription {
+    string description = 1;
+    string image_uuid = 2;
+  }
 }
 
 message ContextWindowStatus {
@@ -6331,6 +7451,198 @@ message ConversationMessage {
   optional ConversationMessage.SimulatedMessageMetadata simulated_message_metadata = 97;
   optional agent.v1.AgentMode agent_mode = 98;
   optional bool turn_steer = 99;
+  message CodeChunk {
+    string relative_workspace_path = 1;
+    int32 start_line_number = 2;
+    repeated string lines = 3;
+    optional ConversationMessage.CodeChunk.SummarizationStrategy summarization_strategy = 4;
+    string language_identifier = 5;
+    optional ConversationMessage.CodeChunk.Intent intent = 6;
+    optional bool is_final_version = 7;
+    optional bool is_first_version = 8;
+    optional bool contents_are_missing = 9;
+    optional bool is_only_included_from_folder = 10;
+    optional ConversationMessage.CodeChunk.CodeChunkGitContext code_chunk_git_context = 11;
+    message CodeChunkGitContext {
+      repeated ConversationMessage.CodeChunk.CodeChunkGitContext.CodeChunkGitInfo git_info = 1;
+      message CodeChunkGitInfo {
+        string commit = 1;
+        string author = 2;
+        string date = 3;
+        string message = 4;
+      }
+    }
+    enum Intent {
+      INTENT_UNSPECIFIED = 0;
+      INTENT_COMPOSER_FILE = 1;
+      INTENT_COMPRESSED_COMPOSER_FILE = 2;
+      INTENT_RECENTLY_VIEWED_FILE = 3;
+      INTENT_OUTLINE = 4;
+      INTENT_MENTIONED_FILE = 5;
+      INTENT_CODE_SELECTION = 6;
+      INTENT_AI_EDITED_FILE = 7;
+      INTENT_VISIBLE_FILE = 8;
+      INTENT_TERMINAL_SELECTION = 9;
+    }
+    enum SummarizationStrategy {
+      SUMMARIZATION_STRATEGY_NONE_UNSPECIFIED = 0;
+      SUMMARIZATION_STRATEGY_SUMMARIZED = 1;
+      SUMMARIZATION_STRATEGY_EMBEDDED = 2;
+    }
+  }
+  message ToolResult {
+    string tool_call_id = 1;
+    string tool_name = 2;
+    uint32 tool_index = 3;
+    string args = 4;
+    string raw_args = 5;
+    repeated ConversationMessage.CodeChunk attached_code_chunks = 6;
+    optional string content = 7;
+    ClientSideToolV2Result result = 8;
+    optional ToolResultError error = 9;
+    repeated ImageProto images = 10;
+    optional ClientSideToolV2Call tool_call = 11;
+    optional string model_call_id = 12;
+    optional uint64 started_at_ms = 13;
+    optional uint64 completed_at_ms = 14;
+  }
+  message MultiRangeCodeChunk {
+    repeated ConversationMessage.MultiRangeCodeChunk.RangeWithPriority ranges = 1;
+    string content = 2;
+    string relative_workspace_path = 3;
+    message RangeWithPriority {
+      SimplestRange range = 1;
+      double priority = 2;
+    }
+  }
+  message NotepadContext {
+    string name = 1;
+    string text = 2;
+    repeated ConversationMessage.CodeChunk attached_code_chunks = 3;
+    repeated string attached_folders = 4;
+    repeated Commit commits = 5;
+    repeated PullRequest pull_requests = 6;
+    repeated GitDiff git_diffs = 7;
+    repeated ImageProto images = 8;
+  }
+  message ComposerContext {
+    string name = 1;
+    ConversationSummary conversation_summary = 2;
+  }
+  message EditLocation {
+    string relative_workspace_path = 1;
+    SimplestRange range = 3;
+    SimplestRange initial_range = 4;
+    string context_lines = 5;
+    string text = 6;
+    SimplestRange text_range = 7;
+  }
+  message EditTrailContext {
+    string unique_id = 1;
+    repeated ConversationMessage.EditLocation edit_trail_sorted = 2;
+  }
+  message ApproximateLintError {
+    string message = 1;
+    string value = 2;
+    int32 start_line = 3;
+    int32 end_line = 4;
+    int32 start_column = 5;
+    int32 end_column = 6;
+  }
+  message Lints {
+    GetLintsForChangeResponse lints = 1;
+    string chat_codeblock_model_value = 2;
+  }
+  message RecentLocation {
+    string relative_workspace_path = 1;
+    int32 line_number = 2;
+  }
+  message RenderedDiff {
+    int32 start_line_number = 1;
+    int32 end_line_number_exclusive = 2;
+    repeated string before_context_lines = 3;
+    repeated string removed_lines = 4;
+    repeated string added_lines = 5;
+    repeated string after_context_lines = 6;
+  }
+  message HumanChange {
+    string relative_workspace_path = 1;
+    repeated ConversationMessage.RenderedDiff rendered_diffs = 2;
+  }
+  message Thinking {
+    string text = 1;
+    string signature = 2;
+    string redacted_thinking = 3;
+    bool is_last_thinking_chunk = 4;
+  }
+  message DiffSinceLastApply {
+    string relative_workspace_path = 1;
+    optional EditFileResult.FileDiff diff = 2;
+    optional bool is_accepted = 4;
+    optional bool is_rejected = 5;
+    optional int32 last_apply_chained_from_n_human_messages_ago = 6;
+  }
+  message DeletedFile {
+    string relative_workspace_path = 1;
+  }
+  message KnowledgeItem {
+    string title = 1;
+    string knowledge = 2;
+    string knowledge_id = 3;
+    bool is_generated = 4;
+  }
+  message DocumentationSelection {
+    string doc_id = 1;
+    string name = 2;
+  }
+  message IdeEditorsState {
+    bool is_pill_displayed = 1;
+    repeated string visible_file_paths = 2;
+    repeated string recently_viewed_file_paths = 3;
+    repeated ConversationMessage.IdeEditorsState.File visible_files = 4;
+    repeated ConversationMessage.IdeEditorsState.File recently_viewed_files = 5;
+    message File {
+      string relative_path = 1;
+      optional bool is_currently_focused = 2;
+      optional int32 current_line_number = 3;
+      optional string current_line_text = 4;
+      optional int32 line_count = 5;
+      optional string absolute_path = 6;
+    }
+  }
+  message PlanUpdate {
+    string current_plan = 1;
+    bool is_first_time_seen = 2;
+  }
+  message SimulatedMessageMetadata {
+    optional string title = 1;
+    optional string task_id = 2;
+    optional string fsd_finding_action = 3;
+    optional string url = 4;
+    optional agent.v1.SubscriptionSource subscription_source = 5;
+    optional agent.v1.SubscriptionEventDisplay subscription_event_display = 6;
+  }
+  message McpDescriptor {
+    string folder_path = 1;
+    optional string server_name = 2;
+    repeated ConversationMessage.McpDescriptor.Tool tools = 3;
+    optional string server_use_instructions = 4;
+    message Tool {
+      string tool_name = 1;
+      optional string description = 2;
+    }
+  }
+  enum MessageType {
+    MESSAGE_TYPE_UNSPECIFIED = 0;
+    MESSAGE_TYPE_HUMAN = 1;
+    MESSAGE_TYPE_AI = 2;
+  }
+  enum ThinkingStyle {
+    THINKING_STYLE_UNSPECIFIED = 0;
+    THINKING_STYLE_DEFAULT = 1;
+    THINKING_STYLE_CODEX = 2;
+    THINKING_STYLE_GPT5 = 3;
+  }
 }
 
 message CurrentFileLocationData {
@@ -6369,6 +7681,12 @@ message InterpreterResult {
 message SimpleFileDiff {
   string relative_workspace_path = 1;
   repeated SimpleFileDiff.Chunk chunks = 3;
+  message Chunk {
+    repeated string old_lines = 1;
+    repeated string new_lines = 2;
+    Unresolved__5 old_range = 3;
+    Unresolved__5 new_range = 4;
+  }
 }
 
 message Commit {
@@ -6396,6 +7714,12 @@ message UserResponseToSuggestedCodeBlock {
   UserResponseToSuggestedCodeBlock.UserResponseType user_response_type = 1;
   string file_path = 2;
   optional FileDiff user_modifications_to_suggested_code_blocks = 3;
+  enum UserResponseType {
+    USER_RESPONSE_TYPE_UNSPECIFIED = 0;
+    USER_RESPONSE_TYPE_ACCEPT = 1;
+    USER_RESPONSE_TYPE_REJECT = 2;
+    USER_RESPONSE_TYPE_MODIFY = 3;
+  }
 }
 
 message ContextRerankingCandidateFile {
@@ -6407,6 +7731,20 @@ message ComposerFileDiff {
   repeated ComposerFileDiff.ChunkDiff chunks = 1;
   ComposerFileDiff.Editor editor = 2;
   bool hit_timeout = 3;
+  message ChunkDiff {
+    string diff_string = 1;
+    int32 old_start = 2;
+    int32 new_start = 3;
+    int32 old_lines = 4;
+    int32 new_lines = 5;
+    int32 lines_removed = 6;
+    int32 lines_added = 7;
+  }
+  enum Editor {
+    EDITOR_UNSPECIFIED = 0;
+    EDITOR_AI = 1;
+    EDITOR_HUMAN = 2;
+  }
 }
 
 message DiffHistoryData {
@@ -6441,6 +7779,17 @@ message CodeChunkContextInclusionInfoV2 {
   optional string pill_sub_codicon_name = 8;
   optional bool pill_is_dashed = 9;
   CodeChunkContextInclusionInfoV2.InclusionType inclusion_type = 10;
+  enum Intent {
+    INTENT_UNSPECIFIED = 0;
+    INTENT_FILE = 1;
+    INTENT_SELECTION = 2;
+  }
+  enum InclusionType {
+    INCLUSION_TYPE_UNSPECIFIED = 0;
+    INCLUSION_TYPE_FULL = 1;
+    INCLUSION_TYPE_OUTLINE = 2;
+    INCLUSION_TYPE_FILENAME = 3;
+  }
 }
 
 message GetPromptDryRunResponse {
@@ -6453,6 +7802,10 @@ message GetPromptDryRunResponse {
   float bar_fraction = 7;
   bool did_bar_overflow = 8;
   bool should_show_new_chat_hint = 9;
+  message TokenCount {
+    bool is_over_token_limit = 1;
+    optional int32 num_tokens = 2;
+  }
 }
 
 message CodeChunkContextInclusionInfo {
@@ -6467,6 +7820,21 @@ message CodeChunkContextInclusionInfo {
   bool chunk_is_from_last_user_message = 9;
   bool is_compressed = 10;
   Unresolved__Os full_file_tokens_count = 11;
+  message TokenCount {
+    bool is_too_large_to_count = 1;
+    int32 num_tokens = 2;
+  }
+  enum InclusionType {
+    INCLUSION_TYPE_UNSPECIFIED = 0;
+    INCLUSION_TYPE_FULL = 1;
+    INCLUSION_TYPE_OUTLINE = 2;
+    INCLUSION_TYPE_FILENAME = 3;
+  }
+  enum Intent {
+    INTENT_UNSPECIFIED = 0;
+    INTENT_FILE = 1;
+    INTENT_SELECTION = 2;
+  }
 }
 
 message SubagentReturnCall {
@@ -6497,6 +7865,11 @@ message DeepSearchSubagentParams {
 
 message DeepSearchSubagentReturnValue {
   repeated DeepSearchSubagentReturnValue.ContextItem context_items = 1;
+  message ContextItem {
+    string file = 1;
+    optional Unresolved__5 line_range = 2;
+    string explanation = 3;
+  }
 }
 
 message FixLintsSubagentParams {
@@ -6605,6 +7978,10 @@ message StreamBugBotRequest {
   optional int32 unified_context_lines = 12;
   repeated CodeBlock context_files = 13;
   optional bool deep_review = 14;
+  message Range {
+    int32 start_line = 1;
+    int32 end_line_inclusive = 2;
+  }
 }
 
 message LogDeeplinkEventRequest {
@@ -6872,6 +8249,12 @@ message StreamCppRequest {
   optional bool supports_cpt = 27;
   optional bool supports_crlf_cpt = 28;
   repeated CodeResult code_results = 29;
+  enum ControlToken {
+    CONTROL_TOKEN_UNSPECIFIED = 0;
+    CONTROL_TOKEN_QUIET = 1;
+    CONTROL_TOKEN_LOUD = 2;
+    CONTROL_TOKEN_OP = 3;
+  }
 }
 
 message StreamCppResponse {
@@ -6892,6 +8275,16 @@ message StreamCppResponse {
   optional bool begin_edit = 15;
   optional bool should_remove_leading_eol = 16;
   optional string binding_id = 17;
+  message CursorPredictionTarget {
+    string relative_path = 1;
+    int32 line_number_one_indexed = 2;
+    string expected_content = 3;
+    bool should_retrigger_cpp = 4;
+  }
+  message ModelInfo {
+    bool is_fused_cursor_prediction_model = 1;
+    bool is_multidiff_model = 2;
+  }
 }
 
 message CppConfigRequest {
@@ -6927,6 +8320,33 @@ message CppConfigResponse {
   bool allows_tab_chunks = 25;
   optional int32 tab_context_refresh_debounce_ms = 26;
   optional int32 tab_context_refresh_editor_change_debounce_ms = 27;
+  message ImportPredictionConfig {
+    bool is_disabled_by_backend = 1;
+    bool should_turn_on_automatically = 2;
+    bool python_enabled = 3;
+  }
+  message MergeBehavior {
+    string type = 1;
+    optional int32 limit = 2;
+    optional int32 radius = 3;
+  }
+  message RecentlyRejectedEditThresholds {
+    int32 hard_reject_threshold = 1;
+    int32 soft_reject_threshold = 2;
+  }
+  message SuggestionHintConfig {
+    repeated string important_lsp_extensions = 1;
+    repeated string enabled_for_path_extensions = 2;
+  }
+  enum Heuristic {
+    HEURISTIC_UNSPECIFIED = 0;
+    HEURISTIC_LOTS_OF_ADDED_TEXT = 1;
+    HEURISTIC_DUPLICATING_LINE_AFTER_SUGGESTION = 2;
+    HEURISTIC_DUPLICATING_MULTIPLE_LINES_AFTER_SUGGESTION = 3;
+    HEURISTIC_REVERTING_USER_CHANGE = 4;
+    HEURISTIC_OUTPUT_EXTENDS_BEYOND_RANGE_AND_IS_REPEATED = 5;
+    HEURISTIC_SUGGESTING_RECENTLY_REJECTED_EDIT = 6;
+  }
 }
 
 message SuggestedEdit {
@@ -6946,6 +8366,14 @@ message GetCppEditClassificationResponse {
   GetCppEditClassificationResponse.ScoredEdit noop_edit = 2;
   optional bool should_noop = 3;
   GetCppEditClassificationResponse.ScoredEdit generation_edit = 4;
+  message LogProbs {
+    repeated string tokens = 1;
+    repeated double token_logprobs = 2;
+  }
+  message ScoredEdit {
+    SuggestedEdit edit = 1;
+    GetCppEditClassificationResponse.LogProbs log_probs = 2;
+  }
 }
 
 message AdditionalFile {
@@ -7053,6 +8481,23 @@ message MarkCppRequest {
   string model_openai_name = 11;
   double current_performance_now_time = 12;
   double session_performance_origin_time = 13;
+  message RangeTransformation {
+    int32 start_line_number = 1;
+    int32 end_line_number = 2;
+  }
+  enum CppResponseTypes {
+    CPP_RESPONSE_TYPES_UNSPECIFIED = 0;
+    CPP_RESPONSE_TYPES_GOOD = 1;
+    CPP_RESPONSE_TYPES_BAD = 2;
+    CPP_RESPONSE_TYPES_BAD_CONTEXT = 3;
+    CPP_RESPONSE_TYPES_BAD_REASONING = 4;
+    CPP_RESPONSE_TYPES_BAD_STUPID_MISTAKE = 5;
+    CPP_RESPONSE_TYPES_BAD_FORMATTING = 6;
+    CPP_RESPONSE_TYPES_BAD_RANGE = 7;
+    CPP_RESPONSE_TYPES_GOOD_PREDICTION = 8;
+    CPP_RESPONSE_TYPES_BAD_FALSE_POSITIVE_TRIGGER = 9;
+    CPP_RESPONSE_TYPES_BAD_FALSE_NEGATIVE_TRIGGER = 10;
+  }
 }
 
 message CppParameterHint {
@@ -7167,6 +8612,13 @@ message CursorPrediction {
   int32 line_number = 3;
   CursorPrediction.CursorPredictionSource source = 4;
   optional string binding_id = 5;
+  enum CursorPredictionSource {
+    CURSOR_PREDICTION_SOURCE_UNSPECIFIED = 0;
+    CURSOR_PREDICTION_SOURCE_ALWAYS_ON = 1;
+    CURSOR_PREDICTION_SOURCE_ACCEPT = 2;
+    CURSOR_PREDICTION_SOURCE_UNDO = 3;
+    CURSOR_PREDICTION_SOURCE_EDITOR_CHANGE = 4;
+  }
 }
 
 message SuggestCursorPredictionEvent {
@@ -7208,6 +8660,12 @@ message CppStoppedTrackingModelEvent {
   string model_uuid = 1;
   string relative_path = 2;
   CppStoppedTrackingModelEvent.StoppedTrackingModelReason reason = 3;
+  enum StoppedTrackingModelReason {
+    STOPPED_TRACKING_MODEL_REASON_UNSPECIFIED = 0;
+    STOPPED_TRACKING_MODEL_REASON_FILE_TOO_BIG = 1;
+    STOPPED_TRACKING_MODEL_REASON_FILE_DISPOSED = 2;
+    STOPPED_TRACKING_MODEL_REASON_CHANGE_TOO_BIG = 3;
+  }
 }
 
 message CppLinterErrorEvent {
@@ -7244,6 +8702,10 @@ message CppQuickAction {
   repeated CppQuickAction.Edit edits = 2;
   optional bool is_preferred = 3;
   CppQuickActionCommand command = 4;
+  message Edit {
+    string text = 1;
+    IRange range = 2;
+  }
 }
 
 message CppChangeQuickActionEvent {
@@ -7275,6 +8737,45 @@ message CmdKEvent {
     CmdKEvent.AcceptPartialDiff accept_partial_diff = 9;
     CmdKEvent.AfterReject after_reject = 10;
   }
+  message SubmitPrompt {
+    IRange original_range = 1;
+    string original_text = 2;
+    string prompt = 3;
+  }
+  message EndOfGeneration {
+    optional string actor_request_id = 1;
+    optional bool silent = 2;
+  }
+  message InterruptGeneration {
+    optional string actor_request_id = 1;
+    optional bool silent = 2;
+  }
+  message AcceptDiffs {
+    optional string actor_request_id = 1;
+    optional bool silent = 2;
+  }
+  message RejectDiffs {
+    optional string actor_request_id = 1;
+    optional bool silent = 2;
+  }
+  message AcceptPartialDiff {
+    IRange green_range = 1;
+    repeated string green_lines = 2;
+    repeated string red_lines = 3;
+  }
+  message RejectPartialDiff {
+    IRange green_range = 1;
+    repeated string green_lines = 2;
+    repeated string red_lines = 3;
+  }
+  message AfterReject {
+    string request_id = 1;
+    oneof event_type {
+      ChatEvent.SubmitPrompt submit_prompt = 2;
+      ChatEvent.EndOfAnyGeneration end_of_any_generation = 3;
+      ChatEvent.EndOfUninterruptedGeneration end_of_uninterrupted_generation = 4;
+    }
+  }
 }
 
 message ChatEvent {
@@ -7283,6 +8784,35 @@ message ChatEvent {
     ChatEvent.SubmitPrompt submit_prompt = 2;
     ChatEvent.EndOfAnyGeneration end_of_any_generation = 3;
     ChatEvent.EndOfUninterruptedGeneration end_of_uninterrupted_generation = 4;
+  }
+  message SubmitPrompt {
+    string prompt = 1;
+  }
+  message EndOfAnyGeneration {
+    string request_id = 1;
+    PointInTimeModel point_in_time_model = 2;
+    oneof event_type {
+      BugBotLinterEvent.LintGenerated lint_generated = 3;
+      BugBotLinterEvent.LintDismissed lint_dismissed = 4;
+      BugBotLinterEvent.UserFeedback user_feedback = 5;
+      BugBotLinterEvent.ViewedReport viewed_report = 6;
+      BugBotLinterEvent.UnviewedReport unviewed_report = 7;
+      BugBotLinterEvent.Started started = 8;
+      BugBotLinterEvent.NotShownBecauseHeuristic not_shown_because_heuristic = 9;
+    }
+  }
+  message EndOfUninterruptedGeneration {
+    string request_id = 1;
+    PointInTimeModel point_in_time_model = 2;
+    oneof event_type {
+      BugBotLinterEvent.LintGenerated lint_generated = 3;
+      BugBotLinterEvent.LintDismissed lint_dismissed = 4;
+      BugBotLinterEvent.UserFeedback user_feedback = 5;
+      BugBotLinterEvent.ViewedReport viewed_report = 6;
+      BugBotLinterEvent.UnviewedReport unviewed_report = 7;
+      BugBotLinterEvent.Started started = 8;
+      BugBotLinterEvent.NotShownBecauseHeuristic not_shown_because_heuristic = 9;
+    }
   }
 }
 
@@ -7297,6 +8827,33 @@ message BugBotLinterEvent {
     BugBotLinterEvent.UnviewedReport unviewed_report = 7;
     BugBotLinterEvent.Started started = 8;
     BugBotLinterEvent.NotShownBecauseHeuristic not_shown_because_heuristic = 9;
+  }
+  message Started {
+    BugReport bug_report = 1;
+  }
+  message LintGenerated {
+    BugReport bug_report = 1;
+  }
+  message LintDismissed {
+    string bug_report_id = 1;
+  }
+  message UserFeedback {
+    string bug_report_id = 1;
+    string feedback = 2;
+  }
+  message ViewedReport {
+    string bug_report_id = 1;
+  }
+  message UnviewedReport {
+    string bug_report_id = 1;
+  }
+  message NotShownBecauseHeuristic {
+    Unresolved__ou heuristic = 1;
+    enum Heuristic {
+      HEURISTIC_UNSPECIFIED = 0;
+      HEURISTIC_LINT_OVERLAP = 1;
+      HEURISTIC_LINES_MISMATCH = 2;
+    }
   }
 }
 
@@ -7315,12 +8872,84 @@ message BugBotEvent {
     BugBotEvent.BackgroundIntervalInterrupted background_interval_interrupted = 11;
     BugBotEvent.BackgroundIntervalErrored background_interval_errored = 12;
   }
+  message Started {
+    BugReports bug_reports = 1;
+  }
+  message ReportsGenerated {
+    BugReports bug_reports = 1;
+  }
+  message PressedFixInComposer {
+    string bug_report_id = 1;
+  }
+  message PressedAddToChat {
+    string bug_report_id = 1;
+  }
+  message PressedOpenInEditor {
+    BugLocation bug_location = 1;
+    string bug_report_id = 2;
+  }
+  message ViewedReport {
+    int32 seconds_viewed = 1;
+    repeated BugBotEvent.ViewedReport.ReportView report_views = 2;
+    message ReportView {
+      string bug_report_id = 1;
+      double view_percentage = 2;
+      double text_percentage = 3;
+    }
+  }
+  message UserFeedback {
+    string bug_report_id = 1;
+    string feedback = 2;
+  }
+  message BackgroundIntervalStarted {
+    bool success = 1;
+  }
+  message BackgroundIntervalEnded {
+    bool success = 1;
+  }
+  message BackgroundIntervalInterrupted {
+    BugBotEvent.BackgroundIntervalInterruptedReason reason = 1;
+  }
+  message BackgroundIntervalErrored {
+    string error_message = 1;
+  }
+  enum BackgroundIntervalInterruptedReason {
+    BACKGROUND_INTERVAL_INTERRUPTED_REASON_UNSPECIFIED = 0;
+    BACKGROUND_INTERVAL_INTERRUPTED_REASON_DISABLED = 1;
+    BACKGROUND_INTERVAL_INTERRUPTED_REASON_TOO_RECENT = 2;
+    BACKGROUND_INTERVAL_INTERRUPTED_REASON_UNVIEWED_BUG_REPORTS = 3;
+    BACKGROUND_INTERVAL_INTERRUPTED_REASON_NOT_IN_GIT_REPO = 4;
+    BACKGROUND_INTERVAL_INTERRUPTED_REASON_DEFAULT_BRANCH_IS_NOT_CURRENT_BRANCH = 5;
+    BACKGROUND_INTERVAL_INTERRUPTED_REASON_NO_GIT_USER = 6;
+    BACKGROUND_INTERVAL_INTERRUPTED_REASON_NO_LAST_COMMIT = 7;
+    BACKGROUND_INTERVAL_INTERRUPTED_REASON_LAST_COMMIT_NOT_MADE_BY_USER = 8;
+    BACKGROUND_INTERVAL_INTERRUPTED_REASON_LAST_COMMIT_TOO_OLD = 9;
+    BACKGROUND_INTERVAL_INTERRUPTED_REASON_DIFF_TOO_LONG = 10;
+    BACKGROUND_INTERVAL_INTERRUPTED_REASON_DIFF_TOO_SHORT = 11;
+    BACKGROUND_INTERVAL_INTERRUPTED_REASON_TELEMETRY_UNHEALTHY = 12;
+  }
 }
 
 message AiRequestEvent {
   AiRequestEvent.RequestType request_type = 1;
   string request_id = 2;
   AiRequestEvent.Source source = 3;
+  enum RequestType {
+    REQUEST_TYPE_UNSPECIFIED = 0;
+    REQUEST_TYPE_START = 1;
+    REQUEST_TYPE_END = 2;
+  }
+  enum Source {
+    SOURCE_UNSPECIFIED = 0;
+    SOURCE_CHAT = 1;
+    SOURCE_CMDK = 2;
+    SOURCE_APPLY = 3;
+    SOURCE_COMPOSER = 4;
+    SOURCE_TASK = 5;
+    SOURCE_CODE_INTERPRETER = 6;
+    SOURCE_INTERPRETER_EXECUTION = 7;
+    SOURCE_BUGBOT = 8;
+  }
 }
 
 message ModelOpenedEvent {
@@ -7330,6 +8959,12 @@ message ModelOpenedEvent {
 
 message BackgroundFilesEvent {
   repeated BackgroundFilesEvent.BackgroundFile files = 2;
+  message BackgroundFile {
+    string relative_workspace_path = 1;
+    string contents = 2;
+    string hash = 3;
+    string full_path = 4;
+  }
 }
 
 message ScrollEvent {
@@ -7361,6 +8996,11 @@ message AnythingQuickAccessItem {
     AnythingQuickAccessItem.Resource resource = 1;
     string separator = 2;
     string section = 3;
+  }
+  message Resource {
+    optional PointInTimeModel model = 1;
+    optional IRange range = 2;
+    optional string uri = 3;
   }
 }
 
@@ -7462,6 +9102,12 @@ message EditHistoryAppendChangesRequest {
   EditHistoryAppendChangesRequest.PrivacyModeStatus privacy_mode_status = 12;
   float time_origin = 13;
   string uri = 14;
+  enum PrivacyModeStatus {
+    PRIVACY_MODE_STATUS_UNSPECIFIED = 0;
+    PRIVACY_MODE_STATUS_PRIVACY_ENABLED = 1;
+    PRIVACY_MODE_STATUS_IMPLICIT_NO_PRIVACY = 2;
+    PRIVACY_MODE_STATUS_EXPLICIT_NO_PRIVACY = 3;
+  }
 }
 
 message EditHistoryAppendChangesResponse {
@@ -7484,6 +9130,15 @@ message BlockDiffPatch {
   string relative_path = 4;
   int32 start_from_change_index = 5;
   string model_uuid = 7;
+  message Change {
+    string text = 1;
+    IRange range = 2;
+  }
+  message ModelWindow {
+    repeated string lines = 1;
+    int32 start_line_number = 2;
+    int32 end_line_number = 3;
+  }
 }
 
 message CppHistoryAppendEvent {
@@ -7524,6 +9179,20 @@ message TerminalEvent {
     TerminalEvent.CommandStart command_start = 4;
     TerminalEvent.CommandFinish command_finish = 5;
   }
+  message Create {
+    bool is_remote = 1;
+  }
+  message Exit {
+    optional int32 exit_code = 1;
+  }
+  message CommandStart {
+    PointInTimeModel point_in_time_model = 1;
+    optional string cwd = 2;
+  }
+  message CommandFinish {
+    PointInTimeModel point_in_time_model = 1;
+    optional int32 exit_code = 2;
+  }
 }
 
 message BrowserEvent {
@@ -7533,6 +9202,32 @@ message BrowserEvent {
     BrowserEvent.TabClosed tab_closed = 3;
     BrowserEvent.Navigation navigation = 4;
     BrowserEvent.ToolAction tool_action = 5;
+  }
+  message TabCreated {
+    string url = 1;
+    optional string title = 2;
+  }
+  message TabClosed {
+    string url = 1;
+    optional string title = 2;
+  }
+  message Navigation {
+    string url = 1;
+    optional string title = 2;
+  }
+  message ToolAction {
+    string tool_name = 1;
+    string args_json = 2;
+    optional bool success = 3;
+    optional string post_snapshot_yaml = 4;
+    optional string post_url = 5;
+    optional string post_title = 6;
+    BrowserEvent.ToolAction.Source source = 7;
+    enum Source {
+      SOURCE_UNSPECIFIED = 0;
+      SOURCE_MCP_TOOL = 1;
+      SOURCE_MANUAL_USER = 2;
+    }
   }
 }
 
@@ -7547,6 +9242,18 @@ message RepoEvent {
   string repo_owner = 1;
   string repo_name = 2;
   RepoEvent.Type event_type = 3;
+  enum Type {
+    TYPE_UNSPECIFIED = 0;
+    TYPE_SYNCED = 1;
+    TYPE_LOADING = 2;
+    TYPE_INDEXING_SETUP = 3;
+    TYPE_INDEXING_INIT_FROM_SIMILAR_CODEBASE = 4;
+    TYPE_PAUSED = 5;
+    TYPE_INDEXING = 6;
+    TYPE_ERROR = 7;
+    TYPE_NOT_AUTO_INDEXING = 8;
+    TYPE_NOT_INDEXED = 9;
+  }
 }
 
 message GitEvent {
@@ -7560,6 +9267,18 @@ message GitEvent {
   optional string commit_hash = 8;
   optional string previous_commit_hash = 9;
   optional string remote_url = 10;
+  enum OperationType {
+    OPERATION_TYPE_UNSPECIFIED = 0;
+    OPERATION_TYPE_COMMIT = 1;
+    OPERATION_TYPE_CHECKOUT = 2;
+    OPERATION_TYPE_PULL = 3;
+    OPERATION_TYPE_FETCH = 4;
+    OPERATION_TYPE_MERGE = 5;
+    OPERATION_TYPE_REBASE = 6;
+    OPERATION_TYPE_STASH = 7;
+    OPERATION_TYPE_BRANCH = 8;
+    OPERATION_TYPE_TAG = 9;
+  }
 }
 
 message WorktreeEvent {
@@ -7572,6 +9291,20 @@ message WorktreeEvent {
   repeated WorktreeEvent.BackgroundAgentComposerMapping background_agent_composer_mappings = 7;
   optional string applied_composer_id = 8;
   optional string viewed_composer_id = 9;
+  message WorktreeComposerMapping {
+    string worktree_path = 1;
+    string composer_id = 2;
+  }
+  message BackgroundAgentComposerMapping {
+    string bc_id = 1;
+    string composer_id = 2;
+  }
+  enum EventType {
+    EVENT_TYPE_UNSPECIFIED = 0;
+    EVENT_TYPE_APPLY_TO_MAIN = 1;
+    EVENT_TYPE_UNDO_APPLY = 2;
+    EVENT_TYPE_VIEW_SUBCOMPOSER = 3;
+  }
 }
 
 message ReviewChangesOpenedEvent {
@@ -7631,6 +9364,11 @@ message ContextItemStatus {
   float score = 3;
   float percentage_of_available_space = 4;
   ContextItemStatus.PostGenerationEvaluation post_generation_evaluation = 5;
+  enum PostGenerationEvaluation {
+    POST_GENERATION_EVALUATION_UNSPECIFIED = 0;
+    POST_GENERATION_EVALUATION_USEFUL = 1;
+    POST_GENERATION_EVALUATION_USELESS = 2;
+  }
 }
 
 message ContextItem {
@@ -7657,6 +9395,130 @@ message ContextItem {
     ContextItem.FileDiffHistory file_diff_history = 20;
     ContextItem.CmdKQueryHistoryInDiffSession cmd_k_query_history_in_diff_session = 21;
     CursorRule project_rule = 22;
+  }
+  message FileChunk {
+    string relative_workspace_path = 1;
+    string chunk_contents = 2;
+    int32 start_line_number = 3;
+  }
+  message SparseFileChunk {
+    string relative_workspace_path = 1;
+    repeated ContextItem.SparseFileChunk.Line lines = 2;
+    int32 total_number_of_lines_in_file = 3;
+    optional int32 cell_number = 4;
+    message Line {
+      string line = 1;
+      int32 line_number = 2;
+    }
+  }
+  message OutlineChunk {
+    string relative_workspace_path = 1;
+    string contents = 2;
+    Unresolved__5 full_range = 3;
+  }
+  message FileDiffHistory {
+    CppFileDiffHistory cpp_file_diff_history = 1;
+    int32 how_many_diffs_ago = 2;
+    bool is_very_recent = 3;
+  }
+  message CmdKImmediateContext {
+    string relative_workspace_path = 1;
+    repeated ContextItem.CmdKImmediateContext.Line lines = 2;
+    int32 total_number_of_lines_in_file = 3;
+    optional int32 cell_number = 4;
+    message Line {
+      string line = 1;
+      int32 line_number = 2;
+    }
+  }
+  message CmdKQuery {
+    string query = 1;
+  }
+  message TerminalCmdKQuery {
+    string query = 1;
+  }
+  message TerminalCmdKQueryHistory {
+    ContextItem.TerminalCmdKQuery query = 1;
+    ContextItem.TerminalCmdKQueryHistory query_history = 2;
+    repeated string context_item_hashes = 5;
+    string suggested_command = 6;
+  }
+  message CmdKQueryHistory {
+    ContextItem.CmdKQuery query = 1;
+    ContextItem.CmdKImmediateContext immediate_context = 2;
+    Unresolved__3s selection = 3;
+    ContextItem.CmdKQueryHistory query_history = 4;
+    repeated string context_item_hashes = 5;
+    optional int64 timestamp = 6;
+    optional double timestamp_double = 7;
+  }
+  message CmdKQueryHistoryInDiffSession {
+    repeated ContextItem.CmdKQueryHistoryInDiffSession.PastCmdKQueryInDiffSession past_cmdk_queries = 1;
+    double curr_timestamp_double = 3;
+    message PastCmdKQueryInDiffSession {
+      ContextItem.CmdKQuery query = 1;
+      string relative_workspace_path = 2;
+      optional bool cmdk_was_accepted = 5;
+      double timestamp_double = 6;
+      optional double timestamp_for_diff_interleaving = 7;
+      optional string request_id = 8;
+    }
+  }
+  message ChatHistory {
+    string user_message = 1;
+    string assistant_response = 2;
+    ContextItem.ChatHistory chat_history = 3;
+    bool active_for_cmd_k = 4;
+    optional int64 timestamp = 5;
+    optional double timestamp_double = 6;
+  }
+  message TerminalHistory {
+    string history = 1;
+    bool active_for_cmd_k = 4;
+    string cwd_full = 5;
+    string cwd_relative_workspace_path = 6;
+    optional int64 timestamp = 7;
+    optional double timestamp_double = 8;
+  }
+  message CustomInstructions {
+    string instructions = 1;
+  }
+  message GoToDefinitionResult {
+    string relative_workspace_path = 1;
+    string line = 2;
+    int32 line_number = 3;
+    int32 column_number = 4;
+    ContextItem.FileChunk definition_chunk = 5;
+  }
+  message DocumentationChunk {
+    string doc_name = 1;
+    string page_url = 2;
+    string documentation_chunk = 3;
+    float score = 4;
+  }
+  message Lints {
+    string relative_workspace_path = 1;
+    repeated Lint lints = 2;
+    repeated ContextItem.Lints.Line context_lines = 3;
+    message Line {
+      string line = 1;
+      int32 line_number = 2;
+    }
+  }
+  message NotebookCellOutput {
+    string relative_workspace_path = 1;
+    string cell_output = 2;
+    int32 cell_number = 3;
+  }
+  message LspSubgraphChunk {
+    LspSubgraphFullContext lsp_subgraph_full_context = 1;
+  }
+  message CommitNoteChunk {
+    string note = 1;
+  }
+  message CmdKSelection {
+    repeated string lines = 1;
+    int32 start_line_number = 2;
   }
 }
 
@@ -7750,6 +9612,15 @@ message StreamCmdKRequest {
   optional StreamCmdKRequest.BranchDiff diff_to_base_branch = 14;
   optional TimingInfo timing_info = 15;
   repeated CursorRule rules = 16;
+  message BranchDiff {
+    repeated StreamCmdKRequest.BranchDiff.FileDiff file_diffs = 1;
+    repeated Commit commits = 2;
+    message FileDiff {
+      string file_name = 1;
+      string diff = 2;
+      bool too_big = 3;
+    }
+  }
 }
 
 message TimingInfo {
@@ -7792,6 +9663,15 @@ message StreamTerminalCmdKResponse {
     StreamTerminalCmdKResponse.Chat chat = 4;
     StreamTerminalCmdKResponse.StatusUpdate status_update = 5;
   }
+  message TerminalCommand {
+    string partial_command = 1;
+  }
+  message Chat {
+    string text = 1;
+  }
+  message StatusUpdate {
+    repeated string messages = 1;
+  }
 }
 
 message StreamCmdKResponse {
@@ -7801,6 +9681,28 @@ message StreamCmdKResponse {
     StreamCmdKResponse.EditEnd edit_end = 3;
     StreamCmdKResponse.Chat chat = 4;
     StreamCmdKResponse.StatusUpdate status_update = 5;
+  }
+  message EditStart {
+    int32 start_line_number = 1;
+    int32 edit_id = 2;
+    optional int32 max_end_line_number_exclusive = 3;
+    optional string file_path = 4;
+  }
+  message EditStream {
+    string text = 1;
+    int32 edit_id = 2;
+    optional string file_path = 3;
+  }
+  message EditEnd {
+    int32 end_line_number_exclusive = 1;
+    int32 edit_id = 2;
+    optional string file_path = 3;
+  }
+  message Chat {
+    string text = 1;
+  }
+  message StatusUpdate {
+    repeated string messages = 1;
   }
 }
 
@@ -7822,6 +9724,12 @@ message GetRelevantChunksResponse {
   oneof response {
     GetRelevantChunksResponse.CodeBlocks code_blocks = 1;
     GetRelevantChunksResponse.ChainOfThoughtStream chain_of_thought_stream = 2;
+  }
+  message ChainOfThoughtStream {
+    string text = 1;
+  }
+  message CodeBlocks {
+    repeated CodeBlock code_blocks = 1;
   }
 }
 
@@ -7971,12 +9879,37 @@ message ContainerTreeNode {
     ContainerTreeNode.Blob blob = 2;
     ContainerTreeNode.Symbol symbol = 3;
   }
+  message Symbol {
+    string doc_string = 1;
+    string value = 2;
+    repeated ContainerTreeNode.Reference references = 6;
+    double score = 7;
+  }
+  message Container {
+    string doc_string = 1;
+    string header = 2;
+    string trailer = 3;
+    repeated ContainerTreeNode children = 5;
+    repeated ContainerTreeNode.Reference references = 6;
+    double score = 7;
+  }
+  message Blob {
+    optional string value = 1;
+  }
+  message Reference {
+    string value = 1;
+    string relative_workspace_path = 2;
+  }
 }
 
 message ModelSelectionSnapshot {
   string model_id = 1;
   bool max_mode = 2;
   repeated ModelSelectionSnapshot.ModelParameterValue parameters = 3;
+  message ModelParameterValue {
+    string id = 1;
+    string value = 2;
+  }
 }
 
 message UsageEventDetails {
@@ -8001,6 +9934,102 @@ message UsageEventDetails {
     UsageEventDetails.ToolCallComposer tool_call_composer = 12;
     UsageEventDetails.BugBot bug_bot = 14;
     UsageEventDetails.PromptHook prompt_hook = 15;
+  }
+  message PromptHook {
+    string model_intent = 1;
+    optional TokenUsage token_usage = 2;
+    optional bool max_mode = 3;
+    optional bool is_token_based_call = 4;
+  }
+  message BugFinderTriggerV1 {
+    bool in_background_subsidized = 1;
+    int32 cost_cents = 2;
+    bool is_fast = 3;
+  }
+  message BugBot {
+    string model_intent = 1;
+    TokenUsage token_usage = 2;
+    bool is_token_based_call = 3;
+    bool max_mode = 4;
+    string billing_mode = 7;
+    oneof discount {
+      google.protobuf.Empty no_discount = 5;
+      google.protobuf.Empty free = 6;
+    }
+  }
+  message Chat {
+    string model_intent = 1;
+    optional int32 override_num_requests_counted = 2;
+    optional bool is_token_based_call = 3;
+    optional TokenUsage token_usage = 4;
+    optional bool max_mode = 5;
+  }
+  message FastApply {
+    bool is_optimistic = 1;
+    bool willing_to_pay_extra_for_speed = 2;
+  }
+  message Composer {
+    string model_intent = 1;
+    optional int32 override_num_requests_counted = 2;
+    optional bool is_headless = 3;
+    optional bool is_token_based_call = 4;
+    optional TokenUsage token_usage = 5;
+    optional bool max_mode = 6;
+  }
+  message ToolCallComposer {
+    string model_intent = 1;
+    optional int32 override_num_requests_counted = 2;
+    optional bool is_headless = 3;
+    optional bool is_token_based_call = 4;
+    optional TokenUsage token_usage = 5;
+    optional bool max_mode = 6;
+  }
+  message WarmComposer {
+    string model_intent = 1;
+    optional bool max_mode = 2;
+  }
+  message ContextChat {
+    string model_intent = 1;
+    optional int32 override_num_requests_counted = 2;
+    optional bool is_token_based_call = 3;
+    optional TokenUsage token_usage = 4;
+    optional bool max_mode = 5;
+  }
+  message CmdK {
+    string model_intent = 1;
+    optional int32 override_num_requests_counted = 2;
+    optional bool is_token_based_call = 3;
+    optional TokenUsage token_usage = 4;
+    optional bool max_mode = 5;
+  }
+  message TerminalCmdK {
+    string model_intent = 1;
+    optional int32 override_num_requests_counted = 2;
+    optional bool is_token_based_call = 3;
+    optional TokenUsage token_usage = 4;
+    optional bool max_mode = 5;
+  }
+  message AiReviewAcceptedComment {
+    string model_intent = 1;
+    optional int32 override_num_requests_counted = 2;
+    optional bool is_token_based_call = 3;
+    optional TokenUsage token_usage = 4;
+    optional bool max_mode = 5;
+  }
+  message InterpreterChat {
+    string model_intent = 1;
+    optional int32 override_num_requests_counted = 2;
+    optional bool is_token_based_call = 3;
+    optional TokenUsage token_usage = 4;
+    optional bool max_mode = 5;
+  }
+  message SlashEdit {
+    string model_intent = 1;
+    optional bool max_mode = 2;
+  }
+  message AgentSdkManagedProduct {
+    string managed_type = 1;
+    string application_slug = 2;
   }
 }
 
@@ -8082,6 +10111,13 @@ message InterfaceAgentStatus {
   string run_tests_message = 14;
   InterfaceAgentStatus.Status write_test_plan = 15;
   string write_test_plan_message = 16;
+  enum Status {
+    STATUS_UNSPECIFIED = 0;
+    STATUS_WAITING = 1;
+    STATUS_RUNNING = 2;
+    STATUS_SUCCESS = 3;
+    STATUS_FAILURE = 4;
+  }
 }
 
 message GetComposerAutocompleteRequest {
@@ -8260,6 +10296,13 @@ message BugBotStatus {
   optional float processed_cost = 7;
   optional int32 thinking_tokens = 8;
   optional float thinking_cost = 9;
+  enum Status {
+    STATUS_UNSPECIFIED = 0;
+    STATUS_IN_PROGRESS = 1;
+    STATUS_IN_PROGRESS_ITERATIONS = 2;
+    STATUS_DONE = 3;
+    STATUS_ERROR = 4;
+  }
 }
 
 message BugbotTrialNotification {
@@ -8463,6 +10506,12 @@ message HeuristicsSelection {
   HeuristicsSelection.HeuristicsSelectionType type = 1;
   int32 start_line = 2;
   int32 end_line = 3;
+  enum HeuristicsSelectionType {
+    HEURISTICS_SELECTION_TYPE_UNSPECIFIED = 0;
+    HEURISTICS_SELECTION_TYPE_GROUP = 1;
+    HEURISTICS_SELECTION_TYPE_LINE = 2;
+    HEURISTICS_SELECTION_TYPE_FOLDING = 3;
+  }
 }
 
 message CalculateAutoSelectionRequest {
@@ -8502,6 +10551,68 @@ message BackgroundCmdKRequest {
   repeated BackgroundCmdKRequest.RecentlyViewedFile recently_viewed_files = 10;
   repeated BackgroundCmdKRequest.Diff recent_diffs = 11;
   optional bool multiple_completions = 12;
+  message Lint {
+    string message = 1;
+    string severity = 2;
+    string relative_workspace_path = 3;
+    int32 start_line_number_one_indexed = 4;
+    int32 start_column_one_indexed = 5;
+    int32 end_line_number_inclusive_one_indexed = 6;
+    int32 end_column_one_indexed = 7;
+    repeated Unresolved__uu quick_fixes = 9;
+    message QuickFix {
+      string message = 1;
+      string kind = 2;
+      bool is_preferred = 3;
+      repeated BackgroundCmdKRequest.Lint.QuickFix.Edit edits = 4;
+      message Edit {
+        string relative_workspace_path = 1;
+        string text = 2;
+        int32 start_line_number_one_indexed = 3;
+        int32 start_column_one_indexed = 4;
+        int32 end_line_number_inclusive_one_indexed = 5;
+        int32 end_column_one_indexed = 6;
+      }
+    }
+  }
+  message ProposedChange {
+    string change = 1;
+    repeated BackgroundCmdKRequest.Lint linter_errors = 2;
+  }
+  message UsefulType {
+    string relative_workspace_path = 1;
+    int32 start_line = 2;
+    string text = 3;
+    optional double score = 4;
+  }
+  message RecentlyViewedFile {
+    string relative_workspace_path = 1;
+    string contents = 2;
+    repeated BackgroundCmdKRequest.RecentlyViewedFile.VisibleRange visible_ranges = 3;
+    message VisibleRange {
+      int32 start_line_number_inclusive = 1;
+      int32 end_line_number_exclusive = 2;
+      optional int32 viewed_at = 3;
+      optional int32 global_order_descending = 4;
+    }
+  }
+  message Diff {
+    string relative_workspace_path = 1;
+    string diff = 2;
+  }
+  enum Type {
+    TYPE_UNSPECIFIED = 0;
+    TYPE_REFLECT = 1;
+    TYPE_LOOP_ON_LINTS = 2;
+    TYPE_CHAT_AND_APPLY = 3;
+    TYPE_COALESCE_GENERATIONS = 4;
+    TYPE_CODEBASE_CHUNKS = 5;
+    TYPE_SPEC_AND_APPLY = 6;
+    TYPE_ASK_CODEBASE = 7;
+    TYPE_FINETUNED_INSTRUCTIONS = 8;
+    TYPE_USEFUL_TYPES = 9;
+    TYPE_CHAT_AND_APPLY_UNDERSPECIFIED = 10;
+  }
 }
 
 message BackgroundCmdKResponse {
@@ -8518,6 +10629,47 @@ message BackgroundCmdKEvalRequest {
   repeated BackgroundCmdKEvalRequest.ProposedChange proposed_change_history = 7;
   repeated CommitNote commit_notes = 8;
   repeated CodeBlock related_code_blocks = 9;
+  message Lint {
+    string message = 1;
+    string severity = 2;
+    string relative_workspace_path = 3;
+    int32 start_line_number_one_indexed = 4;
+    int32 start_column_one_indexed = 5;
+    int32 end_line_number_inclusive_one_indexed = 6;
+    int32 end_column_one_indexed = 7;
+    repeated BackgroundCmdKEvalRequest.Lint.QuickFix quick_fixes = 9;
+    message QuickFix {
+      string message = 1;
+      string kind = 2;
+      bool is_preferred = 3;
+      repeated BackgroundCmdKEvalRequest.Lint.QuickFix.Edit edits = 4;
+      message Edit {
+        string relative_workspace_path = 1;
+        string text = 2;
+        int32 start_line_number_one_indexed = 3;
+        int32 start_column_one_indexed = 4;
+        int32 end_line_number_inclusive_one_indexed = 5;
+        int32 end_column_one_indexed = 6;
+      }
+    }
+  }
+  message ProposedChange {
+    string change = 1;
+    repeated BackgroundCmdKEvalRequest.Lint linter_errors = 2;
+  }
+  enum Experiment {
+    EXPERIMENT_UNSPECIFIED = 0;
+    EXPERIMENT_REFLECT = 1;
+    EXPERIMENT_CMD_K_ORIGINAL_RADIUS = 2;
+    EXPERIMENT_LOOP_ON_LINTS = 3;
+    EXPERIMENT_CHAT_AND_APPLY = 4;
+    EXPERIMENT_COMMIT_NOTES = 5;
+    EXPERIMENT_COALESCE_GENERATIONS = 6;
+    EXPERIMENT_REWORD_INSTRUCTIONS = 7;
+    EXPERIMENT_CODEBASE_CHUNKS = 8;
+    EXPERIMENT_SPEC_AND_APPLY = 9;
+    EXPERIMENT_ASK_CODEBASE = 10;
+  }
 }
 
 message BackgroundCmdKEvalResponse {
@@ -8599,6 +10751,14 @@ message StreamNextCursorPredictionRequest {
   optional string workspace_id = 18;
   repeated FilesyncUpdateWithModelVersion file_sync_updates = 19;
   repeated StreamNextCursorPredictionRequest.FileVisibleRange file_visible_ranges = 20;
+  message VisibleRange {
+    int32 start_line_number_inclusive = 1;
+    int32 end_line_number_exclusive = 2;
+  }
+  message FileVisibleRange {
+    string filename = 1;
+    repeated StreamNextCursorPredictionRequest.VisibleRange visible_ranges = 2;
+  }
 }
 
 message StreamNextCursorPredictionResponse {
@@ -8643,6 +10803,18 @@ message ReportGenerationFeedbackRequest {
   optional bool never_ask_again = 9;
   optional bool did_popup = 10;
   ReportGenerationFeedbackRequest.Source source = 11;
+  enum FeedbackType {
+    FEEDBACK_TYPE_UNSPECIFIED = 0;
+    FEEDBACK_TYPE_THUMBS_UP = 1;
+    FEEDBACK_TYPE_THUMBS_DOWN = 2;
+    FEEDBACK_TYPE_NEUTRAL = 3;
+    FEEDBACK_TYPE_STARS = 4;
+  }
+  enum Source {
+    SOURCE_UNSPECIFIED = 0;
+    SOURCE_INLINE = 1;
+    SOURCE_VIBEOMETER = 2;
+  }
 }
 
 message ReportGenerationFeedbackResponse {
@@ -8663,6 +10835,23 @@ message ReportAgentFeedbackRequest {
   optional string canonical_model_name = 5;
   optional ReportAgentFeedbackRequest.Source source = 6;
   optional ReportAgentFeedbackRequest.Variant variant = 7;
+  enum Sentiment {
+    SENTIMENT_UNSPECIFIED = 0;
+    SENTIMENT_UP = 1;
+    SENTIMENT_DOWN = 2;
+    SENTIMENT_RETRACTED = 3;
+  }
+  enum Source {
+    SOURCE_UNSPECIFIED = 0;
+    SOURCE_IDE = 1;
+    SOURCE_GLASS = 2;
+    SOURCE_SAND = 3;
+  }
+  enum Variant {
+    VARIANT_UNSPECIFIED = 0;
+    VARIANT_PROMINENT = 1;
+    VARIANT_INLINE = 2;
+  }
 }
 
 message ReportAgentFeedbackResponse {
@@ -8752,6 +10941,10 @@ message CheckFeaturesStatusRequest {
 
 message CheckFeaturesStatusResponse {
   repeated CheckFeaturesStatusResponse.FeatureStatus feature_statuses = 1;
+  message FeatureStatus {
+    string feature_name = 1;
+    bool enabled = 2;
+  }
 }
 
 message GetEffectiveTokenLimitRequest {
@@ -8780,6 +10973,10 @@ message CheckNumberConfigsRequest {
 
 message CheckNumberConfigsResponse {
   repeated CheckNumberConfigsResponse.Config configs = 1;
+  message Config {
+    string config_name = 1;
+    int32 value = 2;
+  }
 }
 
 message IntentPredictionRequest {
@@ -8794,6 +10991,17 @@ message IntentPredictionResponse {
   IntentPredictionResponse.ChosenLinterDiagnostics chosen_linter_diagnostics = 3;
   bool use_global_context = 4;
   bool use_with_folder_context = 5;
+  message ChosenDocumentation {
+    repeated int32 doc_indices = 1;
+    repeated string doc_identifiers = 2;
+    repeated string doc_names = 3;
+  }
+  message ChosenFileContents {
+    repeated int32 diagnostic_indices = 1;
+  }
+  message ChosenLinterDiagnostics {
+    repeated int32 diagnostic_indices = 1;
+  }
 }
 
 message ContextOptions {
@@ -8801,6 +11009,37 @@ message ContextOptions {
   ContextOptions.CurrentFileContents current_file_contents = 2;
   ContextOptions.LinterDiagnostics linter_diagnostics = 3;
   ContextOptions.GlobalContext global_context = 4;
+  message AllDocumentation {
+    repeated ContextOptions.AllDocumentation.Documentation available_docs = 1;
+    message Documentation {
+      string name = 1;
+      string url = 2;
+      string identifier = 3;
+    }
+  }
+  message CurrentFileContents {
+    string relative_workspace_path = 1;
+    string contents = 2;
+    CursorPosition cursor_position = 3;
+    repeated DataframeInfo dataframes = 4;
+    string language_id = 5;
+    CursorRange selection = 6;
+  }
+  message LinterDiagnostics {
+    string relative_workspace_path = 1;
+    string contents = 2;
+    repeated ContextOptions.LinterDiagnostics.Diagnostic diagnostics = 3;
+    message Diagnostic {
+      string message = 1;
+      string source = 2;
+      CursorRange range = 3;
+      string relative_workspace_path = 4;
+    }
+  }
+  message GlobalContext {
+    repeated GetRepoNodeIdRequest conversation = 1;
+    ModelDetails model_details = 2;
+  }
 }
 
 message StreamCursorTutorRequest {
@@ -8824,16 +11063,36 @@ message ModelQueryRequest {
   Unresolved__0 repository_info = 9;
   bool faster_and_stupider = 10;
   bool use_globs = 11;
+  enum QueryType {
+    QUERY_TYPE_UNSPECIFIED = 0;
+    QUERY_TYPE_KEYWORDS = 1;
+    QUERY_TYPE_EMBEDDINGS = 2;
+  }
 }
 
 message ModelQueryResponse {
   repeated ModelQueryResponse.Query queries = 1;
+  message Query {
+    string query = 1;
+    bool successful_parse = 2;
+    repeated string good_file_extensions = 3;
+    repeated string bad_file_extensions = 4;
+    repeated string good_paths = 5;
+    repeated string bad_paths = 6;
+  }
 }
 
 message ModelQueryResponseV2 {
   oneof query_or_reasoning {
     ModelQueryResponseV2.QueryItem query = 1;
     string reasoning = 2;
+  }
+  message QueryItem {
+    int32 index = 3;
+    oneof partial_query {
+      string text = 1;
+      string glob = 2;
+    }
   }
 }
 
@@ -8913,6 +11172,40 @@ message TaskStreamChatContextResponse {
     TaskStreamChatContextResponse.ReasoningStep reasoning_step = 6;
     TaskStreamChatContextResponse.ReasoningSubstep reasoning_substep = 7;
   }
+  message Output {
+    string text = 1;
+  }
+  message GatheringFile {
+    string relative_workspace_path = 1;
+    SimpleRange range = 2;
+    int32 step_index = 3;
+    float score = 4;
+  }
+  message GatheringStep {
+    string title = 1;
+    int32 index = 2;
+    string query = 3;
+  }
+  message RerankingStep {
+    string title = 1;
+    int32 index = 2;
+  }
+  message RerankingFile {
+    string relative_workspace_path = 1;
+    SimpleRange range = 2;
+    string reason = 3;
+    bool failed = 4;
+    float score = 5;
+    int32 step_index = 6;
+  }
+  message ReasoningStep {
+    string title = 1;
+    int32 index = 2;
+  }
+  message ReasoningSubstep {
+    string markdown_explanation = 1;
+    int32 step_index = 2;
+  }
 }
 
 message TaskStreamChatContextResponseWrapped {
@@ -8948,6 +11241,10 @@ message StreamChatContextRequest {
     FullFileSearchResult file_search_results = 12;
     CodeSearchResult code_search_results = 13;
   }
+  message CodeContext {
+    repeated CodeBlock chunks = 1;
+    repeated CodeResult scored_chunks = 2;
+  }
 }
 
 message StreamChatContextResponse {
@@ -8962,6 +11259,21 @@ message StreamChatContextResponse {
   optional DocsReference docs_reference = 9;
   optional SymbolLink symbol_link = 10;
   optional FileLink file_link = 11;
+  message UsedCode {
+    repeated CodeResult code_results = 1;
+  }
+  message CodeLink {
+    string relative_workspace_path = 1;
+    int32 start_line_number = 2;
+    int32 end_line_number = 3;
+  }
+  message ChunkIdentity {
+    string file_name = 1;
+    int32 start_line = 2;
+    int32 end_line = 3;
+    string text = 4;
+    ChunkType chunk_type = 5;
+  }
 }
 
 message StreamChatDeepContextRequest {
@@ -9119,6 +11431,163 @@ message AvailableModelsResponse {
   optional string experimental_model_id = 19;
   optional string experimental_model_display_name = 20;
   optional string nudge_new_chats_to_auto_optimize_for = 21;
+  message TooltipData {
+    string primary_text = 1;
+    string secondary_text = 2;
+    bool secondary_warning_text = 3;
+    string icon = 4;
+    string tertiary_text = 5;
+    string tertiary_text_url = 6;
+    optional string markdown_content = 7;
+  }
+  message ModelVendor {
+    AvailableModelsResponse.ModelVendorId id = 1;
+    string display_name = 2;
+  }
+  message ModelPickerBadge {
+    string label = 1;
+    AvailableModelsResponse.ModelPickerBadge.Variant variant = 2;
+    bool dismiss_on_selection = 3;
+    enum Variant {
+      VARIANT_UNSPECIFIED = 0;
+      VARIANT_ACCENT = 1;
+      VARIANT_NEUTRAL = 2;
+      VARIANT_SUCCESS = 3;
+      VARIANT_WARN = 4;
+      VARIANT_DANGER = 5;
+    }
+  }
+  message AvailableModel {
+    string name = 1;
+    bool default_on = 2;
+    optional bool is_long_context_only = 3;
+    optional bool is_chat_only = 4;
+    optional bool supports_agent = 5;
+    optional AvailableModelsResponse.DegradationStatus degradation_status = 6;
+    optional double price = 7;
+    optional AvailableModelsResponse.TooltipData tooltip_data = 8;
+    optional bool supports_thinking = 9;
+    optional bool supports_images = 10;
+    optional bool supports_auto_context = 11;
+    optional int32 auto_context_max_tokens = 12;
+    optional int32 auto_context_extended_max_tokens = 13;
+    optional bool supports_max_mode = 14;
+    optional int32 context_token_limit = 15;
+    optional int32 context_token_limit_for_max_mode = 16;
+    optional string client_display_name = 17;
+    optional string server_model_name = 18;
+    optional bool supports_non_max_mode = 19;
+    optional AvailableModelsResponse.TooltipData tooltip_data_for_max_mode = 20;
+    optional bool is_recommended_for_background_composer = 21;
+    optional bool supports_plan_mode = 22;
+    optional bool is_user_added = 23;
+    optional string inputbox_short_model_name = 24;
+    optional bool supports_sandboxing = 25;
+    optional bool supports_cmd_k = 26;
+    optional bool only_supports_cmd_k = 27;
+    optional int32 background_composer_sort_order = 28;
+    repeated ModelParameterDefinition parameter_definitions = 29;
+    repeated AvailableModelsResponse.ModelVariantConfig variants = 30;
+    optional CloudAgentEffortMode cloud_agent_effort_mode = 32;
+    optional string cloud_migrate_to_model = 33;
+    optional string upgrade_model_id = 34;
+    optional bool is_hidden = 35;
+    repeated string legacy_slugs = 36;
+    repeated string id_aliases = 37;
+    optional int32 named_model_section_index = 38;
+    optional string tagline = 39;
+    optional bool visible_in_routed_model_view = 40;
+    optional string vendor_name = 41;
+    optional AvailableModelsResponse.ModelVendor vendor = 42;
+    optional bool default_disabled_in_admin_allowlist = 43;
+    repeated CloudAgentEffortMode cloud_agent_effort_modes = 44;
+    optional bool supports_smart_mode_classifier = 45;
+    optional bool requires_data_retention = 46;
+    optional string reason_for_zdr_consent_block = 47;
+    repeated AvailableModelsResponse.ModelPickerBadge model_picker_badges = 48;
+  }
+  message ModelVariantConfig {
+    repeated agent.v1.RequestedModel.ModelParameterValue parameter_values = 1;
+    string display_name = 2;
+    bool is_max_mode = 3;
+    optional bool is_default_max_config = 4;
+    optional bool is_default_non_max_config = 5;
+    optional AvailableModelsResponse.TooltipData tooltip_data = 6;
+    optional string tagline = 7;
+    optional string display_name_outside_picker = 8;
+    optional string variant_string_representation = 9;
+    optional AvailableModelsResponse.ConfirmationDialogue confirmation_dialogue = 10;
+    optional string legacy_slug = 11;
+  }
+  message ConfirmationDialogue {
+    string title = 1;
+    string body = 2;
+    string key = 3;
+    bool blocks_submission = 4;
+    optional AvailableModelsResponse.ConfirmationDialogue.Presentation presentation = 5;
+    enum Presentation {
+      PRESENTATION_UNSPECIFIED = 0;
+      PRESENTATION_POST_PICKER_WARNING = 1;
+    }
+  }
+  message FeatureModelConfig {
+    string default_model = 1;
+    repeated string fallback_models = 2;
+    repeated string best_of_n_default_models = 3;
+  }
+  message ModelPickerDisplayConfiguration {
+    AvailableModelsResponse.ModelPickerDisplayConfiguration.RoutedModelViewConfig routed_model_view_config = 1;
+    AvailableModelsResponse.ModelPickerDisplayConfiguration.NamedModelsViewConfig named_models_view_config = 2;
+    optional bool hide_search_bar = 3;
+    optional bool hide_add_models = 4;
+    optional string model_selection_restriction_message = 5;
+    message RoutedModelViewConfig {
+      optional string title = 1;
+      optional AvailableModelsResponse.ModelPickerDisplayConfiguration.RoutedModelViewConfig.RoutedModelViewToNamedViewToggle routed_model_view_to_named_view_toggle = 2;
+      optional AvailableModelsResponse.ModelPickerDisplayConfiguration.RoutedModelViewConfig.RoutedModelViewToNamedViewButton routed_model_view_to_named_view_button = 3;
+      optional bool hide_search_bar = 4;
+      optional bool hide_routed_model_view = 5;
+      message RoutedModelViewToNamedViewToggle {
+        string title_markdown = 1;
+        optional string subtitle = 2;
+        optional bool set_to_last_named_model = 3;
+      }
+      message RoutedModelViewToNamedViewButton {
+        string markdown = 1;
+      }
+    }
+    message NamedModelsViewConfig {
+      optional AvailableModelsResponse.ModelPickerDisplayConfiguration.NamedModelsViewConfig.NamedViewToRoutedModelViewToggle named_view_to_routed_model_view_toggle = 2;
+      optional AvailableModelsResponse.ModelPickerDisplayConfiguration.NamedModelsViewConfig.NamedViewToRoutedModelViewNoButton named_view_to_routed_model_view_no_button = 3;
+      optional AvailableModelsResponse.ModelPickerDisplayConfiguration.NamedModelsViewConfig.NamedViewToRoutedModelViewButton named_view_to_routed_model_view_button = 4;
+      message NamedViewToRoutedModelViewToggle {
+        string markdown = 1;
+      }
+      message NamedViewToRoutedModelViewNoButton {
+        string markdown = 1;
+      }
+      message NamedViewToRoutedModelViewButton {
+        string markdown = 1;
+      }
+    }
+  }
+  enum DegradationStatus {
+    DEGRADATION_STATUS_UNSPECIFIED = 0;
+    DEGRADATION_STATUS_DEGRADED = 1;
+    DEGRADATION_STATUS_DISABLED = 2;
+  }
+  enum ModelVendorId {
+    MODEL_VENDOR_ID_UNSPECIFIED = 0;
+    MODEL_VENDOR_ID_ANTHROPIC = 1;
+    MODEL_VENDOR_ID_OPENAI = 2;
+    MODEL_VENDOR_ID_GOOGLE = 3;
+    MODEL_VENDOR_ID_XAI = 4;
+    MODEL_VENDOR_ID_MOONSHOT = 5;
+    MODEL_VENDOR_ID_CURSOR = 6;
+    MODEL_VENDOR_ID_NVIDIA = 7;
+    MODEL_VENDOR_ID_ZAI = 8;
+    MODEL_VENDOR_ID_META = 9;
+  }
 }
 
 message ModelParameterDefinition {
@@ -9127,6 +11596,32 @@ message ModelParameterDefinition {
   optional string markdown_tooltip = 3;
   ModelParameterDefinition.ModelParameterType parameter_type = 4;
   optional bool is_cycleable_by_hotkey = 5;
+  message ModelParameterType {
+    optional ModelParameterDefinition.BooleanParameterDefinition boolean_parameter = 1;
+    optional ModelParameterDefinition.EnumParameterDefinition enum_parameter = 2;
+  }
+  message BooleanParameterDefinition {
+    repeated ModelParameterDefinition.BooleanParameterDefinition.BooleanParameterValue values = 1;
+    message BooleanParameterValue {
+      string value = 1;
+      optional string display_name = 2;
+      optional bool increases_model_cost = 3;
+      optional bool default_blocked_in_admin_allowlist = 4;
+      optional bool hide_from_user_picker_when_admin_blocked = 5;
+      optional bool blocked_by_admin_allowlist = 6;
+    }
+  }
+  message EnumParameterDefinition {
+    repeated ModelParameterDefinition.EnumParameterDefinition.EnumParameterValue values = 1;
+    message EnumParameterValue {
+      string value = 1;
+      optional string display_name = 2;
+      optional bool increases_model_cost = 3;
+      optional bool blocked_by_admin_allowlist = 4;
+      optional string markdown_tooltip = 5;
+      repeated AvailableModelsResponse.ModelPickerBadge model_picker_badges = 6;
+    }
+  }
 }
 
 message ServerTimeRequest {
@@ -9145,6 +11640,10 @@ message HealthCheckRequest {
 
 message HealthCheckResponse {
   HealthCheckResponse.Status status = 1;
+  enum Status {
+    STATUS_UNSPECIFIED = 0;
+    STATUS_HEALTHY = 1;
+  }
 }
 
 message PrivacyCheckRequest {
@@ -9190,6 +11689,11 @@ message ReviewRequest {
 message ReviewChatMessage {
   string text = 1;
   ReviewChatMessage.ReviewChatMessageType type = 2;
+  enum ReviewChatMessageType {
+    REVIEW_CHAT_MESSAGE_TYPE_UNSPECIFIED = 0;
+    REVIEW_CHAT_MESSAGE_TYPE_HUMAN = 1;
+    REVIEW_CHAT_MESSAGE_TYPE_AI = 2;
+  }
 }
 
 message ReviewChatRequest {
@@ -9244,6 +11748,33 @@ message SlashEditRequest {
   optional bool willing_to_pay_extra_for_speed = 29;
   optional int32 attempt_number = 30;
   optional bool should_throw_timeout_error = 31;
+  enum FastApplyModelType {
+    FAST_APPLY_MODEL_TYPE_UNSPECIFIED = 0;
+    FAST_APPLY_MODEL_TYPE_DEFAULT = 1;
+    FAST_APPLY_MODEL_TYPE_DEEPSEEK = 2;
+    FAST_APPLY_MODEL_TYPE_SONNET = 3;
+    FAST_APPLY_MODEL_TYPE_OPUS_DIFF = 4;
+    FAST_APPLY_MODEL_TYPE_SMART_REWRITE = 5;
+    FAST_APPLY_MODEL_TYPE_GPT4 = 6;
+    FAST_APPLY_MODEL_TYPE_GPT4_NOSPEC = 7;
+    FAST_APPLY_MODEL_TYPE_SMART_REWRITE_NOSPEC = 8;
+    FAST_APPLY_MODEL_TYPE_OPUS = 9;
+    FAST_APPLY_MODEL_TYPE_HAIKU = 10;
+    FAST_APPLY_MODEL_TYPE_GPT4O_NOSPEC = 11;
+    FAST_APPLY_MODEL_TYPE_GPT4O_DIFF = 12;
+    FAST_APPLY_MODEL_TYPE_CODESTRAL_REWRITE = 13;
+    FAST_APPLY_MODEL_TYPE_DEEPSEEK_33B = 14;
+    FAST_APPLY_MODEL_TYPE_SONNET_35_DIFF = 15;
+    FAST_APPLY_MODEL_TYPE_SONNET_35_REWRITE = 16;
+    FAST_APPLY_MODEL_TYPE_PROMPTED_DEEPSEEK_V2 = 17;
+    FAST_APPLY_MODEL_TYPE_CODESTRAL_REWRITE_OLD = 18;
+    FAST_APPLY_MODEL_TYPE_CODESTRAL_REWRITE_FP16 = 19;
+    FAST_APPLY_MODEL_TYPE_DEEPSEEK_33B_V2 = 20;
+    FAST_APPLY_MODEL_TYPE_CODESTRAL_V4 = 21;
+    FAST_APPLY_MODEL_TYPE_CODESTRAL_V5 = 22;
+    FAST_APPLY_MODEL_TYPE_CODESTRAL_V6 = 23;
+    FAST_APPLY_MODEL_TYPE_CODESTRAL_V7 = 24;
+  }
 }
 
 message SlashEditResponse {
@@ -9267,6 +11798,12 @@ message StreamSlashEditFollowUpWithPreviousEditsResponse {
   oneof response {
     StreamSlashEditFollowUpWithPreviousEditsResponse.Chat chat = 1;
     StreamSlashEditFollowUpWithPreviousEditsResponse.EditsToUpdate edits_to_update = 2;
+  }
+  message Chat {
+    string text = 1;
+  }
+  message EditsToUpdate {
+    repeated SlashEditPreviousEdit previous_edits = 1;
   }
 }
 
@@ -9350,6 +11887,26 @@ message StreamAiLintBugRequest {
   repeated LintGenerator force_enable_generators = 19;
   repeated LintGenerator force_disable_generators = 20;
   int32 version = 21;
+  message CodeChunk {
+    string relative_workspace_path = 1;
+    int32 start_line_number = 2;
+    repeated string lines = 3;
+    repeated string context_lines_before = 4;
+    repeated string context_lines_after = 5;
+  }
+  message CodeChunkList {
+    repeated StreamAiLintBugRequest.CodeChunk chunks = 13;
+    repeated int32 referred_start_lines = 14;
+    repeated int32 referred_end_lines = 15;
+  }
+  message DiscriminatorOptions {
+    bool specific_rules = 1;
+    bool compile_errors = 2;
+    bool change_behavior = 3;
+    bool match_code = 4;
+    bool relevance = 5;
+    bool user_awareness = 6;
+  }
 }
 
 message StreamAiLintBugResponse {
@@ -9375,6 +11932,12 @@ message LogLinterExplicitUserFeedbackRequest {
   AiLintBug bug = 1;
   LogLinterExplicitUserFeedbackRequest.LinterUserFeedback user_feedback = 3;
   string user_feedback_details = 4;
+  enum LinterUserFeedback {
+    LINTER_USER_FEEDBACK_UNSPECIFIED = 0;
+    LINTER_USER_FEEDBACK_CORRECT = 1;
+    LINTER_USER_FEEDBACK_INCORRECT = 2;
+    LINTER_USER_FEEDBACK_OTHER = 3;
+  }
 }
 
 message LogLinterExplicitUserFeedbackResponse {
@@ -9446,6 +12009,28 @@ message DebugInfo {
   DebugInfo.Breakpoint breakpoint = 1;
   repeated DebugInfo.CallStackFrame call_stack = 2;
   repeated CodeBlock history = 3;
+  message Variable {
+    string name = 1;
+    string value = 2;
+    optional string type = 3;
+  }
+  message Scope {
+    string name = 1;
+    repeated DebugInfo.Variable variables = 2;
+  }
+  message CallStackFrame {
+    string relative_workspace_path = 1;
+    int32 line_number = 2;
+    string function_name = 3;
+    repeated DebugInfo.Scope scopes = 4;
+  }
+  message Breakpoint {
+    string relative_workspace_path = 1;
+    int32 line_number = 2;
+    repeated string lines_before_breakpoint = 3;
+    repeated string lines_after_breakpoint = 4;
+    optional string exception_info = 5;
+  }
 }
 
 message GetChatRequest {
@@ -9539,6 +12124,29 @@ message GetComposerChatRequest {
   optional int32 context_bank_version = 28;
   CodeSearchResult uses_codebase_results = 29;
   optional bytes context_bank_encryption_key = 31;
+  message RedDiff {
+    string relative_workspace_path = 1;
+    repeated SimplestRange red_ranges = 2;
+    repeated SimplestRange red_ranges_reversed = 3;
+    string start_hash = 4;
+    string end_hash = 5;
+  }
+  message RecentEdits {
+    repeated GetComposerChatRequest.RecentEdits.CodeBlockInfo code_block_info = 1;
+    repeated GetComposerChatRequest.RecentEdits.FileInfo final_file_values = 2;
+    optional string edits_belong_to_composer_generation_uuid = 3;
+    message CodeBlockInfo {
+      string relative_workspace_path = 1;
+      optional string content_before = 2;
+      optional string content_after = 3;
+      optional string generation_uuid = 4;
+      optional int32 version = 5;
+    }
+    message FileInfo {
+      string relative_workspace_path = 1;
+      string content = 2;
+    }
+  }
 }
 
 message CheckUsageBasedPriceRequest {
@@ -9566,6 +12174,14 @@ message CheckQueuePositionResponse {
   CheckQueuePositionResponse.CustomLink custom_link = 6;
   optional int32 new_queue_position = 7;
   optional CheckQueuePositionResponse.ModelForSlowPoolNudgeData model_for_slow_pool_nudge_data = 8;
+  message CustomLink {
+    string address = 1;
+    string message = 2;
+  }
+  message ModelForSlowPoolNudgeData {
+    string model = 1;
+    string message = 2;
+  }
 }
 
 message IsolatedTreesitterRequest {
@@ -9576,6 +12192,15 @@ message IsolatedTreesitterRequest {
 
 message IsolatedTreesitterResponse {
   repeated IsolatedTreesitterResponse.TreesitterSymbolNameItem items = 1;
+  message TreeSitterPosition {
+    int32 row = 1;
+    int32 column = 2;
+  }
+  message TreesitterSymbolNameItem {
+    string symbol_name = 1;
+    optional IsolatedTreesitterResponse.TreeSitterPosition start_position = 2;
+    optional IsolatedTreesitterResponse.TreeSitterPosition end_position = 3;
+  }
 }
 
 message GetSimplePromptRequest {
@@ -9633,6 +12258,16 @@ message GetEvaluationPromptRequest {
   string query_strategy = 5;
   int32 token_limit = 6;
   GetEvaluationPromptRequest.RerankingStrategy reranking_strategy = 7;
+  enum EvaluationPromptType {
+    EVALUATION_PROMPT_TYPE_UNSPECIFIED = 0;
+    EVALUATION_PROMPT_TYPE_GENERATE = 1;
+    EVALUATION_PROMPT_TYPE_CHAT = 2;
+  }
+  enum RerankingStrategy {
+    RERANKING_STRATEGY_UNSPECIFIED = 0;
+    RERANKING_STRATEGY_DISTANCE_ONLY = 1;
+    RERANKING_STRATEGY_GPT4_RELEVANCE = 2;
+  }
 }
 
 message GetEvaluationPromptResponse {
@@ -9678,6 +12313,16 @@ message StreamChatResponse {
   optional string server_bubble_id = 22;
   optional bool stop_using_dsv3_agentic_model = 26;
   optional string usage_uuid = 27;
+  message UsedCode {
+    repeated CodeResult code_results = 1;
+  }
+  message ChunkIdentity {
+    string file_name = 1;
+    int32 start_line = 2;
+    int32 end_line = 3;
+    string text = 4;
+    ChunkType chunk_type = 5;
+  }
 }
 
 message WarmComposerCacheResponse {
@@ -9746,6 +12391,18 @@ message DoThisForMeCheckResponse {
     DoThisForMeCheckResponse.CreateAction create_action = 3;
     DoThisForMeCheckResponse.RunAction run_action = 4;
   }
+  message SkipAction {
+    string relative_workspace_path = 1;
+  }
+  message EditAction {
+    string relative_workspace_path = 1;
+  }
+  message CreateAction {
+    string relative_workspace_path = 1;
+  }
+  message RunAction {
+    string command = 1;
+  }
 }
 
 message DoThisForMeRequest {
@@ -9757,6 +12414,9 @@ message DoThisForMeRequest {
 message DoThisForMeResponse {
   oneof event {
     DoThisForMeResponse.UpdateStatus update_status = 1;
+  }
+  message UpdateStatus {
+    string status = 1;
   }
 }
 
@@ -9779,6 +12439,18 @@ message StreamChatToolformerResponse {
     StreamChatToolformerResponse.ToolAction tool_action = 3;
     StreamChatToolformerResponse.Thought thought = 4;
   }
+  message Output {
+    string text = 1;
+  }
+  message Thought {
+    string text = 1;
+  }
+  message ToolAction {
+    string user_facing_text = 1;
+    ToolCall tool_call = 2;
+    string raw_model_output = 3;
+    bool more_to_come = 4;
+  }
 }
 
 message TaskInstruction {
@@ -9787,11 +12459,21 @@ message TaskInstruction {
   CurrentFileInfo current_file = 3;
   repeated Unresolved__0 repositories = 4;
   ExplicitContext explicit_context = 5;
+  message CodeChunk {
+    string relative_workspace_path = 1;
+    int32 start_line_number = 2;
+    repeated string lines = 3;
+  }
 }
 
 message TaskUserMessage {
   string text = 1;
   repeated TaskUserMessage.CodeChunk attached_code_chunks = 2;
+  message CodeChunk {
+    string relative_workspace_path = 1;
+    int32 start_line_number = 2;
+    repeated string lines = 3;
+  }
 }
 
 message PushAiThoughtRequest {
@@ -9799,6 +12481,20 @@ message PushAiThoughtRequest {
   CmdKDebugInfo cmd_k_debug_info = 2;
   bool automated = 3;
   optional PushAiThoughtRequest.Metadata metadata = 4;
+  message Metadata {
+    oneof event {
+      PushAiThoughtRequest.Metadata.AcceptedHallucinatedFunctionEvent accepted_hallucinated_function_event = 1;
+    }
+    message AcceptedHallucinatedFunctionEvent {
+      string implementation_uuid = 1;
+      string hallucinated_function_uuid = 2;
+      string implementation = 3;
+      string source = 4;
+      string implementation_reqid = 5;
+      string plan_reqid = 6;
+      string reflection_reqid = 7;
+    }
+  }
 }
 
 message PushAiThoughtResponse {
@@ -9924,6 +12620,10 @@ message TaskStreamLogResponse {
     TaskStreamLogResponse.InfoUpdate info_update = 2;
     TaskInfoResponse initial_task_info = 3;
   }
+  message InfoUpdate {
+    optional string human_readable_title = 1;
+    optional TaskStatus task_status = 2;
+  }
 }
 
 message TaskProvideResultRequest {
@@ -9952,6 +12652,11 @@ message TaskSendMessageResponse {
 message ReportFeedbackRequest {
   string feedback = 1;
   ReportFeedbackRequest.FeedbackType feedback_type = 2;
+  enum FeedbackType {
+    FEEDBACK_TYPE_UNSPECIFIED = 0;
+    FEEDBACK_TYPE_LOW_PRIORITY = 1;
+    FEEDBACK_TYPE_HIGH_PRIORITY = 2;
+  }
 }
 
 message ReportFeedbackResponse {
@@ -9993,6 +12698,16 @@ message ReportBugRequest {
   ReportBugRequest.BugType bug_type = 2;
   BugContext context = 3;
   string contact_email = 4;
+  enum BugType {
+    BUG_TYPE_UNSPECIFIED = 0;
+    BUG_TYPE_LOW = 1;
+    BUG_TYPE_MEDIUM = 2;
+    BUG_TYPE_URGENT = 3;
+    BUG_TYPE_CRASH = 4;
+    BUG_TYPE_CONNECTION_ERROR = 5;
+    BUG_TYPE_IDEA = 6;
+    BUG_TYPE_MISC_AUTOMATIC_ERROR = 7;
+  }
 }
 
 message ReportBugResponse {
@@ -10009,6 +12724,80 @@ message FixMarkersRequest {
   int32 iteration_number = 3;
   string sequence_id = 4;
   string user_instruction = 5;
+  message Marker {
+    repeated string lines = 1;
+    int32 start_line = 2;
+    int32 end_line_inclusive = 3;
+    string message = 4;
+    string relative_workspace_path = 5;
+    repeated FixMarkersRequest.Marker.RelatedInformation related_information = 6;
+    repeated FixMarkersRequest.Marker.ContextRange context_ranges = 7;
+    repeated FixMarkersRequest.Marker.AncestorTypeDefinition ancestor_type_definitions = 8;
+    repeated FixMarkersRequest.Marker.InsertedSymbolType inserted_symbol_types = 9;
+    repeated FixMarkersRequest.Marker.QuickFix quick_fixes = 10;
+    int32 start_column = 11;
+    int32 end_column_inclusive = 12;
+    repeated FixMarkersRequest.Marker.ClassInformation class_information = 13;
+    repeated FixMarkersRequest.Marker.FunctionSignature function_signatures = 14;
+    int32 snapshot = 15;
+    message RelatedInformation {
+      string message = 1;
+      string relative_workspace_path = 2;
+      repeated string relevant_lines = 3;
+      int32 start_line = 4;
+    }
+    message ContextRange {
+      int32 start_line = 1;
+      int32 end_line_inclusive = 2;
+    }
+    message AncestorTypeDefinition {
+      string name = 1;
+      string relative_workspace_path = 2;
+      int32 start_line = 3;
+      repeated string lines = 4;
+    }
+    message InsertedSymbolType {
+      string symbol_name = 1;
+      string symbol_type = 2;
+      string relative_workspace_path = 3;
+      int32 symbol_line = 4;
+    }
+    message QuickFix {
+      string message = 1;
+      string kind = 2;
+      bool is_preferred = 3;
+      repeated FixMarkersRequest.Marker.QuickFix.Edit edits = 4;
+      message Edit {
+        string relative_workspace_path = 1;
+        int32 start_line = 2;
+        int32 end_line_inclusive = 3;
+        repeated string deleted_lines = 4;
+        repeated string add_lines = 5;
+        int32 snapshot = 6;
+      }
+    }
+    message ClassInformation {
+      string class_name = 1;
+      int32 start_line = 2;
+      repeated int32 top_level_lines = 3;
+      repeated string lines = 4;
+      repeated FixMarkersRequest.Marker.ClassInformation.Constructor constructors = 5;
+      string detail = 6;
+      message Constructor {
+        int32 start_line = 1;
+        int32 end_line_inclusive = 2;
+      }
+    }
+    message FunctionSignature {
+      string label = 1;
+      string documentation = 2;
+      repeated FixMarkersRequest.Marker.FunctionSignature.FunctionParameter parameters = 3;
+      message FunctionParameter {
+        string label = 1;
+        string documentation = 2;
+      }
+    }
+  }
 }
 
 message FixMarkersResponse {
@@ -10016,6 +12805,12 @@ message FixMarkersResponse {
   repeated FixMarkersResponse.Change changes = 2;
   bool success = 3;
   int32 iteration_number = 4;
+  message Change {
+    int32 start_line = 1;
+    int32 end_line_exclusive = 2;
+    repeated string deleted_lines = 3;
+    repeated string add_lines = 4;
+  }
 }
 
 message StreamLintRequest {
@@ -10050,6 +12845,14 @@ message ReportGroundTruthCandidateResponse {
 message ReportCmdKFateRequest {
   string request_id = 1;
   ReportCmdKFateRequest.Fate fate = 2;
+  enum Fate {
+    FATE_UNSPECIFIED = 0;
+    FATE_CANCELLED = 1;
+    FATE_ACCEPTED = 2;
+    FATE_REJECTED = 3;
+    FATE_FOLLOWED_UP = 4;
+    FATE_REPROMPTED = 5;
+  }
 }
 
 message ReportCmdKFateResponse {
@@ -10130,6 +12933,11 @@ message FindBugsRequest {
 
 message FindBugsResponse {
   optional FindBugsResponse.Bug bug = 1;
+  message Bug {
+    string description = 1;
+    int32 line_number = 2;
+    float confidence = 3;
+  }
 }
 
 message WriteGitCommitMessageRequest {
@@ -10175,6 +12983,16 @@ message KeepComposerCacheWarmResponse {
 message GetDiffReviewRequest {
   repeated GetDiffReviewRequest.SimpleFileDiff diffs = 1;
   optional string model = 2;
+  message SimpleFileDiff {
+    string relative_workspace_path = 1;
+    repeated GetDiffReviewRequest.SimpleFileDiff.Chunk chunks = 2;
+    message Chunk {
+      repeated string old_lines = 1;
+      repeated string new_lines = 2;
+      Unresolved__5 old_range = 3;
+      Unresolved__5 new_range = 4;
+    }
+  }
 }
 
 message StreamDiffReviewResponse {
@@ -10240,6 +13058,12 @@ message GetModelLabelsRequest {
 
 message GetModelLabelsResponse {
   repeated GetModelLabelsResponse.ModelLabel model_labels = 1;
+  message ModelLabel {
+    string name = 1;
+    string label = 2;
+    optional string short_label = 3;
+    optional bool supports_agent = 4;
+  }
 }
 
 message GetLastDefaultModelNudgeRequest {
@@ -10253,6 +13077,11 @@ message GetLastDefaultModelNudgeResponse {
 message GetDefaultModelNudgeDataRequest {
   GetDefaultModelNudgeDataRequest.StartupOpportunity startup_opportunity = 1;
   agent.v1.RequestedModel current_model = 2;
+  enum StartupOpportunity {
+    STARTUP_OPPORTUNITY_UNSPECIFIED = 0;
+    STARTUP_OPPORTUNITY_FIRST_OPEN = 1;
+    STARTUP_OPPORTUNITY_REOPEN = 2;
+  }
 }
 
 message GetDefaultModelNudgeDataResponse {
@@ -10262,6 +13091,15 @@ message GetDefaultModelNudgeDataResponse {
   string conversion_model_override = 4;
   GetDefaultModelNudgeDataResponse.InitialModel initial_model = 5;
   GetDefaultModelNudgeDataResponse.ApplicationOpenModelSwitch application_open_model_switch = 6;
+  message InitialModel {
+    string model_id = 1;
+    repeated agent.v1.RequestedModel.ModelParameterValue parameters = 2;
+  }
+  message ApplicationOpenModelSwitch {
+    string nudge_id = 1;
+    string experiment_name = 2;
+    GetDefaultModelNudgeDataResponse.InitialModel target_model = 3;
+  }
 }
 
 message GetDefaultModelRequest {
@@ -10576,6 +13414,13 @@ message KnowledgeBaseListRequest {
 message KnowledgeBaseListResponse {
   bool success = 1;
   repeated KnowledgeBaseListResponse.Item all_results = 2;
+  message Item {
+    string id = 1;
+    string knowledge = 2;
+    string title = 3;
+    string created_at = 4;
+    bool is_generated = 5;
+  }
 }
 
 message FetchRelevantKnowledgeForConversationRequest {
@@ -10592,12 +13437,21 @@ message FetchRelevantKnowledgeForConversationResponse {
 
 message InferBackgroundComposerScriptsRequest {
   repeated InferBackgroundComposerScriptsRequest.Command commands = 1;
+  message Command {
+    string command = 1;
+    float timestamp = 2;
+    optional string cwd = 3;
+  }
 }
 
 message InferBackgroundComposerScriptsResponse {
   string install_script = 1;
   string start_script = 2;
   repeated InferBackgroundComposerScriptsResponse.Terminal terminals = 3;
+  message Terminal {
+    string name = 1;
+    string command = 2;
+  }
 }
 
 message GetBackgroundComposerFeedbackLinkRequest {
@@ -10627,6 +13481,11 @@ message SttAudioChunk {
 
 message SttControl {
   SttControl.Type type = 1;
+  enum Type {
+    TYPE_UNSPECIFIED = 0;
+    TYPE_STOP = 1;
+    TYPE_CANCEL = 2;
+  }
 }
 
 message SttClientMessage {
@@ -10641,6 +13500,12 @@ message SttServerMessage {
   string text = 1;
   bool is_final = 2;
   SttServerMessage.Kind kind = 3;
+  enum Kind {
+    KIND_UNSPECIFIED = 0;
+    KIND_PARTIAL = 1;
+    KIND_SEGMENT = 2;
+    KIND_FINAL = 3;
+  }
 }
 
 message TranscribeAudioRequest {
@@ -10789,6 +13654,40 @@ message BugConfigResponse {
   BugConfigResponse.LinterStrategyV1 linter_strategy_v1 = 1;
   BugConfigResponse.BugBotV1 bug_bot_v1 = 2;
   BugConfigResponse.LinterStrategyV2 linter_strategy_v2 = 3;
+  message LinterStrategyV1 {
+    bool enabled = 1;
+    bool try_trigger_on_save = 2;
+    double wait_between_triggers_ms = 3;
+  }
+  message LinterStrategyV2 {
+    bool enabled = 1;
+    double wait_between_triggers_ms = 2;
+    double debounce_triggers_ms = 3;
+    int32 keep_lines_around_chunk = 4;
+    int32 prevent_triggering_for_files_with_this_many_lines = 5;
+    bool prevent_triggering_when_lints = 6;
+  }
+  message BugBotV1 {
+    bool enabled = 1;
+    bool is_subsidized = 2;
+    int32 background_call_frequency_ms = 3;
+    bool kill_switch = 4;
+    double show_intrusive_notification_only_if_last_time_was_more_than_ms_ago = 5;
+    optional int32 background_diff_absolute_max_tokens = 6;
+    optional int32 background_diff_min_min_token_threshold = 7;
+    optional int32 background_diff_min_max_token_threshold = 8;
+    optional double background_diff_last_commit_less_than_this_many_ms_ago = 9;
+    optional int32 default_diff_context_lines = 10;
+    optional int32 diff_absolute_max_tokens = 11;
+    optional int32 custom_instructions_max_char_length = 12;
+    optional int32 default_fallback_iterations = 13;
+    optional int32 threshold_for_expensive_run_modal_cents = 14;
+    optional int32 background_unified_context_lines = 15;
+    optional bool background_diff_include_uncommitted = 16;
+    optional string cheap_model_name = 17;
+    optional int32 cheap_absolute_max_tokens = 18;
+    optional int32 expensive_absolute_max_tokens = 19;
+  }
 }
 
 message StreamBugBotLinterRequest {
@@ -10816,6 +13715,10 @@ message ReviewRequestV2 {
   optional string linter_rules = 2;
   optional bool also_find_hard_bugs = 3;
   optional string save_request_as = 4;
+  message FileDiff {
+    Unresolved__pe file = 1;
+    repeated ChunkDiff chunk_diffs = 2;
+  }
 }
 
 message ReviewBugV2 {
@@ -10862,6 +13765,22 @@ message StreamCodeTourRequest {
   optional string raw_user_prompt = 11;
   optional string background_composer_id = 12;
   optional string reviewer_intent = 13;
+  message PullRequestReference {
+    string provider = 1;
+    string owner = 2;
+    string repository = 3;
+    int64 pull_request_number = 4;
+    optional string title = 5;
+    optional string body = 6;
+    optional string base_branch = 7;
+    optional string base_sha = 8;
+    optional string head_sha = 9;
+  }
+  enum PromptConstructionMode {
+    PROMPT_CONSTRUCTION_MODE_UNSPECIFIED = 0;
+    PROMPT_CONSTRUCTION_MODE_SERVER_COMPACT = 1;
+    PROMPT_CONSTRUCTION_MODE_CLIENT_RAW = 2;
+  }
 }
 
 message StreamCodeTourResponse {
@@ -10875,14 +13794,66 @@ message StreamCodeTourResponse {
     StreamCodeTourResponse.MarkdownDeltaEvent markdown_delta = 7;
     StreamCodeTourResponse.ThinkingDeltaEvent thinking_delta = 8;
   }
+  message StatusEvent {
+    StreamCodeTourResponse.StatusEvent.Status status = 1;
+    optional string message = 2;
+    enum Status {
+      STATUS_UNSPECIFIED = 0;
+      STATUS_STARTED = 1;
+      STATUS_PROCESSING = 2;
+    }
+  }
+  message DoneEvent {
+    CodeTourDoneReason reason = 1;
+  }
+  message ErrorEvent {
+    string message = 1;
+    CodeTourDoneReason reason = 2;
+  }
+  message MarkdownDeltaEvent {
+    string markdown_delta = 1;
+  }
+  message ThinkingDeltaEvent {
+    string thinking_delta = 1;
+  }
+  message Blame {
+    repeated CommitMetrics commits = 1;
+    repeated ConversationReference conversations = 2;
+  }
 }
 
 message StreamBugFindingResponse {
   repeated StreamBugFindingResponse.Bug bugs = 1;
+  message Bug {
+    string relative_workspace_path = 1;
+    int32 start_line = 2;
+    int32 end_line_inclusive = 3;
+    repeated string code_lines = 4;
+    double severity = 5;
+    double confidence = 6;
+    string description = 7;
+  }
 }
 
 message StreamBugFindingRequest {
   repeated StreamBugFindingRequest.FileDiff file_diffs = 1;
+  message FileDiff {
+    string relative_workspace_path = 1;
+    repeated StreamBugFindingRequest.FileDiff.Line lines = 2;
+    repeated StreamBugFindingRequest.FileDiff.Hunk hunks = 3;
+    optional string old_relative_workspace_path = 4;
+    bool not_truncated = 5;
+    message Hunk {
+      int32 old_start_one_indexed = 1;
+      int32 new_start_one_indexed = 2;
+      repeated string old_lines = 3;
+      repeated string new_lines = 4;
+    }
+    message Line {
+      int32 one_indexed_line_number = 1;
+      string line = 2;
+    }
+  }
 }
 
 message HeapProfileConfig {
@@ -10907,6 +13878,10 @@ message ProfileScheduleConfig {
   string config_id = 3;
   ProfileScheduleConfig.ScheduleConfig schedule = 4;
   int32 activity_timeout = 5;
+  message ScheduleConfig {
+    int32 interval = 1;
+    int32 duration = 2;
+  }
 }
 
 message ProfilingConfig {
@@ -10934,12 +13909,31 @@ message RequestTrackingFileSnapshot {
   optional string original_file_contents = 7;
   RequestTrackingFileGitInfo git_info = 8;
   RequestTrackingFileSnapshot.Kind kind = 9;
+  message DiffChange {
+    int32 original_start_line_number_one_indexed = 1;
+    int32 original_end_line_number_exclusive_one_indexed = 2;
+    int32 modified_start_line_number_one_indexed = 3;
+    int32 modified_end_line_number_exclusive_one_indexed = 4;
+    repeated string added_lines = 5;
+    repeated int32 tokenized_added_lines = 6;
+  }
+  enum Kind {
+    KIND_UNSPECIFIED = 0;
+    KIND_ADDED = 1;
+    KIND_DELETED = 2;
+    KIND_MODIFIED = 3;
+  }
 }
 
 message RequestTrackingFileGitInfo {
   oneof info {
     RequestTrackingFileGitInfo.GitInfo git_info = 1;
     bool no_repo_found = 2;
+  }
+  message GitInfo {
+    string git_root = 1;
+    string branch = 2;
+    string commit_hash = 3;
   }
 }
 
@@ -11150,6 +14144,10 @@ message UpdateConfig {
   string release_track = 1;
   UpdateConfig.UpdateMode mode = 2;
   optional int32 applied_at = 3;
+  enum UpdateMode {
+    UPDATE_MODE_UNSPECIFIED = 0;
+    UPDATE_MODE_ONE_TIME = 1;
+  }
 }
 
 message PerformanceEventsConfig {
@@ -11780,6 +14778,11 @@ message ConnectGithubCallbackRequest {
   string cursor_code = 4;
   ConnectGithubCallbackRequest.Source source = 5;
   optional string ghe_application = 7;
+  enum Source {
+    SOURCE_UNSPECIFIED = 0;
+    SOURCE_APP = 1;
+    SOURCE_SLACK = 2;
+  }
 }
 
 message ConnectGithubCallbackResponse {
@@ -11799,6 +14802,15 @@ message ScmConnectIntentTarget {
     ScmConnectIntentTarget.User user = 1;
     int32 team_id = 2;
   }
+  message User {
+    string github_repo = 1;
+    optional string ghe_application = 2;
+    PrepareGithubConnectFlowRequest.Source source = 3;
+    string verifier_hash = 4;
+    bool force_oauth = 5;
+    optional ScmConnectIntentTarget connect_target = 6;
+    optional ScmConnectIntentSource connect_source = 7;
+  }
 }
 
 message PrepareGithubConnectFlowRequest {
@@ -11809,6 +14821,13 @@ message PrepareGithubConnectFlowRequest {
   bool force_oauth = 5;
   optional ScmConnectIntentTarget connect_target = 6;
   optional ScmConnectIntentSource connect_source = 7;
+  enum Source {
+    SOURCE_UNSPECIFIED = 0;
+    SOURCE_GLASS_CLOUD_AGENT = 1;
+    SOURCE_GLASS_DIFF = 2;
+    SOURCE_GLASS_AUTOMATIONS = 3;
+    SOURCE_GROK_BOT = 4;
+  }
 }
 
 message PrepareGithubConnectFlowResponse {
@@ -11834,6 +14853,12 @@ message CompleteGithubConnectFlowResponse {
   string installation_id = 2;
   string confirmation_code = 3;
   string github_login = 4;
+  enum Outcome {
+    OUTCOME_UNSPECIFIED = 0;
+    OUTCOME_CONNECTED = 1;
+    OUTCOME_PENDING_APPROVAL = 2;
+    OUTCOME_NEEDS_CONFIRMATION = 3;
+  }
 }
 
 message PrepareSetupGithubEnterpriseAppRequest {
@@ -11862,6 +14887,12 @@ message ListGithubEnterpriseAppsRequest {
 message ListGithubEnterpriseAppsResponse {
   repeated ListGithubEnterpriseAppsResponse.GithubEnterpriseApp apps = 1;
   bool can_manage = 2;
+  message GithubEnterpriseApp {
+    string uuid = 1;
+    string slug = 2;
+    string hostname = 3;
+    bool can_delete = 4;
+  }
 }
 
 message DeleteGithubEnterpriseAppRequest {
@@ -11902,6 +14933,16 @@ message ListGitlabEnterpriseInstancesResponse {
   repeated ListGitlabEnterpriseInstancesResponse.GitlabEnterpriseInstance instances = 1;
   bool gitlab_service_account_token_configured = 2;
   bool can_manage_gitlab_service_account_token = 3;
+  message GitlabEnterpriseInstance {
+    string uuid = 1;
+    string hostname = 2;
+    string username = 3;
+    bool can_delete = 4;
+    string host_controlled_webhook_url = 5;
+    string host_controlled_webhook_secret = 6;
+    bool host_controlled_service_account_token_configured = 7;
+    optional string external_host = 8;
+  }
 }
 
 message SetGitlabEnterpriseHostControlledServiceAccountTokenRequest {
@@ -11953,6 +14994,15 @@ message ListBitbucketServerInstancesRequest {
 
 message ListBitbucketServerInstancesResponse {
   repeated ListBitbucketServerInstancesResponse.BitbucketServerInstance instances = 1;
+  message BitbucketServerInstance {
+    string uuid = 1;
+    string hostname = 2;
+    string external_host = 3;
+    bool can_delete = 4;
+    bool service_account_token_configured = 5;
+    string browser_base_url = 6;
+    string outbound_base_url = 7;
+  }
 }
 
 message UpdateBitbucketServerInstanceTokenRequest {
@@ -11960,6 +15010,12 @@ message UpdateBitbucketServerInstanceTokenRequest {
   oneof action {
     UpdateBitbucketServerInstanceTokenRequest.SetToken set_token = 2;
     UpdateBitbucketServerInstanceTokenRequest.ClearToken clear_token = 3;
+  }
+  message SetToken {
+    string access_token = 1;
+  }
+  message ClearToken {
+    string uuid = 1;
   }
 }
 
@@ -12198,6 +15254,26 @@ message SetUserDefaultTeamResponse {
 
 message GetUserOrganizationsResponse {
   repeated GetUserOrganizationsResponse.Organization organizations = 1;
+  message Team {
+    int32 team_id = 1;
+    string team_name = 2;
+    string team_slug = 3;
+    optional int64 team_organization_membership_created_at_ms = 4;
+    optional TeamRole viewer_team_role = 5;
+    optional int64 team_deleted_at_ms = 6;
+  }
+  message Organization {
+    string organization_id = 1;
+    string organization_name = 2;
+    string organization_slug = 3;
+    UserOrganizationRole role = 4;
+    repeated GetUserOrganizationsResponse.Team teams = 5;
+    optional int32 default_team_id = 6;
+    optional int32 effective_max_teams = 7;
+    repeated string granted_permissions = 8;
+    optional bool can_create_organization_teams = 9;
+    optional int32 root_team_id = 10;
+  }
 }
 
 message OrganizationMemberTeam {
@@ -13282,6 +16358,14 @@ message ListBackgroundComposerSecretsRequest {
 
 message ListBackgroundComposerSecretsResponse {
   repeated ListBackgroundComposerSecretsResponse.Secret secrets = 1;
+  message Secret {
+    string name = 1;
+    double created_at = 2;
+    repeated string scoped_to_repos = 3;
+    BackgroundComposerSecretLevel level = 4;
+    int32 id = 5;
+    BackgroundComposerSecretOwner owner = 6;
+  }
 }
 
 message CreateBackgroundComposerSecretRequest {
@@ -13305,10 +16389,33 @@ message CreateBackgroundComposerSecretBatchRequest {
   bool team_scope = 2;
   repeated string scoped_to_repos = 3;
   BackgroundComposerSecretOwner owner = 4;
+  message Secret {
+    string name = 1;
+    string value = 2;
+    BackgroundComposerSecretLevel level = 3;
+  }
 }
 
 message CreateBackgroundComposerSecretBatchResponse {
   repeated CreateBackgroundComposerSecretBatchResponse.Result results = 1;
+  message Result {
+    string name = 1;
+    CreateBackgroundComposerSecretBatchResponse.Status status = 2;
+    optional string error_message = 3;
+    optional CreateBackgroundComposerSecretBatchResponse.ErrorType error_type = 4;
+  }
+  enum Status {
+    STATUS_UNSPECIFIED = 0;
+    STATUS_CREATED = 1;
+    STATUS_UPDATED = 2;
+    STATUS_ERROR = 3;
+  }
+  enum ErrorType {
+    ERROR_TYPE_UNSPECIFIED = 0;
+    ERROR_TYPE_BAD_REQUEST = 1;
+    ERROR_TYPE_UNAUTHORIZED = 2;
+    ERROR_TYPE_INTERNAL = 3;
+  }
 }
 
 message RevokeBackgroundComposerSecretRequest {
@@ -13380,6 +16487,30 @@ message GetAvailableMcpServersRequest {
 
 message GetAvailableMcpServersResponse {
   repeated GetAvailableMcpServersResponse.McpServerInfo servers = 1;
+  message McpServerInfo {
+    int32 id = 1;
+    string name = 2;
+    bool is_team_server = 3;
+    bool enabled = 4;
+    string type = 5;
+    optional string command = 6;
+    repeated string args = 7;
+    optional string url = 8;
+    optional int64 plugin_id = 9;
+    bool is_unseen = 10;
+    optional bool user_has_access_token = 11;
+    bool is_required = 12;
+    bool managed_by_team_plugin_policy = 13;
+    bool disabled_by_team_admin_policy = 14;
+    optional string server_identifier = 15;
+    optional int32 owning_team_id = 16;
+    repeated GetAvailableMcpServersResponse.McpAccountInfo accounts = 17;
+  }
+  message McpAccountInfo {
+    string account_key = 1;
+    string server_identifier = 2;
+    bool user_has_access_token = 3;
+  }
 }
 
 message GetMcpServerUsageSummaryRequest {
@@ -13482,6 +16613,12 @@ message GetMcpOAuthTokensRequest {
 
 message GetMcpOAuthTokensResponse {
   repeated GetMcpOAuthTokensResponse.Entry entries = 1;
+  message Entry {
+    string server_url = 1;
+    McpOAuthStoredData token_data = 2;
+    int64 updated_at_ms = 3;
+    string account_key = 4;
+  }
 }
 
 message ListSandMcpToolsRequest {
@@ -13492,6 +16629,14 @@ message ListSandMcpToolsRequest {
 
 message ListSandMcpToolsResponse {
   repeated ListSandMcpToolsResponse.Server servers = 1;
+  message Server {
+    string server_identifier = 1;
+    string status = 2;
+    repeated agent.v1.McpToolDefinition tools = 3;
+    string account_label = 4;
+    string row_server_identifier = 5;
+    McpServedBy served_by = 6;
+  }
 }
 
 message ExecuteSandMcpToolRequest {
@@ -13530,6 +16675,33 @@ message SandAuditEvent {
     SandAuditEvent.ShellCommand shell_command = 7;
     SandAuditEvent.BrowserNavigation browser_navigation = 8;
     SandAuditEvent.ComputerUseSession computer_use_session = 9;
+  }
+  message McpToolCall {
+    string tool_call_id = 1;
+    string server_identifier = 2;
+    string server_name = 3;
+    string tool_name = 4;
+    string status = 5;
+    int64 duration_ms = 6;
+  }
+  message ShellCommand {
+    string command = 1;
+    string kind = 2;
+    string target = 3;
+    bool allowed = 4;
+    string blocked_reason = 5;
+    repeated string classification_reasons = 6;
+  }
+  message BrowserNavigation {
+    string url = 1;
+    string page_title = 2;
+  }
+  message ComputerUseSession {
+    string tool_call_id = 1;
+    int64 action_count = 2;
+    map<string, int64> action_counts = 3;
+    int64 duration_ms = 4;
+    int64 screenshot_count = 5;
   }
 }
 
@@ -13585,10 +16757,19 @@ message ValidateMcpOAuthTokensRequest {
   repeated string server_urls = 1;
   optional string service_account_id = 2;
   repeated ValidateMcpOAuthTokensRequest.Target targets = 3;
+  message Target {
+    string server_url = 1;
+    string account_key = 2;
+  }
 }
 
 message ValidateMcpOAuthTokensResponse {
   repeated ValidateMcpOAuthTokensResponse.Result results = 1;
+  message Result {
+    string server_url = 1;
+    bool has_valid_token = 2;
+    string account_key = 3;
+  }
 }
 
 message CheckHttpMcpStatusRequest {
@@ -13604,6 +16785,14 @@ message CheckHttpMcpStatusRequest {
 
 message CheckHttpMcpStatusResponse {
   repeated CheckHttpMcpStatusResponse.ServerStatus statuses = 1;
+  message ServerStatus {
+    int32 id = 1;
+    bool is_available = 2;
+    bool requires_auth = 3;
+    optional string auth_url = 4;
+    optional string error = 5;
+    bool has_valid_token = 6;
+  }
 }
 
 message StoreMcpOAuthPendingStateRequest {
@@ -13748,6 +16937,12 @@ message GetPricingHistoryRequest {
 
 message GetPricingHistoryResponse {
   repeated GetPricingHistoryResponse.PricingDescription pricing_history = 1;
+  message PricingDescription {
+    string description = 1;
+    string id = 2;
+    string changelog = 3;
+    int64 created_at = 4;
+  }
 }
 
 message ListInvoiceCyclesRequest {
@@ -13783,6 +16978,14 @@ message GetMonthlyInvoiceResponse {
   int32 last_hard_limit_cents = 6;
   int64 period_start_ms = 7;
   int64 period_end_ms = 8;
+  message InvoiceItem {
+    string description = 1;
+    int32 cents = 2;
+  }
+  message PricingDescription {
+    string description = 1;
+    string id = 2;
+  }
 }
 
 message GetHardLimitRequest {
@@ -14011,6 +17214,11 @@ message ActivatePromotionResponse {
   ActivatePromotionResponse.ActivationType type = 1;
   optional string checkout_url = 2;
   optional bool success = 3;
+  enum ActivationType {
+    ACTIVATION_TYPE_UNSPECIFIED = 0;
+    ACTIVATION_TYPE_CHECKOUT = 1;
+    ACTIVATION_TYPE_SUBSCRIPTION = 2;
+  }
 }
 
 message GetTeamCustomerPortalUrlRequest {
@@ -14726,10 +17934,27 @@ message GetSignUpTypeRequest {
 
 message GetSignUpTypeResponse {
   GetSignUpTypeResponse.SignUpType sign_up_type = 1;
+  enum SignUpType {
+    SIGN_UP_TYPE_UNSPECIFIED = 0;
+    SIGN_UP_TYPE_AUTH_0 = 1;
+    SIGN_UP_TYPE_GOOGLE = 2;
+    SIGN_UP_TYPE_GITHUB = 3;
+    SIGN_UP_TYPE_WORKOS = 4;
+    SIGN_UP_TYPE_GROK = 5;
+    SIGN_UP_TYPE_X = 6;
+  }
 }
 
 message GetDownloadLinkRequest {
   GetDownloadLinkRequest.Platform platform = 1;
+  enum Platform {
+    PLATFORM_UNSPECIFIED = 0;
+    PLATFORM_MAC_APPLE_SILICON = 1;
+    PLATFORM_MAC_INTEL = 2;
+    PLATFORM_MAC_UNIVERSAL = 3;
+    PLATFORM_WINDOWS = 4;
+    PLATFORM_LINUX = 5;
+  }
 }
 
 message GetDownloadLinkResponse {
@@ -14980,6 +18205,15 @@ message GetTeamReposResponse {
   string team_repo_type = 2;
   repeated GetTeamReposResponse.Repo allowed_repos = 3;
   bool disable_local_exec_allowlist_enforcement = 4;
+  message Repo {
+    int32 id = 1;
+    string url = 2;
+    repeated GetTeamReposResponse.Pattern patterns = 3;
+  }
+  message Pattern {
+    int32 id = 1;
+    string pattern = 2;
+  }
 }
 
 message CreateTeamRepoRequest {
@@ -15176,6 +18410,11 @@ message ResolvePrCreationForgeResponse {
   ResolvePrCreationForgeResponse.PrCreationForge forge = 1;
   string repo_url = 2;
   bool switched = 3;
+  enum PrCreationForge {
+    PR_CREATION_FORGE_UNSPECIFIED = 0;
+    PR_CREATION_FORGE_GITHUB = 1;
+    PR_CREATION_FORGE_ORIGIN = 2;
+  }
 }
 
 message BackgroundAgentSettings {
@@ -15210,6 +18449,12 @@ message DataRetentionPolicy {
   oneof kind {
     DataRetentionPolicy.Indefinite indefinite = 1;
     DataRetentionPolicy.Limited limited = 2;
+  }
+  message Indefinite {
+    uint32 hours = 1;
+  }
+  message Limited {
+    uint32 hours = 1;
   }
 }
 
@@ -15340,6 +18585,10 @@ message AttributionControls {
 message TeamAdminModelRef {
   string model_id = 1;
   repeated TeamAdminModelRef.ModelParameterValue parameters = 2;
+  message ModelParameterValue {
+    string id = 1;
+    string value = 2;
+  }
 }
 
 message TeamAdminNewChatModelResetRule {
@@ -15441,6 +18690,17 @@ message ModelAllowlist {
   optional bool can_set_first_party_default_manually = 7;
   optional int64 new_first_party_model_default_enabled_at = 8;
   repeated FirstPartyPendingModel first_party_pending_models = 9;
+  enum DefaultBehavior {
+    DEFAULT_BEHAVIOR_UNSPECIFIED = 0;
+    DEFAULT_BEHAVIOR_ENABLED = 1;
+    DEFAULT_BEHAVIOR_DISABLED = 2;
+  }
+  enum FirstPartyModelDefault {
+    FIRST_PARTY_MODEL_DEFAULT_UNSPECIFIED = 0;
+    FIRST_PARTY_MODEL_DEFAULT_IMMEDIATELY = 1;
+    FIRST_PARTY_MODEL_DEFAULT_AFTER_7_DAYS = 2;
+    FIRST_PARTY_MODEL_DEFAULT_MANUALLY = 3;
+  }
 }
 
 message FirstPartyPendingModel {
@@ -16001,6 +19261,10 @@ message GetClientUsageDataRequest {
 
 message GetClientUsageDataResponse {
   repeated GetClientUsageDataResponse.NameToCost items_with_cost = 1;
+  message NameToCost {
+    string name = 1;
+    int32 cost_in_cents = 2;
+  }
 }
 
 message GetCurrentPeriodUsageRequest {
@@ -16020,6 +19284,39 @@ message GetCurrentPeriodUsageResponse {
   optional string auto_model_selected_display_message = 11;
   optional string named_model_selected_display_message = 12;
   repeated string auto_bucket_models = 13;
+  message PlanUsage {
+    int32 total_spend = 1;
+    int32 included_spend = 2;
+    int32 bonus_spend = 3;
+    int32 remaining = 4;
+    int32 limit = 5;
+    optional bool remaining_bonus = 6;
+    optional string bonus_tooltip = 7;
+    optional int32 auto_spend = 8;
+    optional int32 api_spend = 9;
+    optional int32 auto_limit = 10;
+    optional int32 api_limit = 11;
+    optional double auto_percent_used = 12;
+    optional double api_percent_used = 13;
+    optional double total_percent_used = 14;
+  }
+  message SpendLimitUsage {
+    int32 total_spend = 1;
+    optional int32 pooled_limit = 2;
+    optional int32 pooled_used = 3;
+    optional int32 pooled_remaining = 4;
+    optional int32 individual_limit = 5;
+    int32 individual_used = 6;
+    int32 individual_remaining = 7;
+    string limit_type = 8;
+    optional int32 overall_limit = 9;
+    optional int32 overall_used = 10;
+    optional int32 overall_remaining = 11;
+  }
+  message FreeBestOfNPromotion {
+    int32 trials_used = 1;
+    int32 trials_remaining = 2;
+  }
 }
 
 message UseSandBankedResetRequest {
@@ -16068,6 +19365,30 @@ message GetSandAccessStatusResponse {
   bool privacy_disclaimer_required = 9;
   bool can_skip_onboarding = 10;
   bool pro_and_super_grok_plans_grant_access = 11;
+  enum SandAccessState {
+    SAND_ACCESS_STATE_UNSPECIFIED = 0;
+    SAND_ACCESS_STATE_GRANTED = 1;
+    SAND_ACCESS_STATE_UNAVAILABLE = 2;
+    SAND_ACCESS_STATE_PAYMENT_REQUIRED = 3;
+  }
+  enum SandPurchaseChannel {
+    SAND_PURCHASE_CHANNEL_UNSPECIFIED = 0;
+    SAND_PURCHASE_CHANNEL_IN_APP = 1;
+    SAND_PURCHASE_CHANNEL_MANAGE_IN_CURSOR = 2;
+    SAND_PURCHASE_CHANNEL_MANAGE_ON_WEB = 3;
+  }
+  enum SandAccessBlockReason {
+    SAND_ACCESS_BLOCK_REASON_UNSPECIFIED = 0;
+    SAND_ACCESS_BLOCK_REASON_NONE = 1;
+    SAND_ACCESS_BLOCK_REASON_TEAM_PRIVACY_MODE = 2;
+    SAND_ACCESS_BLOCK_REASON_TEAM_SETUP_REQUIRED = 3;
+    SAND_ACCESS_BLOCK_REASON_TEAM_ACCESS_REQUIRED = 4;
+    SAND_ACCESS_BLOCK_REASON_NOT_OFFERED = 5;
+    SAND_ACCESS_BLOCK_REASON_FREE_TRIAL_AVAILABLE = 6;
+    SAND_ACCESS_BLOCK_REASON_PAYWALL_INDIVIDUAL = 7;
+    SAND_ACCESS_BLOCK_REASON_PAYWALL_TEAM_MEMBER = 8;
+    SAND_ACCESS_BLOCK_REASON_PAYWALL_TEAM_ADMIN = 9;
+  }
 }
 
 message RegisterSandMachineRequest {
@@ -16207,6 +19528,13 @@ message StartSandTrialResponse {
     StartSandTrialResponse.Activated activated = 1;
     StartSandTrialResponse.CardVerificationRequired card_verification_required = 2;
   }
+  message Activated {
+    int32 amount_cents = 1;
+    google.protobuf.Timestamp expires_at = 2;
+  }
+  message CardVerificationRequired {
+    string checkout_url = 1;
+  }
 }
 
 message IsEligibleForSandTrialRequest {
@@ -16231,6 +19559,14 @@ message GetSandTrialClaimStatusRequest {
 
 message GetSandTrialClaimStatusResponse {
   GetSandTrialClaimStatusResponse.SandTrialClaimStatus status = 1;
+  enum SandTrialClaimStatus {
+    SAND_TRIAL_CLAIM_STATUS_UNSPECIFIED = 0;
+    SAND_TRIAL_CLAIM_STATUS_NONE = 1;
+    SAND_TRIAL_CLAIM_STATUS_PENDING_CARD = 2;
+    SAND_TRIAL_CLAIM_STATUS_GRANTED = 3;
+    SAND_TRIAL_CLAIM_STATUS_REJECTED_DUPLICATE_CARD = 4;
+    SAND_TRIAL_CLAIM_STATUS_BLOCKED = 5;
+  }
 }
 
 message GetPlanInfoRequest {
@@ -16241,6 +19577,25 @@ message GetPlanInfoRequest {
 message GetPlanInfoResponse {
   optional GetPlanInfoResponse.PlanInfo plan_info = 1;
   optional GetPlanInfoResponse.NextUpgrade next_upgrade = 2;
+  message PlanInfo {
+    string plan_name = 1;
+    int32 included_amount_cents = 2;
+    optional string price = 3;
+    optional int64 billing_cycle_end = 4;
+    GetPlanInfoResponse.PlanInfo.PlanOwner plan_owner = 5;
+    enum PlanOwner {
+      PLAN_OWNER_UNSPECIFIED = 0;
+      PLAN_OWNER_STRIPE = 1;
+      PLAN_OWNER_APPLE = 2;
+    }
+  }
+  message NextUpgrade {
+    string tier = 1;
+    string name = 2;
+    int32 included_amount_cents = 3;
+    string price = 4;
+    string description = 5;
+  }
 }
 
 message VerifyAppleTransactionRequest {
@@ -16296,6 +19651,20 @@ message GetCursorReviewEntitlementResponse {
   optional string team_name = 6;
   optional CursorReviewEntitlementScope scope = 7;
   bool eligible_for_origin_review = 8;
+  enum BillingContext {
+    BILLING_CONTEXT_UNSPECIFIED = 0;
+    BILLING_CONTEXT_INDIVIDUAL = 1;
+    BILLING_CONTEXT_TEAM = 2;
+    BILLING_CONTEXT_ENTERPRISE = 3;
+  }
+  enum Reason {
+    REASON_UNSPECIFIED = 0;
+    REASON_OK = 1;
+    REASON_REQUIRES_TEAM_OR_ENTERPRISE = 2;
+    REASON_CURSOR_REVIEW_DISABLED = 3;
+    REASON_REQUIRES_PAID_PLAN = 4;
+    REASON_CURSOR_IDENTITY_UNAVAILABLE = 5;
+  }
 }
 
 message SearchOriginReviewPeopleRequest {
@@ -16355,6 +19724,10 @@ message AllowedModelSelection {
   string model_id = 1;
   optional bool max_mode = 2;
   repeated Unresolved__4u parameters = 3;
+  message ModelParameterValue {
+    string id = 1;
+    string value = 2;
+  }
 }
 
 message GetUsageLimitPolicyStatusResponse {
@@ -16415,6 +19788,32 @@ message GetUsageLimitStatusAndActiveGrantsResponse {
   repeated ActiveCreditGrant active_grants = 2;
   optional ThirdPartyUsageNudge third_party_usage_nudge = 3;
   optional ModelRecommendationNudge model_recommendation_nudge = 4;
+  message UsageLimitPolicyStatus {
+    bool is_in_slow_pool = 1;
+    optional string error_title = 2;
+    optional string error_detail = 3;
+    optional int32 slowness_ms = 4;
+    map<string, string> features = 5;
+    bool can_configure_spend_limit = 6;
+    optional string limit_type = 7;
+    bool has_pending_request = 8;
+    repeated string allowed_model_ids = 9;
+    repeated string allowed_model_tags = 10;
+    optional ErrorButton primary_button = 11;
+    LimitHitStage stage = 12;
+    optional string tray_label = 13;
+    optional string tray_description = 14;
+    optional string cta_label = 15;
+    optional bool dismissible = 16;
+    optional int64 reset_at_ms = 17;
+    optional int32 reset_days_remaining = 18;
+    optional bool can_adjust_on_demand = 19;
+    optional int64 recommended_on_demand_limit_cents = 20;
+    optional int64 on_demand_min_cents = 21;
+    optional int64 on_demand_max_cents = 22;
+    optional int64 current_on_demand_limit_cents = 23;
+    repeated AllowedModelSelection allowed_model_selections = 24;
+  }
 }
 
 message ModelRecommendationNudge {
@@ -16534,6 +19933,28 @@ message GetTeamSpendResponse {
   optional bool has_any_spend_limit_overrides = 11;
   optional bool has_any_free_usage = 12;
   optional bool self_serve_tiered_pricing_enabled = 13;
+  message TeamMemberSpend {
+    int32 user_id = 1;
+    int32 spend_cents = 2;
+    int32 fast_premium_requests = 3;
+    string name = 4;
+    string email = 5;
+    TeamRole role = 6;
+    int32 hard_limit_override_dollars = 7;
+    optional int32 included_spend_cents = 8;
+    optional int32 overall_spend_cents = 9;
+    optional int32 monthly_limit_dollars = 10;
+    optional int64 removed_at = 11;
+    optional int32 effective_per_user_limit_dollars = 12;
+    optional string profile_picture_url = 13;
+    optional TeamMemberBillingTier billing_tier = 14;
+    optional double auto_percent_used = 15;
+    optional double api_percent_used = 16;
+    optional double total_percent_used = 17;
+    optional int64 usage_promo_expires_at = 18;
+    optional int32 first_party_models_additional_budget_dollars = 19;
+    optional bool first_party_models_additional_budget_unlimited = 20;
+  }
 }
 
 message GetTeamSeatUpgradeRecommendationsRequest {
@@ -16719,6 +20140,34 @@ message GetGithubInstallationsResponse {
   repeated string sso_required_org_display_names = 8;
   optional string github_app_slug = 9;
   optional int32 repo_picker_search_debounce_ms = 10;
+  message Repository {
+    int64 installation_id = 1;
+    string repo_node_id = 2;
+    string owner = 3;
+    string name = 4;
+    string html_url = 5;
+    RepoSettings settings = 6;
+    bool archived = 7;
+    optional string bugbot_enabled_by_team_name = 8;
+  }
+  message Installation {
+    int64 installation_id = 1;
+    repeated GetGithubInstallationsResponse.Repository repos = 2;
+    InstallationSettings settings = 3;
+    bool can_modify = 4;
+    bool has_more_repos = 5;
+    optional int32 total_pages = 6;
+    optional string access_error = 7;
+    optional bool needs_team_scope = 9;
+    bool can_modify_installation_settings = 10;
+    optional string account_login = 11;
+    optional BugbotAutofixCapabilities autofix_capabilities = 12;
+    optional bool team_owned = 13;
+    optional BugbotSettingsCapabilities settings_capabilities = 14;
+    optional bool azure_devops_managed = 15;
+    optional BugbotSetupActionRequired setup_action_required = 16;
+    optional bool can_share_with_other_teams = 17;
+  }
 }
 
 message GetGithubInstallationTenantGrantsRequest {
@@ -16728,6 +20177,12 @@ message GetGithubInstallationTenantGrantsRequest {
 
 message GetGithubInstallationTenantGrantsResponse {
   repeated GetGithubInstallationTenantGrantsResponse.Team teams = 1;
+  message Team {
+    int32 team_id = 1;
+    string team_name = 2;
+    bool granted = 3;
+    bool stale = 4;
+  }
 }
 
 message GrantGithubInstallationTenantRequest {
@@ -16755,6 +20210,14 @@ message RevokeGithubInstallationTenantResponse {
 message GetBugbotSuggestedReposResponse {
   repeated GetBugbotSuggestedReposResponse.SuggestedRepo repos = 1;
   bool can_enable = 2;
+  message SuggestedRepo {
+    int64 installation_id = 1;
+    string repo_node_id = 2;
+    string owner = 3;
+    string name = 4;
+    string html_url = 5;
+    int32 pr_count_last_week = 6;
+  }
 }
 
 message InstallationSettings {
@@ -16860,6 +20323,14 @@ message UpdateAllGithubRepoSettingsRequest {
 message UpdateAllGithubRepoSettingsFailure {
   string repo_node_id = 1;
   UpdateAllGithubRepoSettingsFailure.Reason reason = 2;
+  enum Reason {
+    REASON_UNSPECIFIED = 0;
+    REASON_INTERNAL = 1;
+    REASON_BITBUCKET_WORKSPACE_UNLINKED = 2;
+    REASON_BITBUCKET_WORKSPACE_LINKED_TO_OTHER_TEAM = 3;
+    REASON_BITBUCKET_WORKSPACE_CONNECTION_UNVERIFIABLE = 4;
+    REASON_BUGBOT_ENABLED_BY_OTHER_TEAM = 5;
+  }
 }
 
 message UpdateAllGithubRepoSettingsResponse {
@@ -16874,6 +20345,11 @@ message UpdateSelfGithubAllowlistRequest {
   int64 installation_id = 1;
   UpdateSelfGithubAllowlistRequest.Operation operation = 2;
   optional string ghe_application = 4;
+  enum Operation {
+    OPERATION_UNSPECIFIED = 0;
+    OPERATION_ADD = 1;
+    OPERATION_REMOVE = 2;
+  }
 }
 
 message UpdateSelfGithubAllowlistResponse {
@@ -16935,6 +20411,10 @@ message GetUserAdminOrganizationsRequest {
 
 message GetUserAdminOrganizationsResponse {
   repeated GetUserAdminOrganizationsResponse.Organization organizations = 1;
+  message Organization {
+    string login = 1;
+    string hostname = 2;
+  }
 }
 
 message GetTeamGithubUsersRequest {
@@ -17335,6 +20815,14 @@ message RecordBugbotDeeplinkEventRequest {
   string bug_id = 1;
   RecordBugbotDeeplinkEventRequest.BugbotDeeplinkEvent event = 2;
   optional string comment_id = 3;
+  enum BugbotDeeplinkEvent {
+    BUGBOT_DEEPLINK_EVENT_UNSPECIFIED = 0;
+    BUGBOT_DEEPLINK_EVENT_CLICKED = 1;
+    BUGBOT_DEEPLINK_EVENT_HANDLED_DIALOG_SHOWN = 2;
+    BUGBOT_DEEPLINK_EVENT_HANDLED_CHAT_CREATED = 3;
+    BUGBOT_DEEPLINK_EVENT_ERROR = 4;
+    BUGBOT_DEEPLINK_EVENT_HANDLED_FIX_IN_WEB = 5;
+  }
 }
 
 message RecordBugbotDeeplinkEventResponse {
@@ -17389,6 +20877,16 @@ message GetAggregatedUsageEventsResponse {
   double total_cost_cents = 6;
   double percent_of_burst_used = 7;
   optional double total_request_cost = 8;
+  message ModelUsageAggregation {
+    string model_intent = 1;
+    int64 input_tokens = 2;
+    int64 output_tokens = 3;
+    int64 cache_write_tokens = 4;
+    int64 cache_read_tokens = 5;
+    double total_cents = 6;
+    optional double request_cost = 7;
+    optional int32 tier = 8;
+  }
 }
 
 message GetAuditLogsRequest {
@@ -17720,6 +21218,12 @@ message SetTeamMemberNoZdrModelConsentResponse {
 message GetNoZdrModelConsentStatusRequest {
   GetNoZdrModelConsentStatusRequest.Scope scope = 1;
   int32 team_id = 2;
+  enum Scope {
+    SCOPE_UNSPECIFIED = 0;
+    SCOPE_TEAM = 1;
+    SCOPE_TEAM_MEMBER = 2;
+    SCOPE_USER = 3;
+  }
 }
 
 message NoZdrModelConsentStatusEntry {
@@ -18386,6 +21890,13 @@ message LogSlackbotAuthConversionFunnelResponse {
 message LogClickedConnectSlackRequest {
   LogClickedConnectSlackRequest.Origin origin = 1;
   bool skip_setup_flow = 2;
+  enum Origin {
+    ORIGIN_UNSPECIFIED = 0;
+    ORIGIN_APP = 1;
+    ORIGIN_WEBSITE = 2;
+    ORIGIN_SLACK = 3;
+    ORIGIN_PUBLIC_URL = 4;
+  }
 }
 
 message LogClickedConnectSlackResponse {
@@ -19134,6 +22645,24 @@ message GetBugbotMergedPrScanSummaryResponse {
   int32 bugs_found = 6;
   repeated GetBugbotMergedPrScanSummaryResponse.Finding findings = 7;
   int32 total_merged_prs = 8;
+  message Finding {
+    string description = 1;
+    string severity = 2;
+    string category = 3;
+    string repo_owner = 4;
+    string repo_name = 5;
+    int32 pr_number = 6;
+    string pr_url = 7;
+    string file = 8;
+    int32 start_line = 9;
+    int32 end_line = 10;
+    repeated string code_lines = 11;
+    string installation_id = 12;
+    string repo_node_id = 13;
+    int64 pr_merged_at_epoch_millis = 14;
+    string pr_title = 15;
+    string diff_hunk = 16;
+  }
 }
 
 message BugbotModePrompt {
@@ -21301,6 +24830,10 @@ message SetTeamMarketplacePluginPoliciesRequest {
   int64 marketplace_id = 1;
   repeated SetTeamMarketplacePluginPoliciesRequest.Policy policies = 2;
   optional int32 team_id = 3;
+  message Policy {
+    int64 plugin_id = 1;
+    TeamMarketplacePluginInstallMode install_mode = 2;
+  }
 }
 
 message SetTeamMarketplacePluginPoliciesResponse {
@@ -21353,10 +24886,21 @@ message PreviewTeamMarketplaceMcpImpactRequest {
     PreviewTeamMarketplaceMcpImpactRequest.SetPoliciesPreview set_policies = 3;
     PreviewTeamMarketplaceMcpImpactRequest.RemoveMarketplacePreview remove_marketplace = 4;
   }
+  message SetPoliciesPreview {
+    repeated SetTeamMarketplacePluginPoliciesRequest.Policy policies = 1;
+  }
+  message RemoveMarketplacePreview {
+    repeated PreviewTeamMarketplaceMcpImpactResponse.ImpactedPlugin impacted_plugins = 1;
+  }
 }
 
 message PreviewTeamMarketplaceMcpImpactResponse {
   repeated PreviewTeamMarketplaceMcpImpactResponse.ImpactedPlugin impacted_plugins = 1;
+  message ImpactedPlugin {
+    int64 plugin_id = 1;
+    string plugin_name = 2;
+    repeated string mcp_server_names = 3;
+  }
 }
 
 message GetPullRequestForBranchRequest {
@@ -23538,6 +27082,27 @@ message AgentStartupTraceEvent {
     AgentStartupTraceEvent.TurnClose turn_close = 5;
     AgentStartupTraceEvent.ContextLink context_link = 6;
   }
+  message ContextLink {
+    string name = 1;
+    string href = 2;
+  }
+  message SpanStarted {
+    string span_id = 1;
+    string name = 2;
+    optional string parent_span_id = 3;
+    optional string href = 4;
+    optional string temporal_run_id = 5;
+    optional string temporal_activity_id = 6;
+  }
+  message SpanEnded {
+    string span_id = 1;
+  }
+  message UserAction {
+    uint32 turn_index = 1;
+  }
+  message TurnClose {
+    uint32 turn_index = 1;
+  }
 }
 
 message UpdateBackgroundComposerEnvironmentRequest {
@@ -23561,6 +27126,11 @@ message GetOptimizedDiffDetailsRequest {
 message GetOptimizedDiffDetailsResponse {
   GitDiff diff = 1;
   repeated GetOptimizedDiffDetailsResponse.SubmoduleDiff submodule_diffs = 2;
+  message SubmoduleDiff {
+    string relative_path = 1;
+    GitDiff diff = 2;
+    bool errored = 3;
+  }
 }
 
 message NotifyBackgroundComposerShownRequest {
@@ -23603,6 +27173,11 @@ message PublishBackgroundComposerTempRepoRequest {
   string bc_id = 1;
   string new_name = 2;
   PublishBackgroundComposerTempRepoRequest.Visibility visibility = 3;
+  enum Visibility {
+    VISIBILITY_UNSPECIFIED = 0;
+    VISIBILITY_PRIVATE = 1;
+    VISIBILITY_INTERNAL = 2;
+  }
 }
 
 message PublishBackgroundComposerTempRepoResponse {
@@ -23786,6 +27361,10 @@ message AttachBackgroundComposerPodRequest {
 message AttachBackgroundComposerPodResponse {
   AttachBackgroundComposerPodResponse.Event event = 1;
   anyrun.v1.PodStatus updated_status = 2;
+  message Event {
+    string event_id = 1;
+    anyrun.v1.PodEvent event = 2;
+  }
 }
 
 message CreateBackgroundComposerPodSnapshotRequest {
@@ -23802,6 +27381,13 @@ message ChangeBackgroundComposerSnapshotVisibilityRequest {
   string snapshot_id = 1;
   ChangeBackgroundComposerSnapshotVisibilityRequest.Visibility visibility = 2;
   string repo_url = 3;
+  enum Visibility {
+    VISIBILITY_UNSPECIFIED = 0;
+    VISIBILITY_USER = 1;
+    VISIBILITY_REPO_READ_WRITE = 2;
+    VISIBILITY_PUBLIC = 4;
+    VISIBILITY_TEAM = 5;
+  }
 }
 
 message ChangeBackgroundComposerSnapshotVisibilityResponse {
@@ -24209,6 +27795,10 @@ message GetCursorServerUrlResponse {
   int32 port = 2;
   string connection_token = 3;
   repeated GetCursorServerUrlResponse.Header headers = 4;
+  message Header {
+    string key = 1;
+    string value = 2;
+  }
 }
 
 message WarmCursorServerDownloadRequest {
@@ -24581,6 +28171,12 @@ message GrindModeConfig {
   optional bool auto_proceed_after_planning = 4;
   optional int64 time_budget_seconds = 5;
   optional bool grind_prompt_calibrate_effort = 6;
+  enum Phase {
+    PHASE_UNSPECIFIED = 0;
+    PHASE_PLANNING = 1;
+    PHASE_EXECUTING = 2;
+    PHASE_CONTROLLER = 3;
+  }
 }
 
 message AdmittedCustomModeState {
@@ -24706,6 +28302,14 @@ message StartBackgroundComposerFromSnapshotRequest {
   optional string same_vm_machine_owner_bc_id = 126;
   optional string manager_bc_id = 127;
   optional string manager_tool_call_id = 128;
+  message File {
+    string relative_workspace_path = 1;
+    string contents = 2;
+  }
+  message WebhookConfig {
+    string url = 1;
+    optional string secret = 2;
+  }
 }
 
 message GrokBotHandoffLineage {
@@ -24755,6 +28359,11 @@ message AttachBackgroundComposerLogsResponse {
   AttachBackgroundComposerLogsResponse.Event event = 1;
   anyrun.v1.PodStatus updated_status = 2;
   ErrorDetails start_error = 3;
+  message Event {
+    string event_id = 1;
+    anyrun.v1.PodEvent event = 2;
+    WaterfallUpdate waterfall_update = 3;
+  }
 }
 
 message AttachBackgroundComposerRequest {
@@ -24797,6 +28406,11 @@ message PreFetchedBlobFilter {
 
 message ReadOnlySharedPodLifecycleEvent {
   ReadOnlySharedPodLifecycleEvent.Phase phase = 1;
+  enum Phase {
+    PHASE_UNSPECIFIED = 0;
+    PHASE_AWAITING_FULL_POD = 2;
+    PHASE_INACTIVE = 3;
+  }
 }
 
 message WorkerLifecycleEvent {
@@ -24825,6 +28439,59 @@ message StreamConversationResponse {
     StreamConversationResponse.InteractionQueryWithOffset interaction_query_with_offset = 12;
     StreamConversationResponse.ReadOnlySharedPodLifecycleEventWithOffset read_only_shared_pod_lifecycle_event_with_offset = 13;
     StreamConversationResponse.StreamHeartbeat stream_heartbeat = 14;
+  }
+  message PrefetchedBlobs {
+    repeated PreFetchedBlob pre_fetched_blobs = 1;
+  }
+  message InitialState {
+    bytes blob_id = 1;
+    CloudAgentState cloud_agent_state = 2;
+    repeated PreFetchedBlob pre_fetched_blobs = 4;
+    CloudAgentWorkflowStatus workflow_status = 5;
+    repeated agent.v1.UserDisplayInfo user_display_infos = 6;
+  }
+  message CloudAgentStateWithIdAndOffset {
+    string offset_key = 1;
+    bytes blob_id = 2;
+    CloudAgentState cloud_agent_state = 3;
+    repeated PreFetchedBlob pre_fetched_blobs = 4;
+    repeated agent.v1.UserDisplayInfo user_display_infos = 5;
+  }
+  message InteractionUpdateWithOffset {
+    string offset_key = 1;
+    agent.v1.InteractionUpdate interaction_update = 2;
+    repeated agent.v1.UserDisplayInfo user_display_infos = 3;
+  }
+  message InteractionQueryWithOffset {
+    string offset_key = 1;
+    agent.v1.InteractionQuery interaction_query = 2;
+  }
+  message WorkflowStatusWithOffset {
+    string offset_key = 1;
+    CloudAgentWorkflowStatus workflow_status = 2;
+  }
+  message TransientErrorWithOffset {
+    string offset_key = 1;
+    TransientError transient_error = 2;
+  }
+  message DevBannerMessage {
+    string text = 1;
+  }
+  message StreamHeartbeat {
+    string offset_key = 1;
+    WorkerLifecycleEvent worker_lifecycle_event = 2;
+  }
+  message WorkerLifecycleEventWithOffset {
+    string offset_key = 1;
+    WorkerLifecycleEvent worker_lifecycle_event = 2;
+  }
+  message ReadOnlySharedPodLifecycleEventWithOffset {
+    string offset_key = 1;
+    ReadOnlySharedPodLifecycleEvent read_only_shared_pod_lifecycle_event = 2;
+  }
+  enum StreamSignal {
+    STREAM_SIGNAL_UNSPECIFIED = 0;
+    STREAM_SIGNAL_END_OF_INITIAL_STATE_PREFETCH = 1;
   }
 }
 
@@ -24865,6 +28532,28 @@ message HeadlessAgenticComposerResponse {
   optional int32 thinking_duration_ms = 10;
   optional HeadlessAgenticComposerResponse.Status status = 11;
   optional ConversationMessage.ThinkingStyle thinking_style = 12;
+  message UserMessage {
+    string text = 1;
+    string rich_text = 2;
+  }
+  message FinalToolResult {
+    string tool_call_id = 1;
+    ClientSideToolV2Result result = 2;
+  }
+  message Error {
+    string message = 1;
+    ErrorDetails error_details = 2;
+  }
+  message Status {
+    HeadlessAgenticComposerResponse.Status.StatusType type = 1;
+    string message = 2;
+    bool is_complete = 3;
+    enum StatusType {
+      STATUS_TYPE_UNSPECIFIED = 0;
+      STATUS_TYPE_INDEX_SYNC = 1;
+      STATUS_TYPE_GENERIC = 2;
+    }
+  }
 }
 
 message HeadlessAgenticComposerRepositoryInfo {
@@ -24889,6 +28578,13 @@ message HeadlessAgenticComposerPrompt {
   optional bool use_web = 9;
   repeated ComposerExternalLink external_links = 10;
   repeated internapi.v1.BlobDataPerMessage blob_data_per_message = 11;
+  message FileSelection {
+    string relative_workspace_path = 1;
+  }
+  message FileAttachment {
+    string name = 1;
+    string contents = 2;
+  }
 }
 
 message GetBackgroundComposerStatusRequest {
@@ -24940,6 +28636,12 @@ message InjectBackgroundComposerContextRequest {
 
 message InjectBackgroundComposerContextResponse {
   InjectBackgroundComposerContextResponse.Outcome outcome = 1;
+  enum Outcome {
+    OUTCOME_UNSPECIFIED = 0;
+    OUTCOME_QUEUED = 1;
+    OUTCOME_QUEUED_FOR_NEXT_TURN = 2;
+    OUTCOME_REJECTED = 3;
+  }
 }
 
 message SubmitInteractionResponseBackgroundComposerRequest {
@@ -24950,6 +28652,12 @@ message SubmitInteractionResponseBackgroundComposerRequest {
 
 message SubmitInteractionResponseBackgroundComposerResponse {
   SubmitInteractionResponseBackgroundComposerResponse.ResolutionOutcome resolution_outcome = 1;
+  enum ResolutionOutcome {
+    RESOLUTION_OUTCOME_UNSPECIFIED = 0;
+    RESOLUTION_OUTCOME_SIGNAL_ENQUEUED = 1;
+    RESOLUTION_OUTCOME_NOT_PAUSED = 2;
+    RESOLUTION_OUTCOME_QUERY_ID_SIGNAL_ENQUEUED = 3;
+  }
 }
 
 message ListPendingFollowupsRequest {
@@ -25242,6 +28950,11 @@ message GetGithubAccessTokenForReposResponse {
   repeated GetGithubAccessTokenForReposResponse.Status repo_url_statuses = 3;
   GithubAccessErrorType error_type = 4;
   optional string github_redirect_url = 5;
+  message Status {
+    string repo_url = 1;
+    bool has_access = 2;
+    optional string error = 3;
+  }
 }
 
 message MakeGithubRequestRequest {
@@ -25289,6 +29002,13 @@ message CommitBackgroundComposerResponse {
 
 message LiveEgressReapplyResult {
   LiveEgressReapplyResult.Outcome outcome = 1;
+  enum Outcome {
+    OUTCOME_UNSPECIFIED = 0;
+    OUTCOME_APPLIED = 1;
+    OUTCOME_NOT_APPLICABLE = 2;
+    OUTCOME_STORED_NOT_APPLIED = 3;
+    OUTCOME_FAILED = 4;
+  }
 }
 
 message SetPersonalEnvironmentJsonRequest {
@@ -25787,6 +29507,15 @@ message SnapshotAndSaveEnvironmentRequest {
   optional SnapshotAndSaveEnvironmentRequest.EgressConfig egress_config = 11;
   optional string start_command = 12;
   optional string environment_build_id = 13;
+  message EgressConfig {
+    CloudAgentEgressProtectionMode mode = 1;
+    repeated string allowlist = 2;
+  }
+  enum Target {
+    TARGET_UNSPECIFIED = 0;
+    TARGET_PERSONAL = 1;
+    TARGET_TEAM = 2;
+  }
 }
 
 message SnapshotAndSaveEnvironmentResponse {
@@ -26114,6 +29843,10 @@ message GetRepositoryBranchesResponse {
   int32 page = 3;
   bool is_empty_repo = 4;
   string bootstrap_branch = 5;
+  message Branch {
+    string name = 1;
+    bool is_default = 2;
+  }
 }
 
 message GetPullRequestMergeStatusRequest {
@@ -26511,6 +30244,10 @@ message CloudAgentStatePersistedMetadata {
   double timestamp_ms = 3;
   CloudAgentWorkflowStatus workflow_status = 4;
   CloudAgentStatePersistedMetadata.PersistedMetadataVersion version = 5;
+  enum PersistedMetadataVersion {
+    PERSISTED_METADATA_VERSION_UNSPECIFIED = 0;
+    PERSISTED_METADATA_VERSION_1 = 1;
+  }
 }
 
 message CloudAgentState {
@@ -26587,6 +30324,11 @@ message CarriedRequestContext {
 message EnvironmentMcpServerAllowlist {
   repeated EnvironmentMcpServerAllowlist.Entry entries = 1;
   optional bool disable_all_mcp_servers = 2;
+  message Entry {
+    optional string server_url = 1;
+    optional string command = 2;
+    repeated string tool_allowlist = 3;
+  }
 }
 
 message OptimizedDiffState {
@@ -27457,6 +31199,11 @@ message PresignPromptUploadResponse {
   oneof upload {
     PresignPromptUploadResponse.Multipart multipart = 5;
   }
+  message Multipart {
+    string s3_upload_id = 1;
+    repeated PromptUploadPart parts = 2;
+    int64 part_size_bytes = 3;
+  }
 }
 
 message CompletePromptUploadRequest {
@@ -27838,6 +31585,14 @@ message StreamInlineLongCompletionRequest {
   ExplicitContext explicit_context = 13;
   ModelDetails model_details = 14;
   LinterErrors linter_errors = 15;
+  message ContextBlock {
+    StreamInlineLongCompletionRequest.ContextBlock.ContextType context_type = 1;
+    repeated CodeBlock blocks = 2;
+    enum ContextType {
+      CONTEXT_TYPE_UNSPECIFIED = 0;
+      CONTEXT_TYPE_RECENT_LOCATIONS = 1;
+    }
+  }
 }
 
 message StreamAiPreviewsIntent {
@@ -27871,6 +31626,15 @@ message ReportInlineActionResponse {
 message ReportMetricsRequest {
   map<string, ReportMetricsRequest.Metric> metrics = 1;
   repeated ReportMetricsRequest.NamedMetric metrics_list = 2;
+  message Metric {
+    optional double value = 1;
+    map<string, string> tags = 2;
+  }
+  message NamedMetric {
+    string name = 1;
+    optional double value = 2;
+    map<string, string> tags = 3;
+  }
 }
 
 message ReportMetricsResponse {
@@ -28030,6 +31794,11 @@ message TraceSpan {
 message Status {
   string message = 1;
   Status.StatusCode code = 2;
+  enum StatusCode {
+    STATUS_CODE_UNSPECIFIED = 0;
+    STATUS_CODE_OK = 1;
+    STATUS_CODE_ERROR = 2;
+  }
 }
 
 message TraceLink {
@@ -28291,6 +32060,11 @@ message AiProjectBreakdownResponse {
     AiProjectBreakdownResponse.Step step = 2;
     Unresolved__Xi message_payload = 3;
   }
+  message Step {
+    int32 step_number = 1;
+    string step_description = 2;
+    AiProjectStepType step_type = 3;
+  }
 }
 
 message AiProjectBreakdownFeedbackRequest {
@@ -28324,6 +32098,32 @@ message AiProjectStepResponse {
     Unresolved__Xi message_payload = 3;
     AiProjectStepResponse.StepPayload step_payload = 5;
   }
+  message WriteCode {
+    string filename = 1;
+  }
+  message ReviseCode {
+    string thought = 1;
+  }
+  message RunTerm {
+    string command_batch_uuid = 1;
+    string command = 2;
+    string response = 3;
+    string text = 4;
+  }
+  message CreatingFiles {
+    oneof payload {
+      string filename = 1;
+      string directory = 2;
+    }
+  }
+  message StepPayload {
+    oneof payload {
+      AiProjectStepResponse.WriteCode write_code = 5;
+      AiProjectStepResponse.RunTerm run_term = 6;
+      AiProjectStepResponse.CreatingFiles creating_files = 7;
+      AiProjectStepResponse.ReviseCode revise_code = 8;
+    }
+  }
 }
 
 message AiProjectStepResponseWrapped {
@@ -28344,6 +32144,10 @@ message AiProjectStepFeedbackRequest {
   bool force_move_to_next_step = 8;
   oneof feedback_payload {
     Unresolved__Ov modify_code_payload = 9;
+  }
+  message ModifyCodePayload {
+    repeated string files_to_modify = 1;
+    string feedback_text = 2;
   }
 }
 
@@ -28392,6 +32196,10 @@ message OpusChainGetFilePathsRequest {
 
 message OpusChainGetFilePathsResponse {
   repeated OpusChainGetFilePathsResponse.Path paths = 1;
+  message Path {
+    string raw_path = 1;
+    repeated int32 interesting_lines = 2;
+  }
 }
 
 message OpusChainReflectRequest {
@@ -28410,6 +32218,22 @@ message OpusChainReflectRequest {
 message OpusChainReflectResponse {
   string text = 1;
   OpusChainReflectResponse.Decision decision = 2;
+  message AcceptDecision {
+    repeated string codebase_questions = 1;
+  }
+  message RetryWithoutMoreInformationDecision {
+    repeated string codebase_questions = 1;
+  }
+  message RetryWithCodebaseQuestionDecision {
+    repeated string codebase_questions = 1;
+  }
+  message Decision {
+    oneof decision {
+      OpusChainReflectResponse.AcceptDecision accept = 1;
+      OpusChainReflectResponse.RetryWithoutMoreInformationDecision retry_without_more_information = 2;
+      OpusChainReflectResponse.RetryWithCodebaseQuestionDecision retry_with_codebase_question = 3;
+    }
+  }
 }
 
 message OpusChainGetFileInstructionRequest {
@@ -28432,6 +32256,19 @@ message OpusChainGetPlanRequest {
   optional OpusChainGetPlanRequest.CodebaseInformation codebase_information = 8;
   string originating_reflection = 9;
   repeated CodeResult scored_codebase_context = 15;
+  message CodebaseInformation {
+    repeated OpusChainGetPlanRequest.CodebaseInformation.File files = 1;
+    repeated OpusChainGetPlanRequest.CodebaseInformation.QA qa = 2;
+    message File {
+      string relative_workspace_path = 1;
+      string contents = 2;
+      repeated int32 interesting_lines = 3;
+    }
+    message QA {
+      string question = 1;
+      string answer = 2;
+    }
+  }
 }
 
 message OpusChainGetPlanResponse {
@@ -28453,6 +32290,19 @@ message Session {
   Session.SessionType type = 2;
   string created_at = 3;
   string expires_at = 4;
+  enum SessionType {
+    SESSION_TYPE_UNSPECIFIED = 0;
+    SESSION_TYPE_WEB = 1;
+    SESSION_TYPE_CLIENT = 2;
+    SESSION_TYPE_BUGBOT = 3;
+    SESSION_TYPE_BACKGROUND_AGENT = 4;
+    SESSION_TYPE_SUPPORT_IMPERSONATION = 5;
+    SESSION_TYPE_API_KEY_TOKEN = 6;
+    SESSION_TYPE_TRAINING = 7;
+    SESSION_TYPE_EXEC_DAEMON = 8;
+    SESSION_TYPE_GRAPHITE = 9;
+    SESSION_TYPE_MOBILE = 10;
+  }
 }
 
 message ListActiveSessionsRequest {
@@ -28500,6 +32350,12 @@ message GetSessionTokenRequest {
   optional string code_verifier = 5;
   optional string redirect_uri = 6;
   optional bool issue_refresh_token = 7;
+  enum Destination {
+    DESTINATION_UNSPECIFIED = 0;
+    DESTINATION_PORTAL = 1;
+    DESTINATION_AISERVER = 2;
+    DESTINATION_AUTH_PROXY = 3;
+  }
 }
 
 message GetSessionTokenResponse {
@@ -28552,6 +32408,11 @@ message CheckSessionTokenRequest {
 message CheckSessionTokenResponse {
   bool valid = 1;
   CheckSessionTokenResponse.Validity validity = 2;
+  enum Validity {
+    VALIDITY_UNSPECIFIED = 0;
+    VALIDITY_VALID = 1;
+    VALIDITY_INVALID = 2;
+  }
 }
 
 message CreateMobileSessionRequest {
@@ -28611,6 +32472,15 @@ message GetEmailResponse {
   optional string job_role = 3;
   optional bool is_recently_created_user = 4;
   optional string use_case = 5;
+  enum SignUpType {
+    SIGN_UP_TYPE_UNSPECIFIED = 0;
+    SIGN_UP_TYPE_AUTH_0 = 1;
+    SIGN_UP_TYPE_GITHUB = 2;
+    SIGN_UP_TYPE_GOOGLE = 3;
+    SIGN_UP_TYPE_WORKOS = 4;
+    SIGN_UP_TYPE_GROK = 5;
+    SIGN_UP_TYPE_X = 6;
+  }
 }
 
 message GetUserMetaRequest {
@@ -29113,6 +32983,21 @@ message GetCodebaseSnapshotStatusResponse {
     GetCodebaseSnapshotStatusResponse.Verified verified = 2;
     GetCodebaseSnapshotStatusResponse.Incomplete incomplete = 3;
   }
+  message Pending {
+    string pack_id = 1;
+    string content_sha256 = 2;
+    uint64 size_bytes = 3;
+  }
+  message Verified {
+    string pack_id = 1;
+    string content_sha256 = 2;
+    uint64 size_bytes = 3;
+  }
+  message Incomplete {
+    string pack_id = 1;
+    string content_sha256 = 2;
+    uint64 size_bytes = 3;
+  }
 }
 
 message PackfileMetadata {
@@ -29124,6 +33009,9 @@ message PackfileMetadata {
 message PackfileUploadMethod {
   oneof method {
     PackfileUploadMethod.DirectChunkedUpload direct_chunked_upload = 1;
+  }
+  message DirectChunkedUpload {
+    uint64 chunk_size_bytes = 1;
   }
 }
 
@@ -29137,11 +33025,25 @@ message CreatePackfileUploadResponse {
     CreatePackfileUploadResponse.UploadRequired upload_required = 1;
     CreatePackfileUploadResponse.AlreadyUploaded already_uploaded = 2;
   }
+  message UploadRequired {
+    string upload_uuid = 1;
+    PackfileUploadMethod method = 2;
+  }
+  message AlreadyUploaded {
+    oneof completion {
+      PackfileUploadCompletion.DirectChunkedUpload direct_chunked_upload = 1;
+    }
+  }
 }
 
 message PackfileUploadCompletion {
   oneof completion {
     PackfileUploadCompletion.DirectChunkedUpload direct_chunked_upload = 1;
+  }
+  message DirectChunkedUpload {
+    string codebase_uuid = 1;
+    string upload_uuid = 2;
+    PackfileUploadCompletion completion = 3;
   }
 }
 
@@ -29184,6 +33086,10 @@ message CursorPredictionConfigResponse {
   repeated CursorPredictionModel models = 1;
   string default_model = 2;
   repeated CursorPredictionConfigResponse.Heuristic heuristics = 3;
+  enum Heuristic {
+    HEURISTIC_UNSPECIFIED = 0;
+    HEURISTIC_DISABLE_IN_LAST_CPP_SUGGESTION = 1;
+  }
 }
 
 message CustomerEvalOwner {
@@ -30285,6 +34191,14 @@ message InitGitGraphResponse {
     GitGraphCreated created = 1;
     InitGitGraphResponse.Challenge challenge = 2;
   }
+  message Challenge {
+    repeated string verify_commits = 1;
+    repeated string root_commits = 2;
+    repeated InitGitGraphResponse.Challenge.VisitedCommits visited_commits = 3;
+    message VisitedCommits {
+      repeated string visited_commits = 1;
+    }
+  }
 }
 
 message GitGraphCreated {
@@ -30296,6 +34210,10 @@ message InitGitGraphChallengeRequest {
   string root_sha = 1;
   string search_key = 2;
   repeated InitGitGraphChallengeRequest.Response responses = 3;
+  message Response {
+    string verify_commit = 1;
+    string verify_value = 2;
+  }
 }
 
 message InitGitGraphChallengeResponse {
@@ -30315,10 +34233,22 @@ message GitGraphCommitFile {
   GitGraphCommitFile.Status status = 3;
   string encrypted_from_relative_path = 5;
   string encrypted_to_relative_path = 6;
+  enum Status {
+    STATUS_UNSPECIFIED = 0;
+    STATUS_ADDED = 1;
+    STATUS_DELETED = 2;
+    STATUS_MODIFIED = 3;
+    STATUS_RENAMED = 4;
+  }
 }
 
 message BatchedUploadCommitsIntoGitGraphResponse {
   repeated BatchedUploadCommitsIntoGitGraphResponse.Result results = 1;
+  message Result {
+    string sha = 1;
+    bool success = 2;
+    bool already_visited = 3;
+  }
 }
 
 message GetGitGraphRelatedFilesRequest {
@@ -30340,6 +34270,11 @@ message GitGraphRelatedFile {
 message MarkPendingCommitsRequest {
   string workspace_id = 1;
   repeated MarkPendingCommitsRequest.Commit commits = 2;
+  message Commit {
+    string sha = 1;
+    repeated string parent_shas = 2;
+    double timestamp_ms = 3;
+  }
 }
 
 message MarkPendingCommitsResponse {
@@ -30354,6 +34289,11 @@ message GetPendingCommitsRequest {
 message GetPendingCommitsResponse {
   repeated GetPendingCommitsResponse.Commit commits = 1;
   float wait_before_uploading_ms = 2;
+  message Commit {
+    string sha = 1;
+    optional string visited_neighbor_sha = 2;
+    int32 parent_walk_depth = 3;
+  }
 }
 
 message DeleteGitGraphRequest {
@@ -32387,6 +36327,17 @@ message GrokBotRoomMemberTurnMessage {
   bool is_self = 3;
   string text = 4;
   optional GrokBotRoomMemberTurnMessage.ReplyTarget reply_to = 5;
+  message ReplyTarget {
+    GrokBotRoomMemberTurnMessage.SpeakerKind speaker_kind = 1;
+    string speaker_name = 2;
+    bool is_self = 3;
+    string quote = 4;
+  }
+  enum SpeakerKind {
+    SPEAKER_KIND_UNSPECIFIED = 0;
+    SPEAKER_KIND_HUMAN = 1;
+    SPEAKER_KIND_AGENT = 2;
+  }
 }
 
 message RequestGrokBotRoomMemberTurnRequest {
@@ -32764,6 +36715,12 @@ message SortUsefulTypesNaiveRequest {
   string file_contents = 2;
   SortUsefulTypesNaiveRequest.IRange query_range = 3;
   repeated UsefulType useful_types = 4;
+  message IRange {
+    int32 start_line_number = 1;
+    int32 start_column = 2;
+    int32 end_line_number = 3;
+    int32 end_column = 4;
+  }
 }
 
 message SortUsefulTypesNaiveResponse {
@@ -32786,6 +36743,22 @@ message Opus2ChainReflectRequest {
 message Opus2ChainReflectResponse {
   string text = 1;
   Opus2ChainReflectResponse.Decision decision = 2;
+  message AcceptDecision {
+    repeated string codebase_questions = 1;
+  }
+  message RetryWithoutMoreInformationDecision {
+    repeated string codebase_questions = 1;
+  }
+  message RetryWithCodebaseQuestionDecision {
+    repeated string codebase_questions = 1;
+  }
+  message Decision {
+    oneof decision {
+      Unresolved__Wv accept = 1;
+      Opus2ChainReflectResponse.RetryWithoutMoreInformationDecision retry_without_more_information = 2;
+      Opus2ChainReflectResponse.RetryWithCodebaseQuestionDecision retry_with_codebase_question = 3;
+    }
+  }
 }
 
 message V0ChainRunRequest {
@@ -32829,6 +36802,37 @@ message Opus2ChainPlanRequest {
   repeated Opus2ChainPlanRequest.File branch_diff_files = 16;
   ContextAST context_ast = 17;
   HallucinatedFunctionsProtoPrompt prompt = 20;
+  message BranchDiff {
+    repeated Opus2ChainPlanRequest.BranchDiff.FileDiff file_diffs = 1;
+    repeated Commit commits = 2;
+    message FileDiff {
+      string file_name = 1;
+      string diff = 2;
+      bool too_big = 3;
+    }
+  }
+  message File {
+    string relative_workspace_path = 1;
+    string text = 2;
+  }
+  message CodebaseInformation {
+    repeated Opus2ChainPlanRequest.CodebaseInformation.File files = 1;
+    repeated Opus2ChainPlanRequest.CodebaseInformation.QA qa = 2;
+    message File {
+      string relative_workspace_path = 1;
+      string contents = 2;
+      repeated int32 interesting_lines = 3;
+    }
+    message QA {
+      string question = 1;
+      string answer = 2;
+    }
+  }
+  enum OpusPlanVersion {
+    OPUS_PLAN_VERSION_UNSPECIFIED = 0;
+    OPUS_PLAN_VERSION_V0 = 1;
+    OPUS_PLAN_VERSION_V1_MORE_CONTEXT_AND_GUIDELINES = 2;
+  }
 }
 
 message Opus2ChainPlanResponse {
@@ -34293,11 +38297,25 @@ message UploadResponse {
   string similar_doc_identifier = 3;
   repeated string uploaded_pages = 4;
   string doc_uuid = 5;
+  enum Status {
+    STATUS_UNSPECIFIED = 0;
+    STATUS_SUCCESS = 1;
+    STATUS_FAILURE = 2;
+    STATUS_ALREADY_EXISTS = 3;
+    STATUS_SIMILAR_ALREADY_EXISTS = 4;
+  }
 }
 
 message UploadedStatus {
   UploadedStatus.Status status = 1;
   repeated string uploaded_pages = 2;
+  enum Status {
+    STATUS_UNSPECIFIED = 0;
+    STATUS_IN_PROGRESS = 1;
+    STATUS_SUCCEEDED = 2;
+    STATUS_FAILED = 3;
+    STATUS_NOT_FOUND = 4;
+  }
 }
 
 message UpsertDocsRequest {
@@ -34447,6 +38465,11 @@ message GetFileStatsRequest {
 
 message GetFileStatsResponse {
   repeated GetFileStatsResponse.Stat file_stats = 1;
+  message Stat {
+    string absolute_path = 1;
+    bool path_exists = 2;
+    bool is_file = 3;
+  }
 }
 
 message CompileRepoIncludeExcludePatternsRequest {
@@ -34638,6 +38661,109 @@ message ContextIntent {
     ContextIntent.CommitNotes commit_notes = 19;
     ContextIntent.DiffHistory diff_history = 20;
     ContextIntent.PastCmdkConversationsInDiffSessions past_cmdk_messages_in_diff_sessions = 21;
+  }
+  message Documentation {
+    string documentation_identifier = 1;
+  }
+  message File {
+    string relative_workspace_path = 1;
+    ContextIntent.File.Mode mode = 2;
+    enum Mode {
+      MODE_UNSPECIFIED = 0;
+      MODE_FULL = 1;
+      MODE_OUTLINE = 2;
+      MODE_CHUNKS = 3;
+    }
+  }
+  message CodeSelection {
+    string relative_workspace_path = 1;
+    SimpleRange potentially_out_of_date_range = 2;
+    string text = 3;
+  }
+  message CommitNotes {
+    repeated LintSeverity filter_to_severities = 3;
+    oneof scope {
+      ContextIntent.Lints.CmdKScope cmdk_scope = 1;
+      ContextIntent.Lints.FileScope file_scope = 2;
+    }
+  }
+  message Lints {
+    repeated LintSeverity filter_to_severities = 3;
+    oneof scope {
+      ContextIntent.Lints.CmdKScope cmdk_scope = 1;
+      ContextIntent.Lints.FileScope file_scope = 2;
+    }
+    message CmdKScope {
+      string relative_workspace_path = 1;
+      optional Unresolved__5 filter_range = 2;
+    }
+    message FileScope {
+      string relative_workspace_path = 1;
+      optional Unresolved__5 filter_range = 2;
+    }
+  }
+  message RecentLocations {
+    optional double timestamp = 2;
+  }
+  message PastCmdkConversationsInDiffSessions {
+    int32 instance_id = 1;
+    bool active_for_cmd_k = 2;
+    optional bool use_active_instance_as_fallback = 3;
+  }
+  message VisibleTabs {
+    int32 instance_id = 1;
+    bool active_for_cmd_k = 2;
+    optional bool use_active_instance_as_fallback = 3;
+  }
+  message CmdKCurrentFile {
+    int32 instance_id = 1;
+    bool active_for_cmd_k = 2;
+    optional bool use_active_instance_as_fallback = 3;
+  }
+  message CmdKQueryEtc {
+    int32 instance_id = 1;
+    bool active_for_cmd_k = 2;
+    optional bool use_active_instance_as_fallback = 3;
+  }
+  message CustomInstructions {
+    int32 instance_id = 1;
+    bool active_for_cmd_k = 2;
+    optional bool use_active_instance_as_fallback = 3;
+  }
+  message CmdKDefinitions {
+    int32 instance_id = 1;
+    bool active_for_cmd_k = 2;
+    optional bool use_active_instance_as_fallback = 3;
+  }
+  message ChatHistory {
+    int32 instance_id = 1;
+    bool active_for_cmd_k = 2;
+    optional bool use_active_instance_as_fallback = 3;
+  }
+  message DiffHistory {
+    int32 instance_id = 1;
+    bool active_for_cmd_k = 2;
+    optional bool use_active_instance_as_fallback = 3;
+  }
+  message TerminalCmdKDefaults {
+    int32 instance_id = 1;
+    bool active_for_cmd_k = 2;
+    optional bool use_active_instance_as_fallback = 3;
+  }
+  message TerminalHistory {
+    int32 instance_id = 1;
+    bool active_for_cmd_k = 2;
+    optional bool use_active_instance_as_fallback = 3;
+  }
+  message LspSubgraph {
+    repeated PotentiallyCachedContextItem context_items = 1;
+    CmdKOptions cmd_k_options = 2;
+    CmdKLegacyContext legacy_context = 3;
+  }
+  enum Type {
+    TYPE_UNSPECIFIED = 0;
+    TYPE_USER_ADDED = 1;
+    TYPE_AUTOMATIC = 2;
   }
 }
 
@@ -36686,6 +40812,7 @@ message Unresolved__Iu {} // unresolved: $Iu
 message Unresolved__Ju {} // unresolved: $Ju
 message Unresolved__Lu {} // unresolved: $Lu
 message Unresolved__Mu {} // unresolved: $Mu
+message Unresolved__Ns {} // unresolved: $Ns
 message Unresolved__Nu {} // unresolved: $Nu
 message Unresolved__Os {} // unresolved: $Os
 message Unresolved__Ou {} // unresolved: $Ou
@@ -36703,6 +40830,7 @@ message Unresolved__Vs {} // unresolved: $Vs
 message Unresolved__Vu {} // unresolved: $Vu
 message Unresolved__Wl {} // unresolved: $Wl
 message Unresolved__Wu {} // unresolved: $Wu
+message Unresolved__Wv {} // unresolved: $Wv
 message Unresolved__Xi {} // unresolved: $Xi
 message Unresolved__Ye {} // unresolved: $Ye
 message Unresolved__Ys {} // unresolved: $Ys
@@ -36731,6 +40859,7 @@ message Unresolved__ld {} // unresolved: $ld
 message Unresolved__lu {} // unresolved: $lu
 message Unresolved__mu {} // unresolved: $mu
 message Unresolved__od {} // unresolved: $od
+message Unresolved__ou {} // unresolved: $ou
 message Unresolved__pd {} // unresolved: $pd
 message Unresolved__pe {} // unresolved: $pe
 message Unresolved__pu {} // unresolved: $pu
@@ -36739,6 +40868,7 @@ message Unresolved__rd {} // unresolved: $rd
 message Unresolved__sd {} // unresolved: $sd
 message Unresolved__su {} // unresolved: $su
 message Unresolved__ud {} // unresolved: $ud
+message Unresolved__uu {} // unresolved: $uu
 message Unresolved__xs {} // unresolved: $xs
 message Unresolved__xu {} // unresolved: $xu
 message Unresolved__yh {} // unresolved: $yh

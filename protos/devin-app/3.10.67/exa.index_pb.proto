@@ -33,6 +33,11 @@ message RepositoryConfig {
   string auth_uid = 7;
   string service_key_id = 8;
   string email = 9;
+  message AutoIndexConfig {
+    string branch_name = 1;
+    google.protobuf.Duration interval = 2;
+    int32 max_num_auto_indexes = 3;
+  }
 }
 
 message IndexConfig {
@@ -71,6 +76,12 @@ message Index {
   bytes repo_stats = 14;
   string auth_uid = 15;
   string email = 16;
+  message RepoStats {
+    int64 size = 1;
+    int64 file_count = 2;
+    int64 size_no_ignore = 3;
+    int64 file_count_no_ignore = 4;
+  }
 }
 
 message Repository {
@@ -349,6 +360,40 @@ message IndexerEvent {
     exa.user_analytics_pb.QueryRequestCascadeRuns remove_workspace = 6;
     exa.user_analytics_pb.CascadeRunsQueryEntry ignore_workspace = 7;
     exa.user_analytics_pb.QueryResultCascadeRuns add_commit = 8;
+  }
+  message Deletion {
+    string absolute_uri = 1;
+  }
+  message Untrack {
+    string absolute_uri = 1;
+    repeated exa.codeium_common_pb.WorkspacePath paths = 2;
+    string workspace_uri = 3;
+  }
+  message Update {
+    string absolute_uri = 1;
+    repeated exa.codeium_common_pb.WorkspacePath paths = 2;
+    google.protobuf.Timestamp mod_time = 3;
+    exa.user_analytics_pb.CascadeToolUsageQueryEntry add_workspace_info = 4;
+    message AddWorkspaceInfo {
+      uint64 add_workspace_uid = 1;
+      uint64 add_workspace_queue_uid = 2;
+    }
+  }
+  message AddWorkspace {
+    uint64 add_workspace_uid = 1;
+    uint64 add_workspace_queue_uid = 2;
+    string workspace_uri = 3;
+    int64 num_files = 4;
+    int64 size = 5;
+  }
+  message RemoveWorkspace {
+    string workspace_uri = 1;
+  }
+  message IgnoreWorkspace {
+    string workspace_uri = 1;
+  }
+  message AddCommit {
+    string sha = 1;
   }
 }
 

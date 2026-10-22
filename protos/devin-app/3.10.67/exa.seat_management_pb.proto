@@ -12,8 +12,10 @@ import "google.protobuf.compiler.proto";
 import "google.protobuf.proto";
 import "google.rpc.proto";
 import "google/protobuf/any.proto";
+import "google/protobuf/duration.proto";
 import "google/protobuf/empty.proto";
 import "google/protobuf/field_mask.proto";
+import "google/protobuf/struct.proto";
 import "google/protobuf/timestamp.proto";
 import "google/protobuf/wrappers.proto";
 
@@ -331,6 +333,10 @@ message RequestTeamAccessResponse {
 
 message UpdateUserTeamStatusRequest {
   repeated exa.user_analytics_pb.QueryRequestAllUsersCommandStats updates = 2;
+  message UserTeamStatusUpdateItem {
+    string api_key = 1;
+    Unresolved_b.proto3.getEnumType_I.UserTeamStatus_ status = 2;
+  }
 }
 
 message UpdateUserTeamStatusResponse {
@@ -361,6 +367,10 @@ message RefreshTeamInviteIdResponse {
 
 message GrantPreapprovalRequest {
   repeated exa.user_analytics_pb.CascadeToolUsageQueryEntry preapprovals = 2;
+  message PreapprovalUserItem {
+    string name = 1;
+    string email = 2;
+  }
 }
 
 message GrantPreapprovalResponse {
@@ -477,6 +487,30 @@ message GetTeamBillingResponse {
   exa.user_analytics_pb.AcuConsumptionQuery failed_subscription_payment = 20;
   string top_up_error_string = 21;
   bool team_top_up_criteria_reached = 22;
+  message Invoice {
+    float amount = 1;
+    string currency = 2;
+    bool paid = 3;
+    google.protobuf.Timestamp created = 4;
+    string invoice_pdf_url = 5;
+  }
+  message PaymentMethod {
+    string type = 1;
+    oneof payment_type {
+      exa.user_analytics_pb.DevinUsageEntry card = 2;
+    }
+    message CardType {
+      string brand = 1;
+      int64 exp_month = 2;
+      int64 exp_year = 3;
+      string last4 = 4;
+    }
+  }
+  message FailedSubscriptionPayment {
+    string invoice_link = 1;
+    string decline_code = 2;
+    google.protobuf.Timestamp pay_by_date = 3;
+  }
 }
 
 message UpdateSeatsRequest {
@@ -628,6 +662,10 @@ message GetTeamActivityRequest {
 
 message GetTeamActivityResponse {
   repeated exa.user_analytics_pb.UserAcuCapSelector user_activity = 1;
+  message UserActivity {
+    google.protobuf.StringValue user = 1;
+    exa.codeium_common_pb.CompletionStatistics completion_statistics = 2;
+  }
 }
 
 message GetSSOProviderRequest {
@@ -1019,6 +1057,11 @@ message GetUserNotificationsRequest {
 
 message GetUserNotificationsResponse {
   GetUserNotificationsResponse.TeamPreapprovalMetadata team_preapproval_metadata = 1;
+  message TeamPreapprovalMetadata {
+    string admin_name = 1;
+    string team_name = 2;
+    google.protobuf.Timestamp created_at = 3;
+  }
 }
 
 message ConnectGithubAccountRequest {
@@ -1690,6 +1733,194 @@ message ExportUserDataInternalResponse {
   repeated google.protobuf.Type group_members = 17;
   repeated google.protobuf.Field audit_logs = 18;
   repeated google.protobuf.Enum registration_activity = 19;
+  message Invoice {
+    string id = 1;
+    int64 amount_paid = 2;
+    string currency = 3;
+    google.protobuf.Timestamp created = 4;
+    bool paid = 5;
+    string invoice_pdf = 6;
+    string status = 7;
+  }
+  message StripeData {
+    string customer_id = 1;
+    string subscription_id = 2;
+    bool subscription_active = 3;
+    string subscription_status = 4;
+    google.protobuf.Timestamp current_period_start = 5;
+    google.protobuf.Timestamp current_period_end = 6;
+    bool cancel_at_period_end = 7;
+    string payment_method_type = 8;
+    string payment_method_last4 = 9;
+    repeated google.protobuf.Duration invoices = 10;
+  }
+  message BrevoData {
+    string email = 1;
+    map<string, string> attributes = 2;
+    repeated int64 list_ids = 3;
+    google.protobuf.Timestamp created_at = 4;
+    google.protobuf.Timestamp modified_at = 5;
+  }
+  message BigQueryData {
+    repeated google.protobuf.Struct preapproved_users = 1;
+    repeated google.protobuf.Value waitlist = 2;
+    repeated google.protobuf.ListValue blog_subscriptions = 3;
+    repeated google.protobuf.DoubleValue wrapped_2024 = 4;
+    repeated google.protobuf.FloatValue email_tracking = 5;
+    repeated google.protobuf.Int64Value cascade_costs = 6;
+    message PreapprovedUserRow {
+      string id = 1;
+      string name = 2;
+      string email = 3;
+      string team_id = 4;
+      string issued_by_api_key = 5;
+      google.protobuf.Timestamp created_at = 6;
+      google.protobuf.Timestamp updated_at = 7;
+    }
+    message WaitlistRow {
+      string email = 1;
+      string feature_name = 2;
+      google.protobuf.Timestamp signup_time = 3;
+      google.protobuf.Timestamp accepted_at = 4;
+    }
+    message BlogSubscriptionRow {
+      string id = 1;
+      string email = 2;
+      google.protobuf.Timestamp created_at = 3;
+    }
+    message Wrapped2024Row {
+      string api_key = 1;
+      string email = 2;
+      string name = 3;
+      int32 total_minutes_coded = 4;
+      float coding_percentile = 5;
+      google.protobuf.Timestamp biggest_coding_day = 6;
+      int32 minutes_coding_biggest_day = 7;
+      int32 autocompletes_accepted = 8;
+      int32 cascade_messages_sent = 9;
+      int32 cascade_lines_written = 10;
+    }
+    message EmailTrackingRow {
+      string auth_uid = 1;
+      string email_id = 2;
+      google.protobuf.Timestamp sent_at = 3;
+    }
+    message CascadeCostRow {
+      string api_key = 1;
+      string user_email = 2;
+      google.protobuf.Timestamp date = 3;
+      float cascade_cost = 4;
+      int64 prompt_credits = 5;
+      int64 flow_credits = 6;
+      int64 num_product_events = 7;
+    }
+  }
+  message FirebaseAuthData {
+    string uid = 1;
+    google.protobuf.Timestamp creation_time = 2;
+    google.protobuf.Timestamp last_sign_in_time = 3;
+    bool email_verified = 4;
+    repeated google.protobuf.Int32Value providers = 5;
+  }
+  message ProviderData {
+    string provider_id = 1;
+    string uid = 2;
+    string email = 3;
+  }
+  message GitHubAuthData {
+    string auth_uid = 1;
+    string github_username = 2;
+    google.protobuf.Timestamp created_at = 3;
+    google.protobuf.Timestamp updated_at = 4;
+  }
+  message NetlifyAuthData {
+    string auth_uid = 1;
+    string netlify_user_id = 2;
+    google.protobuf.Timestamp created_at = 3;
+    google.protobuf.Timestamp updated_at = 4;
+  }
+  message OfferTrackingRow {
+    string auth_uid = 1;
+    string offer_id = 2;
+    google.protobuf.Timestamp created_at = 3;
+  }
+  message UserFeaturesRow {
+    string id = 1;
+    string api_key = 2;
+    int32 feature = 3;
+    google.protobuf.Timestamp created_at = 4;
+  }
+  message CompletionExampleRow {
+    string auth_uid = 1;
+    string completion_id = 2;
+    string file_path = 3;
+    string short_prefix = 4;
+    string completion_text = 5;
+    string short_suffix = 6;
+    google.protobuf.Timestamp timestamp = 7;
+  }
+  message WindsurfProjectRow {
+    string windsurf_project_id = 1;
+    string auth_uid = 2;
+    string deployment_provider = 3;
+    string provider_project_id = 4;
+    string project_name = 5;
+    string domain = 6;
+    string subdomain_name = 7;
+    google.protobuf.Timestamp expires_at = 8;
+    google.protobuf.Timestamp claimed_at = 9;
+    google.protobuf.Timestamp deprovisioned_at = 10;
+    google.protobuf.Timestamp created_at = 11;
+    google.protobuf.Timestamp updated_at = 12;
+  }
+  message WindsurfDeploymentRow {
+    string windsurf_deployment_id = 1;
+    string windsurf_project_id = 2;
+    string provider_deployment_id = 3;
+    string workspace_path = 4;
+    string deployment_url = 5;
+    google.protobuf.Timestamp created_at = 6;
+    google.protobuf.Timestamp updated_at = 7;
+  }
+  message UserReferralRow {
+    uint32 id = 1;
+    string auth_uid = 2;
+    string referred_email = 3;
+    string details = 4;
+    google.protobuf.Timestamp created_at = 5;
+    google.protobuf.Timestamp granted_at = 6;
+  }
+  message UserRoleRow {
+    string api_key = 1;
+    string role = 2;
+    string group_id = 3;
+  }
+  message GroupMemberRow {
+    string id = 1;
+    string group_id = 2;
+    string user_id = 3;
+    google.protobuf.Timestamp created_at = 4;
+    google.protobuf.Timestamp updated_at = 5;
+  }
+  message AuditLogRow {
+    string event_id = 1;
+    google.protobuf.Timestamp timestamp = 2;
+    string team_id = 3;
+    string user_email = 4;
+    string user_name = 5;
+    string api_key = 6;
+    string event = 7;
+    string status_code = 8;
+    string status_reason = 9;
+    string description = 10;
+  }
+  message RegistrationActivityRow {
+    string email_id = 1;
+    int32 action_value = 2;
+    string action_description = 3;
+    google.protobuf.Timestamp time_of_action = 4;
+    bool successful_action = 5;
+  }
 }
 
 message InitiateAccountOwnershipVerificationInternalRequest {
@@ -1951,6 +2182,14 @@ message GetEligibleDevinOrganizationsRequest {
 
 message GetEligibleDevinOrganizationsResponse {
   repeated GetEligibleDevinOrganizationsResponse.DevinOrganization organizations = 1;
+  message DevinOrganization {
+    string org_id = 1;
+    string display_name = 2;
+    string account_id = 3;
+    bool is_admin = 4;
+    bool can_use_cli = 5;
+    bool can_use_cascade = 6;
+  }
 }
 
 message WindsurfPostAuthRequest {
@@ -1963,6 +2202,17 @@ message WindsurfPostAuthResponse {
   optional string auth1_token = 3;
   optional string account_id = 4;
   optional string primary_org_id = 5;
+  message WindsurfPostAuthOrg {
+    string id = 1;
+    string name = 2;
+    bool is_admin = 3;
+    bool can_use_cli = 4;
+    bool can_use_cascade = 5;
+    string plan_slug = 6;
+    string subscription_status = 7;
+    string webapp_host = 8;
+    bool sso_login_required = 9;
+  }
 }
 
 message GetStripeSubscriptionStateRequest {
@@ -2146,6 +2396,11 @@ message BatchGetSelfHostedAcuUserOverridesRequest {
 
 message BatchGetSelfHostedAcuUserOverridesResponse {
   repeated BatchGetSelfHostedAcuUserOverridesResponse.Entry entries = 1;
+  message Entry {
+    string auth_uid = 1;
+    double cycle_acu_limit = 2;
+    double current_cycle_usage = 3;
+  }
 }
 
 message GetSelfHostedAcuSelfUsageRequest {

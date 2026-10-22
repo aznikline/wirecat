@@ -31,24 +31,42 @@ const WKT_IMPORT = {
 };
 
 const pkgOf = (tn) => tn.slice(0, tn.lastIndexOf("."));
+// Real package = longest dotted prefix that is NOT itself a type name.
+// A prefix that is a registered type means the tn is nested inside that type,
+// so its package is the next shorter prefix.
+const pkgOfReal = (tn, allTypes) => {
+  let p = tn.lastIndexOf(".");
+  while (p > 0) {
+    const cand = tn.slice(0, p);
+    if (!allTypes.has(cand)) return cand;
+    p = tn.lastIndexOf(".", p - 1);
+  }
+  return tn.slice(0, tn.lastIndexOf("."));
+};
 const shortOf = (tn) => tn.slice(tn.lastIndexOf(".") + 1);
 const sanitize = (s) => s.replace(/[^A-Za-z0-9_.]/g, "_");
 
 function emit(catalog, packages) {
-  // group types by package
+  // group types by package — package = longest prefix that is not itself a type
+  const allTypes = new Set([
+    ...Object.keys(catalog.messages ?? {}),
+    ...Object.keys(catalog.enums ?? {}),
+    ...Object.keys(catalog.services ?? {}),
+  ]);
+  const pkgFor = (tn) => pkgOfReal(tn, allTypes);
   const byPkg = {};
   const add = (pkg, kind, tn, def) => ((byPkg[pkg] ??= { messages: {}, enums: {}, services: {} })[kind][tn] = def);
   for (const [tn, def] of Object.entries(catalog.messages ?? {})) {
-    if (packages && !packages.includes(pkgOf(tn))) continue;
-    add(pkgOf(tn), "messages", tn, def);
+    if (packages && !packages.includes(pkgFor(tn))) continue;
+    add(pkgFor(tn), "messages", tn, def);
   }
   for (const [tn, def] of Object.entries(catalog.enums ?? {})) {
-    if (packages && !packages.includes(pkgOf(tn))) continue;
-    add(pkgOf(tn), "enums", tn, def);
+    if (packages && !packages.includes(pkgFor(tn))) continue;
+    add(pkgFor(tn), "enums", tn, def);
   }
   for (const [tn, def] of Object.entries(catalog.services ?? {})) {
-    if (packages && !packages.includes(pkgOf(tn))) continue;
-    add(pkgOf(tn), "services", tn, def);
+    if (packages && !packages.includes(pkgFor(tn))) continue;
+    add(pkgFor(tn), "services", tn, def);
   }
 
   // nested-type tree: pkg.A.B where pkg.A is also a message -> child of A
@@ -91,7 +109,7 @@ function emit(catalog, packages) {
         return name;
       }
       if (WKT_IMPORT[tn]) { imports.add(WKT_IMPORT[tn]); return tn; }
-      const rp = pkgOf(tn);
+      const rp = pkgFor(tn);
       // same package (incl. nested pkg.Parent.Child): resolve relative
       if (tn.startsWith(curPkg + ".")) {
         const rel = tn.slice(curPkg.length + 1);

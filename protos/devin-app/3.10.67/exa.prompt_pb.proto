@@ -8,7 +8,7 @@ import "exa.chat_pb.proto";
 import "exa.codeium_common_pb.proto";
 import "exa.context_module_pb.proto";
 import "exa.cortex_pb.proto";
-import "exa.language_server_pb.HandleStreamingTabV2Response.proto";
+import "exa.language_server_pb.proto";
 import "google/protobuf/wrappers.proto";
 
 message PendingCommand {
