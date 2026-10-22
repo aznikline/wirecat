@@ -310,6 +310,29 @@ function auditFile(src, label) {
     r.service_channels.push(svc);
   }
 
+  // 3c. dual-path guard inconsistency --------------------------------------------
+  // WorkBuddy pattern: the same dangerous sink (shell.openExternal/openPath,
+  // exec) is reachable through multiple registration paths, where ONE path
+  // validates args (scheme allowlist, extension blocklist) and a sibling path
+  // does not — the unguarded path bypasses the sibling's policy. Detect per
+  // sink class: count call sites with/without a guard marker in the preceding
+  // ~600 chars.
+  if (r.role === "main" || /ipcMain|BrowserWindow/.test(src)) {
+    const GUARD = /startsWith\s*\(|ALLOWED|BLOCKED|allowlist|blocklist|protocol|scheme|new Set\(|isAllowed|allowedSchemes|canOpen|validate/i;
+    const site = (re, cls) => {
+      let g = 0, u = 0;
+      for (const m of src.matchAll(re)) {
+        const ctx = src.slice(Math.max(0, m.index - 600), m.index);
+        GUARD.test(ctx) ? g++ : u++;
+      }
+      if (g > 0 && u > 1) r.misc_flags.push({ flag: `dual-path:${cls}:${g}guarded+${u}unguarded`, file: label });
+    };
+    site(/shell\.openExternal\s*\(/g, "openExternal");
+    site(/shell\.openPath\s*\(/g, "openPath");
+    // child-process sites only — bare .exec( matches regex.exec() everywhere
+    site(/\bchild_process\.exec(?:File|Sync)?\s*\(|\bcp\.exec(?:File|Sync)?\s*\(|\bchild_process\.spawn(?:Sync)?\s*\(|\bcp\.spawn(?:Sync)?\s*\(|\bexecFile(?:Sync)?\s*\(/g, "process_spawn");
+  }
+
   // 4. remote-content loading ---------------------------------------------------
   for (const m of src.matchAll(/\.loadURL\s*\(\s*["'`](https?:\/\/[^"'`]+)["'`]/g))
     r.remote_loads.push({ kind: "loadURL", url: m[1].slice(0, 160), file: label });
@@ -503,6 +526,14 @@ function scoreApp(files) {
         "certificate-error handler implements custom trust checks (possible pinning)",
         "Hostname/fingerprint-based decision logic observed — consistent with certificate pinning, not a bypass. Recorded as a positive control.",
         { files: [...(flagFiles[fl] ?? [])] });
+    if (fl.startsWith("dual-path:")) {
+      const [, cls, counts] = fl.split(":");
+      const unguarded = Number(counts?.match(/(\d+)unguarded/)?.[1] ?? 0);
+      add("inconsistent-sink-validation", unguarded >= 4 ? "high" : "medium", CONF.OBSERVED,
+        `${cls} reachable via multiple paths with inconsistent argument validation (${counts})`,
+        `The same ${cls} sink is invoked from several call sites; some are preceded by allowlist/blocklist checks and some are not. When a sibling path enforces a policy the unguarded path bypasses it entirely — a classic "two registration paths, one guarded" pattern (verified live on Tencent WorkBuddy: direct-IPC had scheme allowlist + executable blocklist, the RPC path had neither).`,
+        { files: [...(flagFiles[fl] ?? [])] });
+    }
   }
 
   // R3: unvalidated handlers that touch sinks ----------------------------------

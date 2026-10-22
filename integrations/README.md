@@ -8,9 +8,24 @@ thin recipes, not code forks.
 | Adapter | Harness | Files |
 |---|---|---|
 | `artex/` | ARTEX agentic pentest framework | custom-tool spec + task prompt template + registration script |
+| `../tools/mcp-server.mjs` | any MCP client (Claude Code, Devin, ARTEX mcphttp) | zero-dep stdio JSON-RPC server |
 
-Planned: an MCP stdio server wrapping audit/diff/extract for any
-MCP-capable agent (Claude Code, Devin, ARTEX's mcphttp).
+## MCP adapter
+
+`node tools/mcp-server.mjs` speaks MCP over stdio (newline-delimited and
+Content-Length framing both accepted). Tools exposed:
+
+| Tool | What it does |
+|---|---|
+| `wirecat_audit` | full attack-surface audit of an extracted app dir → markdown report |
+| `wirecat_audit_diff` | finding + service-channel delta between two audit JSONs |
+| `wirecat_extract_protos` | proto/service/IPC catalog from a JS file list |
+| `wirecat_catalog_diff` | service/method/field delta between two catalogs |
+| `wirecat_emit_proto` | emit compilable `.proto3` from a catalog |
+| `wirecat_list_audits` | list the committed audit corpus |
+
+Register it in any MCP client config the same way, e.g.
+`{ "mcpServers": { "wirecat": { "command": "node", "args": ["<repo>/tools/mcp-server.mjs"] } } }`.
 
 ## The pattern an adapter should encode
 
