@@ -125,7 +125,25 @@ function auditFile(src, label) {
     nav_guards: [],
     misc_flags: [],
     service_channels: [],
+    bulk_ipc: null,
   };
+
+  // 0. bulk IPC registration (DI-registry style) ---------------------------------
+  // Unity Hub / VS Code-adjacent apps: a services map is iterated and every
+  // entry becomes ipcMain.handle(channel, (_event, ...args) => fn(...args)).
+  // The event arg is discarded — sender validation is structurally impossible.
+  {
+    const shell = src.match(/ipcMain\.handle\s*\(\s*(\w+)\s*,\s*\(\s*(_\w*|e|_event)\s*,\s*\.\.\.\w+\s*\)\s*=>/);
+    const entriesFeed = src.match(/Object\.entries\([\s\S]{0,120}?forEach/);
+    if (shell && entriesFeed) {
+      const computedHandlers = [...src.matchAll(/\[([A-Z][A-Z0-9_]{2,})\]\s*=\s*\(\.\.\.args\)\s*=>\s*this\./g)].length;
+      r.bulk_ipc = {
+        pattern: shell[0].slice(0, 160),
+        event_discarded: /^_/.test(shell[2]),
+        computed_handler_count: computedHandlers,
+      };
+    }
+  }
 
   // 1. webPreferences object literals -----------------------------------------
   for (const m of src.matchAll(/\bwebPreferences\s*:\s*\{/g)) {
@@ -211,9 +229,22 @@ function auditFile(src, label) {
     // an ipcRenderer reference (possibly via a destructured alias) — the
     // Discord-RCE exposure class.
     const forwarding = ipcRef(slice);
-    const genericFwd = /\(\s*(?:\w+\s*,\s*)*\.{3}\w+\s*\)\s*=>[^}]{0,200}(invoke|send|sendSync)\s*\(/.test(slice)
+    // A first-arg identifier only counts as caller-controlled if it does NOT
+    // resolve to a string literal in-file — invoke(SOME_CHANNEL_CONST, ...) is
+    // a fixed-channel wrapper, not a wildcard.
+    const fixedChannelWrap = (() => {
+      for (const fm of slice.matchAll(/(?:invoke|send|sendSync)\s*\(\s*([A-Z][A-Z0-9_]{2,}|[a-z]\w+)\s*[,)]/g)) {
+        const ident = fm[1];
+        const def = src.match(new RegExp(`\\b(?:const|let|var)\\s+${ident}\\s*=\\s*["'\`][^"'\`]+["'\`]`)) ||
+                    src.match(new RegExp(`\\b${ident}\\s*=\\s*["'\`][^"'\`]+["'\`]`));
+        if (def) return true;
+      }
+      return false;
+    })();
+    const genericFwd = !fixedChannelWrap && (
+      /\(\s*(?:\w+\s*,\s*)*\.{3}\w+\s*\)\s*=>[^}]{0,200}(invoke|send|sendSync)\s*\(/.test(slice)
       || /(invoke|send|sendSync)\s*\(\s*\w+\s*,/.test(slice) // first arg is a variable channel
-      || /\w+\s*\(\s*\w+\s*(?:,\s*\.{3}\w+)?\s*\)\s*\{[^}]{0,200}(invoke|send|sendSync)\s*\(/.test(slice); // method shorthand fwd
+      || /\w+\s*\(\s*\w+\s*(?:,\s*\.{3}\w+)?\s*\)\s*\{[^}]{0,200}(invoke|send|sendSync)\s*\(/.test(slice)); // method shorthand fwd
     // channel-name guard inside the bridge: e.g. t(e){if(!e.startsWith("vscode:"))throw}
     // turns an unbounded wildcard into a namespace-gated one.
     const guard = slice.match(/startsWith\s*\(\s*["'`]([^"'`]+)["'`]/);
@@ -331,6 +362,7 @@ function scoreApp(files) {
   const exposures = [];
   const handlers = [];
   const svcChannels = [];
+  const bulkIpc = [];
   const wps = [];
   const remote = [];
   const navGuards = new Set();
@@ -348,6 +380,7 @@ function scoreApp(files) {
     for (const h of f.handlers) handlers.push(h);
     for (const e of f.exposures) exposures.push(e);
     for (const s of f.service_channels) svcChannels.push(s);
+    if (f.bulk_ipc) bulkIpc.push({ file: f.file, ...f.bulk_ipc });
     for (const w of f.web_preferences) wps.push(w);
     for (const rl of f.remote_loads) remote.push(rl);
     for (const g of f.nav_guards) navGuards.add(g);
@@ -512,12 +545,26 @@ function scoreApp(files) {
       `${unpairedHandlers.length} handler(s) with no observed renderer send`,
       "Internal channels or dynamically-composed names — potentially reachable only via wildcard bridges (see wildcard-ipc-exposure).", { channels: unpairedHandlers.slice(0, 30) });
 
+  // R6b: bulk IPC registration — whole service registry becomes handlers ----
+  for (const b of bulkIpc) {
+    add("bulk-ipc-registration", "high", CONF.OBSERVED,
+      `entire service registry exposed as IPC handlers${b.event_discarded ? " with the event argument discarded" : ""}`,
+      `${b.file} registers every entry of a services map via ipcMain.handle — sender validation is ${b.event_discarded ? "structurally absent (parameter ignored)" : "unverified"}. ${b.computed_handler_count} computed-name handler(s) found in-file; combined with any renderer compromise + an ungated invoke bridge, every service method is callable.`,
+      { file: b.file, computed_handlers: b.computed_handler_count });
+  }
+
   // R7: the synthesized reachability verdict — connect the gated bridge to
   // the privileged surface it gates. THIS is the reasoning layer: a gated
   // wildcard for prefix P + N service channels + M transport channels under
   // P = every one of them callable from any compromised renderer.
-  const gatedPrefix = [...new Set(exposures.filter((e) => e.channel_arg_forwarded && e.channel_guard).map((e) => e.channel_guard.allowlist_prefix))];
   const ungatedExposure = exposures.some((e) => e.channel_arg_forwarded && !e.channel_guard);
+  const bulkTotal = bulkIpc.reduce((n, b) => n + b.computed_handler_count, 0);
+  if (ungatedExposure && bulkTotal)
+    add("renderer-to-full-service-registry", "critical", CONF.OBSERVED,
+      `ungated invoke bridge + bulk-registered service registry = ${bulkTotal} privileged methods callable from any compromised renderer`,
+      `An unguarded contextBridge passthrough (wildcard-ipc-exposure) meets a DI registry where every entry is ipcMain.handle()'d with the event argument discarded. A single XSS, hostile webview, or navigation escape in the window holding the bridge yields the entire privileged surface — file writes, installs, credential and license operations — with no per-channel checks possible.`,
+      { computed_handlers: bulkTotal });
+  const gatedPrefix = [...new Set(exposures.filter((e) => e.channel_arg_forwarded && e.channel_guard).map((e) => e.channel_guard.allowlist_prefix))];
   const vscodeNsChannels = Object.keys(channels).filter((c) => gatedPrefix.some((p) => c.startsWith(p)));
   const svcTotal = new Set(svcChannels.map((s) => s.name)).size;
   if ((gatedPrefix.length || ungatedExposure) && (svcTotal || vscodeNsChannels.length)) {
