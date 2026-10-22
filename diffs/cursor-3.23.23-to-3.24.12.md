@@ -4,6 +4,7 @@
 - **messages**: +417 / -34 / ~555
 - **enums**: +75 / -5 / ~18
 - **ipc_channels**: +0 / -0 / ~0
+- **endpoint_hosts**: +1 / -0 / ~0
 
 ## Added services (1)
 - `origin.v1.OriginPrPageService`
@@ -2390,3 +2391,6 @@
 - `aiserver.v1.CursorTeamMergeBlock`
 - `aiserver.v1.PlanType`
 - `origin.v1.DiffRelayNotServedReason`
+
+## Added endpoint hosts (1)
+- `anytool.corp.anysphere.co`

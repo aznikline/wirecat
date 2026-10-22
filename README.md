@@ -28,10 +28,11 @@ diffed release-over-release.
 ## Layout
 
 ```
-catalogs/<app>/<version>.json   machine catalog (services/messages/enums/ipc)
+catalogs/<app>/<version>.json   machine catalog (services/messages/enums/ipc/endpoints)
 specs/<app>/<version>-*.md      rendered spec docs
+protos/<app>/<version>/         emitted .proto3 files (usable codegen input)
 diffs/<app>-<a>-to-<b>.md       protocol evolution reports
-tools/                          extractor + differ + renderer + release tracker
+tools/                          extractor + differ + renderer + proto emitter + release tracker
 ```
 
 ## Tools
@@ -46,6 +47,9 @@ node tools/diff-catalogs.mjs catalogs/cursor/3.24.12.json catalogs/cursor/3.26.1
 
 # Render spec markdown
 node tools/render-spec.mjs catalogs/cursor/3.26.16.json [--packages aiserver.v1,agent.v1] [--full]
+
+# Emit .proto3 files from a catalog
+node tools/emit-proto.mjs catalogs/cursor/3.26.16.json --out protos/cursor/3.26.16 [--packages aiserver.v1,agent.v1]
 
 # Track a new Cursor stable release end-to-end (also usable standalone)
 tools/track-cursor-release.sh
@@ -70,8 +74,14 @@ exposeInMainWorld` globals, and namespace-qualified channel vocabulary
 (`vscode:*`, `cursor:*`, …) filtered against real call sites to control
 false positives.
 
+**Endpoint surface** — literal `https://` URLs grouped by host
+(`endpoints.urls` + `endpoints.hosts`), so backend hosts
+(`api2/3/4/5.cursor.sh`, `repo42.cursor.sh`, …) are diffable
+release-over-release alongside the protocol surface.
+
 Unresolved or ambiguous references are reported as `unresolved:<ident>`
-rather than guessed.
+rather than guessed. Emitted `.proto` files keep those gaps honest via
+`Unresolved_*` placeholder messages.
 
 ## Automation
 
@@ -95,8 +105,10 @@ version.
 
 ## Roadmap
 
-- Endpoint + auth-flow correlation layer (bind services to URLs/credentials)
-- More apps: Slack, Discord, Figma desktop, Linear, Notion, AI tooling
+- Auth-flow association layer (which headers/tokens each service carries)
+- protobufjs (`pbjs static-module`) extraction pass — unlocks Discord/Signal
+- More apps: Discord and Slack are next (both have official release feeds +
+  real proto surfaces); Notion/Linear/Obsidian are documented correct
+  negatives (no protobuf, IPC-only)
 - Dynamic IPC patterns: channel names built at runtime (template concat,
   computed args) are documented gaps — only literal channels are cataloged
-- `.proto` file emission from catalogs (interoperable codegen input)

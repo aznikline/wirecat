@@ -40,6 +40,6 @@ jobs:
         run: |
           git config user.name "wirecat-bot"
           git config user.email "bot@wirecat.local"
-          git add catalogs/cursor/ specs/cursor/ diffs/
+          git add catalogs/cursor/ specs/cursor/ protos/cursor/ diffs/
           git commit -m "catalog: cursor ${{ steps.detect.outputs.version }}"
           git push

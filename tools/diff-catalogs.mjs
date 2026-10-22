@@ -37,6 +37,12 @@ const enm = diffTypeMap(old.enums, cur.enums, enumSig);
 const ipcA = old.ipc?.channels ?? {}, ipcB = cur.ipc?.channels ?? {};
 const ipc = diffTypeMap(ipcA, ipcB, (c) => `${c.sends}/${c.invokes}/${c.listeners}/${c.handlers}`);
 const ipcSig = { added: ipc.added, removed: ipc.removed, changed: ipc.changed };
+// endpoint hosts only (URL-level churn is noise; host additions/removals are signal)
+const hostsA = Object.keys(old.endpoints?.hosts ?? {}), hostsB = Object.keys(cur.endpoints?.hosts ?? {});
+const ep = {
+  added: hostsB.filter((h) => !hostsA.includes(h)),
+  removed: hostsA.filter((h) => !hostsB.includes(h)),
+};
 
 // per-service method-level detail for changed services
 const methodChanges = {};
@@ -74,11 +80,13 @@ const report = {
     messages: { added: msg.added.length, removed: msg.removed.length, changed: msg.changed.length },
     enums: { added: enm.added.length, removed: enm.removed.length, changed: enm.changed.length },
     ipc_channels: { added: ipc.added.length, removed: ipc.removed.length, changed: ipc.changed.length },
+    endpoint_hosts: { added: ep.added.length, removed: ep.removed.length, changed: 0 },
   },
   services: svc,
   messages: msg,
   enums: enm,
   ipc_channels: ipcSig,
+  endpoint_hosts: ep,
   method_changes: methodChanges,
   field_changes: fieldChanges,
 };
@@ -112,6 +120,8 @@ if (md) {
   sect("Added IPC channels", ipc.added);
   sect("Removed IPC channels", ipc.removed);
   sect("Changed IPC channels", ipc.changed);
+  sect("Added endpoint hosts", ep.added);
+  sect("Removed endpoint hosts", ep.removed);
   process.stdout.write(out.join("\n") + "\n");
 } else {
   process.stdout.write(JSON.stringify(report, null, 1) + "\n");

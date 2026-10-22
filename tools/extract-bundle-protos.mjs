@@ -127,49 +127,6 @@ export function extractFromSource(src, fileLabel) {
     return { ref: id, resolved: null };
   };
 
-  // pass 2: message definitions with fields
-  for (const m of src.matchAll(/\b([A-Za-z_$][\w$]*)\s*=\s*[\w$]+\.makeMessageType\s*\(\s*["'`]([^"'`]+)["'`]/g)) {
-    const typeName = m[2];
-    const arrow = src.indexOf("=>", m.index + m[0].length);
-    if (arrow === -1) continue;
-    const openBracket = src.indexOf("[", arrow);
-    if (openBracket === -1) continue;
-    const close = findBalanced(src, openBracket, "[", "]");
-    if (close === -1) continue;
-    const fieldsBody = src.slice(openBracket + 1, close);
-    const fields = [];
-    for (const fo of splitTop(fieldsBody)) {
-      const t = fo.trim();
-      if (!t.startsWith("{")) continue;
-      const inner = t.slice(1, findBalanced(t, 0, "{", "}") ?? t.length - 1);
-      const f = parseObjectBody(inner);
-      const field = {
-        no: Number(f.no), name: str(f.name), kind: str(f.kind),
-      };
-      if (f.T !== undefined) {
-        if (field.kind === "scalar") {
-          const tn = Number(f.T);
-          field.type = SCALAR[tn] ?? `scalar#${tn}`;
-        } else {
-          // T may be a bare ident or a call like ns.getEnumType(ident)
-          const inner = f.T.match(/getEnumType\(\s*([A-Za-z_$][\w$]*)\s*\)/);
-          const r = resolve(inner ? inner[1] : f.T);
-          field.type = r.resolved ?? `unresolved:${r.ref}`;
-        }
-      }
-      if (f.repeated === "!0") field.repeated = true;
-      if (f.opt === "!0") field.optional = true;
-      if (f.req === "!0") field.required = true;
-      if (f.packed === "!0") field.packed = true;
-      if (f.jsonName) field.json_name = str(f.jsonName);
-      if (f.oneof) field.oneof = str(f.oneof);
-      if (f.L) field.list_kind = f.L; // presence tracking
-      fields.push(field);
-    }
-    fields.sort((a, b) => a.no - b.no);
-    messages[typeName] = { kind: "message", name: typeName, fields };
-  }
-
   const parseFieldList = (fieldsBody) => {
     const fields = [];
     for (const fo of splitTop(fieldsBody)) {
@@ -188,6 +145,23 @@ export function extractFromSource(src, fileLabel) {
           field.type = r.resolved ?? `unresolved:${r.ref}`;
         }
       }
+      if (field.kind === "map") {
+        if (f.K !== undefined) {
+          const kn = Number(f.K);
+          field.key_type = SCALAR[kn] ?? `scalar#${kn}`;
+        }
+        if (f.V !== undefined) {
+          const vobj = parseObjectBody(f.V.replace(/^\{|\}$/g, ""));
+          const vKind = str(vobj.kind);
+          if (vKind === "scalar" || vKind === undefined) {
+            const vn = Number(vobj.T);
+            field.value_type = SCALAR[vn] ?? `scalar#${vn}`;
+          } else {
+            const r = resolve(vobj.T);
+            field.value_type = r.resolved ?? `unresolved:${r.ref}`;
+          }
+        }
+      }
       if (f.repeated === "!0" || f.repeat === "!0" || f.repeat === "1" || f.repeat === "2") field.repeated = true;
       if (f.opt === "!0") field.optional = true;
       if (f.req === "!0") field.required = true;
@@ -199,6 +173,18 @@ export function extractFromSource(src, fileLabel) {
     }
     return fields.sort((a, b) => a.no - b.no);
   };
+
+  // pass 2: protobuf-es makeMessageType field lists
+  for (const m of src.matchAll(/\b([A-Za-z_$][\w$]*)\s*=\s*[\w$]+\.makeMessageType\s*\(\s*["'`]([^"'`]+)["'`]/g)) {
+    const typeName = m[2];
+    const arrow = src.indexOf("=>", m.index + m[0].length);
+    if (arrow === -1) continue;
+    const openBracket = src.indexOf("[", arrow);
+    if (openBracket === -1) continue;
+    const close = findBalanced(src, openBracket, "[", "]");
+    if (close === -1) continue;
+    messages[typeName] = { kind: "message", name: typeName, fields: parseFieldList(src.slice(openBracket + 1, close)) };
+  }
 
   // pass 2b: protobuf-ts messages — Ident.typeName="pkg.Msg",Ident.fields=X.proto3.util.newFieldList(()=>[...])
   for (const e of tnEvents) {
@@ -303,6 +289,25 @@ export function extractFromSource(src, fileLabel) {
       if (!ipc.exposed_globals.includes(m[1])) ipc.exposed_globals.push(m[1]);
   }
 
+  // pass 7: endpoint vocabulary — literal https:// URLs and bare API host strings.
+  // Filtered to hosts that look like app backends (no CDN/fonts/analytics noise
+  // beyond recording them; classification is left to the catalog consumer).
+  const urls = {};
+  for (const m of src.matchAll(/["'`](https?:\/\/[A-Za-z0-9._~:/?#[\]@!$&'()*+,;=%-]+)["'`]/g)) {
+    let u = m[1];
+    if (u.length > 300) continue;
+    // strip trailing punctuation often glued to literals
+    u = u.replace(/[).,;]+$/, "");
+    urls[u] = (urls[u] ?? 0) + 1;
+  }
+  const endpoints = { urls, hosts: {} };
+  for (const u of Object.keys(urls)) {
+    try {
+      const h = new URL(u).hostname;
+      (endpoints.hosts[h] ??= []).push(u);
+    } catch { /* malformed literal, keep in urls only */ }
+  }
+
   if (unresolvedIdents.size) {
     notes.push(`${unresolvedIdents.size} identifier(s) could not be resolved to a typeName`);
   }
@@ -316,7 +321,7 @@ export function extractFromSource(src, fileLabel) {
       methods: Object.values(services).reduce((n, s) => n + Object.keys(s.methods).length, 0),
       ipc_channels: Object.keys(ipc.channels).length,
     },
-    services, messages, enums, ipc,
+    services, messages, enums, ipc, endpoints,
     notes,
   };
 }
@@ -331,7 +336,7 @@ if (process.argv[1] && process.argv[1].endsWith("extract-bundle-protos.mjs")) {
   const files = args.filter((a) => !a.startsWith("--"));
   if (listFile) for (const l of readFileSync(listFile, "utf8").split("\n")) if (l.trim()) files.push(l.trim());
 
-  const merged = { generated_by: "wirecat extract-bundle-protos", sources: [], counts: { services: 0, messages: 0, enums: 0, methods: 0, ipc_channels: 0 }, services: {}, messages: {}, enums: {}, ipc: { channels: {}, exposed_globals: [] }, notes: [] };
+  const merged = { generated_by: "wirecat extract-bundle-protos", sources: [], counts: { services: 0, messages: 0, enums: 0, methods: 0, ipc_channels: 0 }, services: {}, messages: {}, enums: {}, ipc: { channels: {}, exposed_globals: [] }, endpoints: { urls: {}, hosts: {} }, notes: [] };
   for (const f of files) {
     const src = readFileSync(f, "utf8");
     const r = extractFromSource(src, basename(f));
@@ -346,6 +351,14 @@ if (process.argv[1] && process.argv[1].endsWith("extract-bundle-protos.mjs")) {
         for (const s of info.sites ?? []) if (!c.sites.includes(s)) c.sites.push(s);
       }
       for (const g of r.ipc.exposed_globals) if (!merged.ipc.exposed_globals.includes(g)) merged.ipc.exposed_globals.push(g);
+    }
+    if (r.endpoints) {
+      for (const [u, n] of Object.entries(r.endpoints.urls)) merged.endpoints.urls[u] = (merged.endpoints.urls[u] ?? 0) + n;
+      for (const [h, us] of Object.entries(r.endpoints.hosts))
+        for (const u of us) {
+          (merged.endpoints.hosts[h] ??= []);
+          if (!merged.endpoints.hosts[h].includes(u)) merged.endpoints.hosts[h].push(u);
+        }
     }
     for (const k of ["services", "messages", "enums", "methods", "ipc_channels"]) merged.counts[k] += r.counts[k] ?? 0;
     merged.notes.push(...r.notes);

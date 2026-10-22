@@ -56,5 +56,6 @@ if [ -n "$PREV" ]; then
   echo "[track] diff written: diffs/cursor-${PV}-to-${VERSION}.md"
 fi
 node "$REPO/tools/render-spec.mjs" "$CAT" > "$REPO/specs/cursor/${VERSION}-services.md"
+node "$REPO/tools/emit-proto.mjs" "$CAT" --out "$REPO/protos/cursor/${VERSION}" --packages aiserver.v1,agent.v1,origin.v1,cursor_files.v1,scmapi.v0
 echo "$VERSION" > "$REPO/catalogs/cursor/LATEST"
 echo "[track] done: $VERSION"

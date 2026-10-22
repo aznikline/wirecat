@@ -4,6 +4,7 @@
 - **messages**: +1197 / -65 / ~635
 - **enums**: +127 / -0 / ~34
 - **ipc_channels**: +5 / -2 / ~0
+- **endpoint_hosts**: +8 / -41 / ~0
 
 ## Added services (8)
 - `aiserver.v1.CodebaseProtectionService`
@@ -3749,3 +3750,56 @@
 ## Removed IPC channels (2)
 - `vscode:createAlwaysLocalSingletonChannelConnection`
 - `vscode:createAlwaysLocalSingletonChannelConnectionResult`
+
+## Added endpoint hosts (8)
+- `mermaid-node-link.invalid`
+- `api.origin.cursor.com`
+- `app.graphite.com`
+- `api.origin-staging.cursor.com`
+- `review.stg.cursor.com`
+- `staging.cursor.com`
+- `foo.bar`
+- `x.ai`
+
+## Removed endpoint hosts (41)
+- `dev.cursorvm-manager.com`
+- `dev1.cursorvm-manager.com`
+- `dev2.cursorvm-manager.com`
+- `dev3.cursorvm-manager.com`
+- `dev4.cursorvm-manager.com`
+- `dev5.cursorvm-manager.com`
+- `dev6.cursorvm-manager.com`
+- `train1.cursorvm-manager.com`
+- `train2.cursorvm-manager.com`
+- `train3.cursorvm-manager.com`
+- `train4.cursorvm-manager.com`
+- `train5.cursorvm-manager.com`
+- `train8.cursorvm-manager.com`
+- `train9.cursorvm-manager.com`
+- `train10.cursorvm-manager.com`
+- `train11.cursorvm-manager.com`
+- `train12.cursorvm-manager.com`
+- `train13-oci.cursorvm-manager.com`
+- `eval1.cursorvm-manager.com`
+- `eval2.cursorvm-manager.com`
+- `eval3.cursorvm-manager.com`
+- `test1.cursorvm-manager.com`
+- `test3.cursorvm-manager.com`
+- `test5.cursorvm-manager.com`
+- `test2-gcp.cursorvm-manager.com`
+- `test4-oci.cursorvm-manager.com`
+- `us1.cursorvm-manager.com`
+- `us1p.cursorvm-manager.com`
+- `us3.cursorvm-manager.com`
+- `us3p.cursorvm-manager.com`
+- `us4.cursorvm-manager.com`
+- `us4p.cursorvm-manager.com`
+- `us5.cursorvm-manager.com`
+- `us5p.cursorvm-manager.com`
+- `us6.cursorvm-manager.com`
+- `us6p.cursorvm-manager.com`
+- `us7.cursorvm-manager.com`
+- `us7p.cursorvm-manager.com`
+- `us8.cursorvm-manager.com`
+- `origin.cursor.com`
+- `origin-staging.cursor.com`

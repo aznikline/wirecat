@@ -1,9 +1,10 @@
 # Catalog diff: 3.24.12 -> 3.26.16
 
 - **services**: +2 / -0 / ~40
-- **messages**: +657 / -29 / ~646
+- **messages**: +657 / -29 / ~644
 - **enums**: +85 / -2 / ~28
 - **ipc_channels**: +0 / -0 / ~0
+- **endpoint_hosts**: +5 / -12 / ~0
 
 ## Added services (2)
 - `scmapi.v0.ScmService`
@@ -1134,7 +1135,7 @@
 - `google.protobuf.compiler.CodeGeneratorRequest`
 - `google.protobuf.compiler.CodeGeneratorResponse`
 
-## Changed messages (646)
+## Changed messages (644)
 - `agent.v1.SubagentType`
   - changed: `5 media_review -> media_review`
 - `agent.v1.NetworkPolicy`
@@ -2837,11 +2838,6 @@
   - added: `5 error`
   - changed: `1 commit -> id`
   - changed: `2 branch -> method`
-- `google.protobuf.Api`
-  - changed: `2 methods -> methods`
-  - changed: `7 syntax -> syntax`
-- `google.protobuf.Method`
-  - changed: `7 syntax -> syntax`
 - `google.protobuf.Value`
   - changed: `1 null_value -> null_value`
   - changed: `5 struct_value -> struct_value`
@@ -2981,3 +2977,24 @@
 - `aiserver.v1.GrokBotSlackInstallOutcome`
 - `aiserver.v1.RunInferenceInvocationPurpose`
 - `aiserver.v1.RemoteAgentHostControllerMethod`
+
+## Added endpoint hosts (5)
+- `console.statsig.com`
+- `auth.grok.spacex.com`
+- `auth.grok-staging.spacex.com`
+- `gtm-api.corp.anysphere.co`
+- `worker-api`
+
+## Removed endpoint hosts (12)
+- `anytool.corp.anysphere.co`
+- `x.ai`
+- `inikulin.github.io`
+- `api.cursor.com`
+- `bitbucket.org`
+- `ghe.company.github.com`
+- `gitlab.example.com`
+- `gerrit-a.example.com`
+- `origin.cursor.com`
+- `origin-staging.cursor.com`
+- `origin-test.cursor.com`
+- `origin.cursor.com.evil.example`
