@@ -4,9 +4,9 @@
 
 # Wirecat
 
-### 读应用的 JavaScript,还原它和服务器通信用的那套没文档的 API。
+### 静态还原编译进应用客户端代码里的内部 API 定义。
 
-**指向一个装好的应用(Cursor、Slack、Discord……),拿回它的全部 RPC 服务、方法、消息字段、IPC channel 和后端主机——以 `.proto` 文件 + 发版差异的形式。**
+**从已安装应用的 JavaScript 中提取 protobuf 描述符与 IPC 定义——不抓包、不运行目标——输出版本化 `.proto` 文件 + 发版差异。**
 
 [![CI: track-cursor](https://img.shields.io/github/actions/workflow/status/aznikline/wirecat/track-cursor.yml?style=flat-square&label=track-cursor)](https://github.com/aznikline/wirecat/actions/workflows/track-cursor.yml)
 [![Node.js](https://img.shields.io/badge/Node.js-%E2%89%A518-339933?style=flat-square&logo=nodedotjs&logoColor=white)](#快速开始)
@@ -21,11 +21,12 @@
 
 ---
 
-像 Cursor 这样的应用,跟自家服务器通信用的是一套从未公开文档的 API
-——但完整定义就躺在应用自带的混淆 JavaScript 里:它调用的每个
-protobuf 服务、Electron 进程间的每个 IPC channel、它联系的每个后端
-主机。想给它写个客户端,或者想知道它的 agent 协议长什么样?今天这
-意味着几天手工 grep bundle——而且笔记在下个版本就过时了。
+应用用 protobuf 构建时,编译器会把完整的服务描述符嵌进交付的
+JavaScript——客户端所知的每个 RPC 服务、消息字段、枚举都会挺过
+压缩混淆存留下来。也就是说,客户端完整的对服务端 API 可以直接
+**从产物本身恢复**:不抓包、不运行应用、不用猜线上格式。想给它
+写个客户端,或者想知道它的 agent 协议长什么样?今天这意味着几天
+手工 grep bundle——而且笔记在下个版本就过时了。
 
 **Wirecat 是把这件事机械化的工具。** 它对应用自带的 JS bundle 做静态分析,
 产出应用全部暴露面的*类型化目录*——然后 CI 在每个新版本上重跑,

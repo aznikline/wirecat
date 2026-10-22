@@ -4,9 +4,9 @@
 
 # Wirecat
 
-### Read an app's JavaScript. Recover the undocumented APIs it uses to talk to its servers.
+### Statically recover the internal API schema embedded in an app's client code.
 
-**Point it at an installed app (Cursor, Slack, Discord…). Get back every RPC service, method, message field, IPC channel, and backend host it calls — as `.proto` files + release diffs.**
+**Wirecat extracts the protobuf descriptors and IPC definitions compiled into an installed app's JavaScript — no traffic capture, no execution — and publishes the result as versioned `.proto` files + release diffs.**
 
 [![CI: track-cursor](https://img.shields.io/github/actions/workflow/status/aznikline/wirecat/track-cursor.yml?style=flat-square&label=track-cursor)](https://github.com/aznikline/wirecat/actions/workflows/track-cursor.yml)
 [![Node.js](https://img.shields.io/badge/Node.js-%E2%89%A518-339933?style=flat-square&logo=nodedotjs&logoColor=white)](#quick-start)
@@ -21,13 +21,14 @@
 
 ---
 
-Apps like Cursor call their servers through APIs that are never documented
-publicly — but the full definition sits inside the app's own minified
-JavaScript: every protobuf service it calls, every IPC channel between its
-Electron processes, every backend host it talks to. Want to build a client
-for one of these apps, or just know what its agent protocol looks like?
-Today that means days of grepping bundled code by hand — and your notes go
-stale on the next release.
+When an app is built from protobuf sources, the compiler embeds complete
+service descriptors into the shipped JavaScript — every RPC service,
+message field, and enum the client knows about survives minification.
+That means the client's full server-facing API is recoverable *from the
+artifact itself*: no packet capture, no running the app, no guessing at
+wire format. Want to build a client for one of these apps, or just know
+what its agent protocol looks like? Today that means days of grepping
+bundled code by hand — and your notes go stale on the next release.
 
 **Wirecat is a tool that does this extraction mechanically.** It reads the JS
 bundles installed with the app (no execution) and produces a *typed catalog* of everything the app
