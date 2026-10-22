@@ -1,0 +1,905 @@
+{
+ "generated_by": "wirecat audit-electron",
+ "app": "devin",
+ "version": "3.10.67",
+ "scope_note": "boundary-protocol reachability + bounded intra-handler scan; NOT whole-program taint. Absence of a finding is not proof of safety.",
+ "findings": [
+  {
+   "rule": "custom-cert-verifyproc",
+   "severity": "medium",
+   "confidence": "inferred",
+   "title": "setCertificateVerifyProc installed — decision logic needs manual review",
+   "detail": "A custom certificate verifier exists. Whether it enforces pinning (correct) or rubber-stamps (bypass) is unresolved at this analysis depth.",
+   "evidence": {
+    "files": [
+     "out/main.js"
+    ]
+   }
+  },
+  {
+   "rule": "custom-cert-pinning-present",
+   "severity": "info",
+   "confidence": "observed",
+   "title": "certificate-error handler implements custom trust checks (possible pinning)",
+   "detail": "Hostname/fingerprint-based decision logic observed — consistent with certificate pinning, not a bypass. Recorded as a positive control.",
+   "evidence": {
+    "files": [
+     "out/main.js"
+    ]
+   }
+  },
+  {
+   "rule": "remote-content-with-ipc",
+   "severity": "medium",
+   "confidence": "inferred",
+   "title": "app loads remote content (1 literal remote URL(s)) while exposing 13 IPC channel(s)",
+   "detail": "Remote-loadable content and a privileged IPC surface coexist in this build. Whether any remote-reachable window can reach the handlers is unresolved — that requires runtime window/process mapping.",
+   "evidence": {
+    "remote_urls": [
+     "https://aka.ms/vscode-windows-unc"
+    ],
+    "channels": 13
+   }
+  },
+  {
+   "rule": "unpaired-renderer-sends",
+   "severity": "info",
+   "confidence": "derived",
+   "title": "1 channel(s) sent but no handler found",
+   "detail": "Either the handler lives in an unscanned file/native module, or the channel is registered dynamically.",
+   "evidence": {
+    "channels": [
+     "vscode:registerAuxiliaryWindow"
+    ]
+   }
+  },
+  {
+   "rule": "handler-without-observed-caller",
+   "severity": "info",
+   "confidence": "derived",
+   "title": "12 handler(s) with no observed renderer send",
+   "detail": "Internal channels or dynamically-composed names — potentially reachable only via wildcard bridges (see wildcard-ipc-exposure).",
+   "evidence": {
+    "channels": [
+     "ipc-message",
+     "did-navigate",
+     "context-menu",
+     "destroyed",
+     "console-message",
+     "did-finish-load",
+     "did-start-loading",
+     "will-navigate",
+     "will-redirect",
+     "render-process-gone",
+     "did-fail-load",
+     "before-input-event"
+    ]
+   }
+  }
+ ],
+ "service_channels": [
+  {
+   "name": "agentHostLogger",
+   "file": "node/agentHostMain.js",
+   "resolved_ref": null,
+   "binding": null,
+   "methods": [],
+   "sinks": []
+  },
+  {
+   "name": "agentHost",
+   "file": "node/agentHostMain.js",
+   "resolved_ref": null,
+   "binding": null,
+   "methods": [],
+   "sinks": []
+  },
+  {
+   "name": "agentHostConnectionTracker",
+   "file": "node/agentHostMain.js",
+   "resolved_ref": "ih",
+   "binding": "t.add(new ih)",
+   "methods": [
+    "_decodeUri",
+    "_encodeUri"
+   ],
+   "sinks": []
+  },
+  {
+   "name": "logger",
+   "file": "node/ptyHostMain.js",
+   "resolved_ref": null,
+   "binding": null,
+   "methods": [],
+   "sinks": []
+  },
+  {
+   "name": "heartbeat",
+   "file": "node/ptyHostMain.js",
+   "resolved_ref": "he",
+   "binding": "new he,s={_serviceBrand:void 0,...fl},a=new qr(vo(process.argv,Na),s),l=new oi(ul(a),a.logsHome)",
+   "methods": [
+    "dispose",
+    "isDisposed",
+    "clear",
+    "add",
+    "delete",
+    "deleteAndLeak",
+    "assertNotDisposed"
+   ],
+   "sinks": []
+  },
+  {
+   "name": "ptyHost",
+   "file": "node/ptyHostMain.js",
+   "resolved_ref": "d",
+   "binding": "Mr.fromService(d,o)",
+   "methods": [],
+   "sinks": []
+  },
+  {
+   "name": "ptyHostWindow",
+   "file": "node/ptyHostMain.js",
+   "resolved_ref": "unresolved:trace",
+   "binding": "",
+   "methods": [],
+   "sinks": []
+  },
+  {
+   "name": "watcher",
+   "file": "watcher/watcherMain.js",
+   "resolved_ref": "q",
+   "binding": "",
+   "methods": [
+    "dispose",
+    "isDisposed",
+    "clear",
+    "add",
+    "delete",
+    "deleteAndLeak",
+    "assertNotDisposed"
+   ],
+   "sinks": []
+  },
+  {
+   "name": "extensionGalleryManifest",
+   "file": "sharedProcess/sharedProcessMain.js",
+   "resolved_ref": null,
+   "binding": null,
+   "methods": [],
+   "sinks": []
+  },
+  {
+   "name": "mcpGalleryManifest",
+   "file": "sharedProcess/sharedProcessMain.js",
+   "resolved_ref": null,
+   "binding": null,
+   "methods": [],
+   "sinks": []
+  },
+  {
+   "name": "telemetryAppender",
+   "file": "sharedProcess/sharedProcessMain.js",
+   "resolved_ref": null,
+   "binding": null,
+   "methods": [],
+   "sinks": []
+  },
+  {
+   "name": "extensions",
+   "file": "sharedProcess/sharedProcessMain.js",
+   "resolved_ref": null,
+   "binding": null,
+   "methods": [],
+   "sinks": []
+  },
+  {
+   "name": "mcpManagement",
+   "file": "sharedProcess/sharedProcessMain.js",
+   "resolved_ref": null,
+   "binding": null,
+   "methods": [],
+   "sinks": []
+  },
+  {
+   "name": "languagePacks",
+   "file": "sharedProcess/sharedProcessMain.js",
+   "resolved_ref": null,
+   "binding": null,
+   "methods": [],
+   "sinks": []
+  },
+  {
+   "name": "diagnostics",
+   "file": "sharedProcess/sharedProcessMain.js",
+   "resolved_ref": null,
+   "binding": null,
+   "methods": [],
+   "sinks": []
+  },
+  {
+   "name": "extensionTipsService",
+   "file": "sharedProcess/sharedProcessMain.js",
+   "resolved_ref": null,
+   "binding": null,
+   "methods": [],
+   "sinks": []
+  },
+  {
+   "name": "checksum",
+   "file": "sharedProcess/sharedProcessMain.js",
+   "resolved_ref": null,
+   "binding": null,
+   "methods": [],
+   "sinks": []
+  },
+  {
+   "name": "v8InspectProfiling",
+   "file": "sharedProcess/sharedProcessMain.js",
+   "resolved_ref": null,
+   "binding": null,
+   "methods": [],
+   "sinks": []
+  },
+  {
+   "name": "userDataSyncMachines",
+   "file": "sharedProcess/sharedProcessMain.js",
+   "resolved_ref": null,
+   "binding": null,
+   "methods": [],
+   "sinks": []
+  },
+  {
+   "name": "customEndpointTelemetry",
+   "file": "sharedProcess/sharedProcessMain.js",
+   "resolved_ref": null,
+   "binding": null,
+   "methods": [],
+   "sinks": []
+  },
+  {
+   "name": "userDataSyncAccount",
+   "file": "sharedProcess/sharedProcessMain.js",
+   "resolved_ref": null,
+   "binding": null,
+   "methods": [],
+   "sinks": []
+  },
+  {
+   "name": "userDataSyncStoreManagement",
+   "file": "sharedProcess/sharedProcessMain.js",
+   "resolved_ref": "get",
+   "binding": "",
+   "methods": [],
+   "sinks": []
+  },
+  {
+   "name": "userDataSync",
+   "file": "sharedProcess/sharedProcessMain.js",
+   "resolved_ref": null,
+   "binding": null,
+   "methods": [],
+   "sinks": []
+  },
+  {
+   "name": "userDataAutoSync",
+   "file": "sharedProcess/sharedProcessMain.js",
+   "resolved_ref": null,
+   "binding": null,
+   "methods": [],
+   "sinks": []
+  },
+  {
+   "name": "IUserDataSyncResourceProviderService",
+   "file": "sharedProcess/sharedProcessMain.js",
+   "resolved_ref": null,
+   "binding": null,
+   "methods": [],
+   "sinks": []
+  },
+  {
+   "name": "remoteTunnel",
+   "file": "sharedProcess/sharedProcessMain.js",
+   "resolved_ref": null,
+   "binding": null,
+   "methods": [],
+   "sinks": []
+  },
+  {
+   "name": "sharedWebContentExtractor",
+   "file": "sharedProcess/sharedProcessMain.js",
+   "resolved_ref": null,
+   "binding": null,
+   "methods": [],
+   "sinks": []
+  },
+  {
+   "name": "playwright",
+   "file": "sharedProcess/sharedProcessMain.js",
+   "resolved_ref": null,
+   "binding": null,
+   "methods": [],
+   "sinks": []
+  },
+  {
+   "name": "localGit",
+   "file": "sharedProcess/sharedProcessMain.js",
+   "resolved_ref": null,
+   "binding": null,
+   "methods": [],
+   "sinks": []
+  },
+  {
+   "name": "download",
+   "file": "workbench/workbench.desktop.main.js",
+   "resolved_ref": null,
+   "binding": null,
+   "methods": [],
+   "sinks": []
+  },
+  {
+   "name": "urlHandler",
+   "file": "workbench/workbench.desktop.main.js",
+   "resolved_ref": null,
+   "binding": null,
+   "methods": [],
+   "sinks": []
+  },
+  {
+   "name": "extensionRecommendationNotification",
+   "file": "workbench/workbench.desktop.main.js",
+   "resolved_ref": null,
+   "binding": null,
+   "methods": [],
+   "sinks": []
+  },
+  {
+   "name": "userDataSyncUtil",
+   "file": "workbench/workbench.desktop.main.js",
+   "resolved_ref": null,
+   "binding": null,
+   "methods": [],
+   "sinks": []
+  },
+  {
+   "name": "launch",
+   "file": "out/main.js",
+   "resolved_ref": "e",
+   "binding": "this._register(new se),s=st.fromService(e.get(VT),o,{disableMarshalling:!0})",
+   "methods": [
+    "fail",
+    "next",
+    "then"
+   ],
+   "sinks": []
+  },
+  {
+   "name": "diagnostics",
+   "file": "out/main.js",
+   "resolved_ref": null,
+   "binding": null,
+   "methods": [],
+   "sinks": []
+  },
+  {
+   "name": "policy",
+   "file": "out/main.js",
+   "resolved_ref": null,
+   "binding": null,
+   "methods": [],
+   "sinks": []
+  },
+  {
+   "name": "policy",
+   "file": "out/main.js",
+   "resolved_ref": null,
+   "binding": null,
+   "methods": [],
+   "sinks": []
+  },
+  {
+   "name": "copilotManagedSettings",
+   "file": "out/main.js",
+   "resolved_ref": null,
+   "binding": null,
+   "methods": [],
+   "sinks": []
+  },
+  {
+   "name": "userDataProfiles",
+   "file": "out/main.js",
+   "resolved_ref": null,
+   "binding": null,
+   "methods": [],
+   "sinks": []
+  },
+  {
+   "name": "userDataProfiles",
+   "file": "out/main.js",
+   "resolved_ref": null,
+   "binding": null,
+   "methods": [],
+   "sinks": []
+  },
+  {
+   "name": "update",
+   "file": "out/main.js",
+   "resolved_ref": null,
+   "binding": null,
+   "methods": [],
+   "sinks": []
+  },
+  {
+   "name": "process",
+   "file": "out/main.js",
+   "resolved_ref": "e",
+   "binding": "this._register(new se),s=st.fromService(e.get(VT),o,{disableMarshalling:!0})",
+   "methods": [
+    "fail",
+    "next",
+    "then"
+   ],
+   "sinks": []
+  },
+  {
+   "name": "encryption",
+   "file": "out/main.js",
+   "resolved_ref": "e",
+   "binding": "this._register(new se),s=st.fromService(e.get(VT),o,{disableMarshalling:!0})",
+   "methods": [
+    "fail",
+    "next",
+    "then"
+   ],
+   "sinks": []
+  },
+  {
+   "name": "sign",
+   "file": "out/main.js",
+   "resolved_ref": "e",
+   "binding": "this._register(new se),s=st.fromService(e.get(VT),o,{disableMarshalling:!0})",
+   "methods": [
+    "fail",
+    "next",
+    "then"
+   ],
+   "sinks": []
+  },
+  {
+   "name": "keyboardLayout",
+   "file": "out/main.js",
+   "resolved_ref": null,
+   "binding": null,
+   "methods": [],
+   "sinks": []
+  },
+  {
+   "name": "nativeHost",
+   "file": "out/main.js",
+   "resolved_ref": null,
+   "binding": null,
+   "methods": [],
+   "sinks": []
+  },
+  {
+   "name": "nativeHost",
+   "file": "out/main.js",
+   "resolved_ref": "e",
+   "binding": "this._register(new se),s=st.fromService(e.get(VT),o,{disableMarshalling:!0})",
+   "methods": [
+    "fail",
+    "next",
+    "then"
+   ],
+   "sinks": []
+  },
+  {
+   "name": "webContentExtractor",
+   "file": "out/main.js",
+   "resolved_ref": "e",
+   "binding": "this._register(new se),s=st.fromService(e.get(VT),o,{disableMarshalling:!0})",
+   "methods": [
+    "fail",
+    "next",
+    "then"
+   ],
+   "sinks": []
+  },
+  {
+   "name": "workspaces",
+   "file": "out/main.js",
+   "resolved_ref": "e",
+   "binding": "this._register(new se),s=st.fromService(e.get(VT),o,{disableMarshalling:!0})",
+   "methods": [
+    "fail",
+    "next",
+    "then"
+   ],
+   "sinks": []
+  },
+  {
+   "name": "menubar",
+   "file": "out/main.js",
+   "resolved_ref": "e",
+   "binding": "this._register(new se),s=st.fromService(e.get(VT),o,{disableMarshalling:!0})",
+   "methods": [
+    "fail",
+    "next",
+    "then"
+   ],
+   "sinks": []
+  },
+  {
+   "name": "url",
+   "file": "out/main.js",
+   "resolved_ref": "e",
+   "binding": "this._register(new se),s=st.fromService(e.get(VT),o,{disableMarshalling:!0})",
+   "methods": [
+    "fail",
+    "next",
+    "then"
+   ],
+   "sinks": []
+  },
+  {
+   "name": "webview",
+   "file": "out/main.js",
+   "resolved_ref": null,
+   "binding": null,
+   "methods": [],
+   "sinks": []
+  },
+  {
+   "name": "storage",
+   "file": "out/main.js",
+   "resolved_ref": null,
+   "binding": null,
+   "methods": [],
+   "sinks": []
+  },
+  {
+   "name": "storage",
+   "file": "out/main.js",
+   "resolved_ref": null,
+   "binding": null,
+   "methods": [],
+   "sinks": []
+  },
+  {
+   "name": "profileStorageListener",
+   "file": "out/main.js",
+   "resolved_ref": "e",
+   "binding": "this._register(new se),s=st.fromService(e.get(VT),o,{disableMarshalling:!0})",
+   "methods": [
+    "fail",
+    "next",
+    "then"
+   ],
+   "sinks": []
+  },
+  {
+   "name": "localPty",
+   "file": "out/main.js",
+   "resolved_ref": "e",
+   "binding": "this._register(new se),s=st.fromService(e.get(VT),o,{disableMarshalling:!0})",
+   "methods": [
+    "fail",
+    "next",
+    "then"
+   ],
+   "sinks": []
+  },
+  {
+   "name": "externalTerminal",
+   "file": "out/main.js",
+   "resolved_ref": "e",
+   "binding": "this._register(new se),s=st.fromService(e.get(VT),o,{disableMarshalling:!0})",
+   "methods": [
+    "fail",
+    "next",
+    "then"
+   ],
+   "sinks": []
+  },
+  {
+   "name": "windsurfAppIcon",
+   "file": "out/main.js",
+   "resolved_ref": "e",
+   "binding": "this._register(new se),s=st.fromService(e.get(VT),o,{disableMarshalling:!0})",
+   "methods": [
+    "fail",
+    "next",
+    "then"
+   ],
+   "sinks": []
+  },
+  {
+   "name": "windsurfKeybindings",
+   "file": "out/main.js",
+   "resolved_ref": "e",
+   "binding": "this._register(new se),s=st.fromService(e.get(VT),o,{disableMarshalling:!0})",
+   "methods": [
+    "fail",
+    "next",
+    "then"
+   ],
+   "sinks": []
+  },
+  {
+   "name": "windsurfWindowsManager",
+   "file": "out/main.js",
+   "resolved_ref": null,
+   "binding": null,
+   "methods": [],
+   "sinks": []
+  },
+  {
+   "name": "windsurfLanguageServer",
+   "file": "out/main.js",
+   "resolved_ref": "e",
+   "binding": "this._register(new se),s=st.fromService(e.get(VT),o,{disableMarshalling:!0})",
+   "methods": [
+    "fail",
+    "next",
+    "then"
+   ],
+   "sinks": []
+  },
+  {
+   "name": "sandboxHelper",
+   "file": "out/main.js",
+   "resolved_ref": "e",
+   "binding": "this._register(new se),s=st.fromService(e.get(VT),o,{disableMarshalling:!0})",
+   "methods": [
+    "fail",
+    "next",
+    "then"
+   ],
+   "sinks": []
+  },
+  {
+   "name": "logger",
+   "file": "out/main.js",
+   "resolved_ref": null,
+   "binding": null,
+   "methods": [],
+   "sinks": []
+  },
+  {
+   "name": "logger",
+   "file": "out/main.js",
+   "resolved_ref": null,
+   "binding": null,
+   "methods": [],
+   "sinks": []
+  },
+  {
+   "name": "extensionhostdebugservice",
+   "file": "out/main.js",
+   "resolved_ref": "e",
+   "binding": "this._register(new se),s=st.fromService(e.get(VT),o,{disableMarshalling:!0})",
+   "methods": [
+    "fail",
+    "next",
+    "then"
+   ],
+   "sinks": []
+  },
+  {
+   "name": "systemMonitor",
+   "file": "out/main.js",
+   "resolved_ref": "e",
+   "binding": "this._register(new se),s=st.fromService(e.get(VT),o,{disableMarshalling:!0})",
+   "methods": [
+    "fail",
+    "next",
+    "then"
+   ],
+   "sinks": []
+  }
+ ],
+ "stats": {
+  "files_scanned": 17,
+  "roles_seen": [
+   "preload",
+   "renderer",
+   "main"
+  ],
+  "web_preferences_blocks": 6,
+  "ipc_channels": 13,
+  "main_handlers": 0,
+  "service_channels": 66,
+  "exposed_globals": 1,
+  "remote_url_literals": 1,
+  "nav_guard_tokens": [
+   "new-window",
+   "setWindowOpenHandler",
+   "will-navigate"
+  ],
+  "misc_flags": [
+   "cert-verifyproc",
+   "cert-handler-custom-pinning"
+  ]
+ },
+ "per_file": [
+  {
+   "file": "electron-browser/preload-browserView.js",
+   "role": "preload",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 1,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "node/diffWorkerMain.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "node/agentHostMain.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "node/ptyHostMain.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "electron-browser/profileAnalysisWorkerMain.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "watcher/watcherMain.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "sharedProcess/sharedProcessMain.js",
+   "role": "main",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "node/cliProcessMain.js",
+   "role": "main",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "workbench/workbench.desktop.main.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 1,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 8,
+   "misc_flags": []
+  },
+  {
+   "file": "common/outputLinkComputerMain.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "services/notebookWebWorkerMain.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "worker/extensionHostWorkerMain.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "browser/languageDetectionWebWorkerMain.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "worker/textMateTokenizationWorker.workerMain.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "worker/localFileSearchMain.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "services/editorWebWorkerMain.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "out/main.js",
+   "role": "main",
+   "web_preferences_blocks": 6,
+   "ipc_sites": 15,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 10,
+   "misc_flags": [
+    {
+     "flag": "cert-verifyproc",
+     "file": "out/main.js"
+    },
+    {
+     "flag": "cert-handler-custom-pinning",
+     "file": "out/main.js"
+    }
+   ]
+  }
+ ]
+}

@@ -6,7 +6,7 @@
 
 ### Statically recover the internal API schema embedded in an app's client code.
 
-**Wirecat extracts the protobuf descriptors and IPC definitions compiled into an installed app's JavaScript — no traffic capture, no execution — and publishes the result as versioned `.proto` files + release diffs.**
+**Wirecat extracts the protobuf descriptors and IPC definitions compiled into an installed app's JavaScript — no traffic capture, no execution — and publishes the result as versioned `.proto` files + release diffs. It also audits the Electron attack surface it finds: which privileged IPC handlers are reachable from untrusted content, with evidence.**
 
 [![CI: track-cursor](https://img.shields.io/github/actions/workflow/status/aznikline/wirecat/track-cursor.yml?style=flat-square&label=track-cursor)](https://github.com/aznikline/wirecat/actions/workflows/track-cursor.yml)
 [![Node.js](https://img.shields.io/badge/Node.js-%E2%89%A518-339933?style=flat-square&logo=nodedotjs&logoColor=white)](#quick-start)
@@ -85,6 +85,12 @@ node tools/emit-proto.mjs catalog.json --out protos/
 
 # 5. Render a readable spec
 node tools/render-spec.mjs catalog.json [--packages aiserver.v1,agent.v1]
+
+# 6. Audit the Electron attack surface
+node tools/audit-electron.mjs app/out/main.js app/out/**/preload*.js ... --out audit.json --md audit.md
+
+# 7. Diff the attack surface between two releases
+node tools/audit-electron.mjs --diff audits/app/old.json audits/app/new.json
 ```
 
 Static analysis only — target bundles are parsed, never executed.
@@ -102,6 +108,43 @@ Static analysis only — target bundles are parsed, never executed.
 Honesty guarantees: unresolved or ambiguous references are emitted as
 `unresolved:<ident>` — never guessed. Emitted `.proto` files keep gaps visible
 as `Unresolved_*` placeholders.
+
+## Attack-surface audit
+
+`tools/audit-electron.mjs` answers the question bounty hunters currently
+answer by hand: *is a privileged `ipcMain` handler reachable from untrusted
+content, and does attacker input reach a dangerous sink?*
+
+It is **not** whole-program taint analysis (infeasible on 50 MB minified
+bundles) — it is boundary-protocol reachability: the trust-boundary edges
+that survive minification, joined with a confidence tier on every finding
+(`observed` / `derived` / `inferred` / `unknown`). Unknowns stay unknown.
+
+What it detects, with real output from Cursor 3.26.16:
+
+- **contextBridge exposure shape** — distinguishes a raw `ipcRenderer`
+  passthrough (critical, the Discord-2020-RCE class) from Cursor's actual
+  posture: a *gated* wildcard that forwards caller-controlled channel names
+  but enforces a `vscode:` prefix allowlist
+- **the synthesized reachability verdict** — connects the bridge to what it
+  gates: `bridgeable-privileged-surface` — a compromised renderer can reach
+  **52 registered `registerChannel` service channels + transport channels**
+- **`webPreferences` flags** — `contextIsolation`, `nodeIntegration`,
+  `sandbox`, `webSecurity`, `webviewTag`, including literals that appear
+  outside parsed option blocks
+- **handler-level checks** — sender-validation presence
+  (`senderFrame`/`getURL`/origin checks) × dangerous-sink classes
+  (code exec, navigation, file write, session/network, host bridge)
+- **TLS posture** — certificate bypass vs. *correctly classified* custom
+  pinning (naive patterns false-positive on every VS Code-family app;
+  verified on Devin.app)
+- **attack-surface diff** — `audit-electron.mjs --diff` reports
+  findings + new/removed privileged service channels between releases
+
+Validation: the Discord-2020-RCE shape (unisolated window + raw
+`ipcRenderer` bridge + unvalidated `child_process` handler) replays as
+`critical` + `high` findings; sender-validated handlers are correctly
+exempted. Audits for all tracked apps live in `audits/`.
 
 ## Catalogs
 
@@ -126,8 +169,9 @@ catalogs/<app>/<version>.json   machine catalog (services/messages/enums/ipc/end
 protos/<app>/<version>/         emitted .proto3 files — usable codegen input
 specs/<app>/<version>-*.md      rendered spec docs + auth surface
 diffs/<app>-<a>-to-<b>.md       release-over-release protocol evolution
+audits/<app>/<version>.{json,md} attack-surface findings + per-release surface diff
 docs/target-assessment.md       which apps fit the pipeline (fat vs thin bundles)
-tools/                          extractor · differ · renderer · proto emitter · release tracker
+tools/                          extractor · differ · renderer · proto emitter · auditor · release tracker
 ```
 
 ## Automation
@@ -155,6 +199,11 @@ holds the newest tracked version. The same flow runs standalone via
 
 ## Roadmap
 
+- Deeper audit reachability: cross-module DI/service-token resolution for
+  `registerChannel` bodies (currently surface inventory + in-file resolution;
+  full method-level sink analysis needs module-table recovery)
+- Renderer-side exposure scoping: which remote-loading *window* can reach
+  which bridge (needs window↔preload↔webPreferences joins)
 - Auth-flow association: bind headers/credential keys to specific services
 - Live validation of the protobufjs pass (Discord web bundles are auth-gated)
 - Dynamic IPC channel expansion (runtime-built names like `DISCORD_${event}`,

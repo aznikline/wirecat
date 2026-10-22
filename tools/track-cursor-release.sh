@@ -57,5 +57,22 @@ if [ -n "$PREV" ]; then
 fi
 node "$REPO/tools/render-spec.mjs" "$CAT" > "$REPO/specs/cursor/${VERSION}-services.md"
 node "$REPO/tools/emit-proto.mjs" "$CAT" --out "$REPO/protos/cursor/${VERSION}" --packages aiserver.v1,agent.v1,origin.v1,cursor_files.v1,scmapi.v0
+
+# attack-surface audit: main process + preloads + workbench bundles.
+mkdir -p "$REPO/audits/cursor"
+ALIST=$(mktemp)
+find "$APP_DIR/out" \( -name "main.js" -o -name "preload*.js" -o -name "*Main.js" -o -name "workbench.*.js" \) -size +1k > "$ALIST" 2>/dev/null || true
+if [ -s "$ALIST" ]; then
+  AUD="$REPO/audits/cursor/${VERSION}.json"
+  node "$REPO/tools/audit-electron.mjs" --files "$ALIST" --app cursor --version "$VERSION" --out "$AUD" --md "$REPO/audits/cursor/${VERSION}.md"
+  APREV=$(ls "$REPO"/audits/cursor/*.json 2>/dev/null | grep -v "/$VERSION.json" | sort -V | tail -1)
+  if [ -n "$APREV" ]; then
+    APV=$(basename "$APREV" .json)
+    node "$REPO/tools/audit-electron.mjs" --diff "$APREV" "$AUD" > "$REPO/audits/cursor/diff-${APV}-to-${VERSION}.md"
+    echo "[track] attack-surface diff: audits/cursor/diff-${APV}-to-${VERSION}.md"
+  fi
+fi
+rm -f "$ALIST"
+
 echo "$VERSION" > "$REPO/catalogs/cursor/LATEST"
 echo "[track] done: $VERSION"

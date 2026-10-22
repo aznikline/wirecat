@@ -1,0 +1,989 @@
+{
+ "generated_by": "wirecat audit-electron",
+ "app": "cursor",
+ "version": "3.23.23",
+ "scope_note": "boundary-protocol reachability + bounded intra-handler scan; NOT whole-program taint. Absence of a finding is not proof of safety.",
+ "findings": [
+  {
+   "rule": "gated-wildcard-exposure",
+   "severity": "medium",
+   "confidence": "observed",
+   "title": "contextBridge global \"vscode\" forwards channel names gated to prefix \"vscode:\"",
+   "detail": "The bridge passes caller-controlled channel names to ipcRenderer but enforces a \"vscode:\" allowlist (enforcement mechanism unresolved). Any compromised renderer can still reach every privileged handler under that namespace — including internal service channels not meant for untrusted input.",
+   "evidence": {
+    "file": "electron-sandbox/preload.js",
+    "global": "vscode",
+    "guard": {
+     "allowlist_prefix": "vscode:",
+     "scope": "file_helper"
+    }
+   }
+  },
+  {
+   "rule": "webviewTag-on",
+   "severity": "medium",
+   "confidence": "observed",
+   "title": "webviewTag enabled",
+   "detail": "webviewTag:true embeds second-class renderers with their own preload/security posture — historically a top Electron bug source.",
+   "evidence": {
+    "files": [
+     "out/main.js"
+    ]
+   }
+  },
+  {
+   "rule": "sandbox-off",
+   "severity": "medium",
+   "confidence": "inferred",
+   "title": "sandbox:false observed outside a parsed webPreferences block",
+   "detail": "The flag literal appears in the bundle but not inside any webPreferences object the parser bound — the window it applies to is unresolved.",
+   "evidence": {
+    "files": [
+     "workbench/workbench.desktop.main.js",
+     "workbench/workbench.glass.main.js"
+    ]
+   }
+  },
+  {
+   "rule": "custom-cert-verifyproc",
+   "severity": "medium",
+   "confidence": "inferred",
+   "title": "setCertificateVerifyProc installed — decision logic needs manual review",
+   "detail": "A custom certificate verifier exists. Whether it enforces pinning (correct) or rubber-stamps (bypass) is unresolved at this analysis depth.",
+   "evidence": {
+    "files": [
+     "out/main.js"
+    ]
+   }
+  },
+  {
+   "rule": "remote-content-with-ipc",
+   "severity": "medium",
+   "confidence": "inferred",
+   "title": "app loads remote content (1 literal remote URL(s)) while exposing 5 IPC channel(s)",
+   "detail": "Remote-loadable content and a privileged IPC surface coexist in this build. Whether any remote-reachable window can reach the handlers is unresolved — that requires runtime window/process mapping.",
+   "evidence": {
+    "remote_urls": [
+     "https://aka.ms/vscode-windows-unc"
+    ],
+    "channels": 5
+   }
+  },
+  {
+   "rule": "unpaired-renderer-sends",
+   "severity": "info",
+   "confidence": "derived",
+   "title": "3 channel(s) sent but no handler found",
+   "detail": "Either the handler lives in an unscanned file/native module, or the channel is registered dynamically.",
+   "evidence": {
+    "channels": [
+     "vscode:extensionProcessSpawned",
+     "vscode:registerAuxiliaryWindow",
+     "vscode:runAction"
+    ]
+   }
+  },
+  {
+   "rule": "handler-without-observed-caller",
+   "severity": "info",
+   "confidence": "derived",
+   "title": "2 handler(s) with no observed renderer send",
+   "detail": "Internal channels or dynamically-composed names — potentially reachable only via wildcard bridges (see wildcard-ipc-exposure).",
+   "evidence": {
+    "channels": [
+     "ipc-message",
+     "before-input-event"
+    ]
+   }
+  },
+  {
+   "rule": "bridgeable-privileged-surface",
+   "severity": "high",
+   "confidence": "derived",
+   "title": "compromised renderer can reach 53 registered service channel(s) + 3 literal transport channel(s) via the exposed bridge",
+   "detail": "The preload forwards caller-controlled channel names gated to \"vscode:\". All 53 registerChannel service(s) and 3 literal channel(s) in that namespace are callable: a single XSS/navigation bug in any remote-loading window yields the full privileged surface. Channel-class resolution: 64/64 resolved in-file (rest are DI tokens behind cross-module bindings — method-level sink analysis unresolved, not absent).",
+   "evidence": {
+    "gated_prefixes": [
+     "vscode:"
+    ],
+    "service_channels": [
+     "watcher",
+     "extensionGalleryManifest",
+     "telemetryAppender",
+     "extensions",
+     "languagePacks",
+     "diagnostics",
+     "extensionTipsService",
+     "checksum",
+     "v8InspectProfiling",
+     "customEndpointTelemetry",
+     "remoteTunnel",
+     "sharedWebContentExtractor",
+     "download",
+     "urlHandler",
+     "extensionRecommendationNotification",
+     "continuousProfiling",
+     "pathInspection",
+     "fileAppend",
+     "agentAnalyticsOperations",
+     "performanceTelemetry",
+     "launch",
+     "browserView",
+     "tracing",
+     "abuse",
+     "browserSessionData",
+     "policy",
+     "userDataProfiles",
+     "update",
+     "systemNotification",
+     "tray",
+     "localAgentStorageService",
+     "localModeDataImportService",
+     "worktreeCleanupMainService",
+     "localScheduledTasksMainService",
+     "localSubscriptionMailboxMainService",
+     "process",
+     "power",
+     "extensionMonitor",
+     "encryption",
+     "sign"
+    ],
+    "literal_channels_in_scope": [
+     "vscode:extensionProcessSpawned",
+     "vscode:registerAuxiliaryWindow",
+     "vscode:runAction"
+    ]
+   }
+  }
+ ],
+ "service_channels": [
+  {
+   "name": "watcher",
+   "file": "watcher/watcherMain.js",
+   "resolved_ref": "V",
+   "binding": "",
+   "methods": [
+    "dispose",
+    "_register"
+   ],
+   "sinks": []
+  },
+  {
+   "name": "extensionGalleryManifest",
+   "file": "sharedProcess/sharedProcessMain.js",
+   "resolved_ref": null,
+   "binding": null,
+   "methods": [],
+   "sinks": []
+  },
+  {
+   "name": "telemetryAppender",
+   "file": "sharedProcess/sharedProcessMain.js",
+   "resolved_ref": null,
+   "binding": null,
+   "methods": [],
+   "sinks": []
+  },
+  {
+   "name": "extensions",
+   "file": "sharedProcess/sharedProcessMain.js",
+   "resolved_ref": null,
+   "binding": null,
+   "methods": [],
+   "sinks": []
+  },
+  {
+   "name": "languagePacks",
+   "file": "sharedProcess/sharedProcessMain.js",
+   "resolved_ref": null,
+   "binding": null,
+   "methods": [],
+   "sinks": []
+  },
+  {
+   "name": "diagnostics",
+   "file": "sharedProcess/sharedProcessMain.js",
+   "resolved_ref": null,
+   "binding": null,
+   "methods": [],
+   "sinks": []
+  },
+  {
+   "name": "extensionTipsService",
+   "file": "sharedProcess/sharedProcessMain.js",
+   "resolved_ref": null,
+   "binding": null,
+   "methods": [],
+   "sinks": []
+  },
+  {
+   "name": "checksum",
+   "file": "sharedProcess/sharedProcessMain.js",
+   "resolved_ref": null,
+   "binding": null,
+   "methods": [],
+   "sinks": []
+  },
+  {
+   "name": "v8InspectProfiling",
+   "file": "sharedProcess/sharedProcessMain.js",
+   "resolved_ref": null,
+   "binding": null,
+   "methods": [],
+   "sinks": []
+  },
+  {
+   "name": "customEndpointTelemetry",
+   "file": "sharedProcess/sharedProcessMain.js",
+   "resolved_ref": null,
+   "binding": null,
+   "methods": [],
+   "sinks": []
+  },
+  {
+   "name": "remoteTunnel",
+   "file": "sharedProcess/sharedProcessMain.js",
+   "resolved_ref": null,
+   "binding": null,
+   "methods": [],
+   "sinks": []
+  },
+  {
+   "name": "sharedWebContentExtractor",
+   "file": "sharedProcess/sharedProcessMain.js",
+   "resolved_ref": null,
+   "binding": null,
+   "methods": [],
+   "sinks": []
+  },
+  {
+   "name": "download",
+   "file": "workbench/workbench.desktop.main.js",
+   "resolved_ref": null,
+   "binding": null,
+   "methods": [],
+   "sinks": []
+  },
+  {
+   "name": "urlHandler",
+   "file": "workbench/workbench.desktop.main.js",
+   "resolved_ref": null,
+   "binding": null,
+   "methods": [],
+   "sinks": []
+  },
+  {
+   "name": "extensionRecommendationNotification",
+   "file": "workbench/workbench.desktop.main.js",
+   "resolved_ref": null,
+   "binding": null,
+   "methods": [],
+   "sinks": []
+  },
+  {
+   "name": "download",
+   "file": "workbench/workbench.glass.main.js",
+   "resolved_ref": null,
+   "binding": null,
+   "methods": [],
+   "sinks": []
+  },
+  {
+   "name": "urlHandler",
+   "file": "workbench/workbench.glass.main.js",
+   "resolved_ref": null,
+   "binding": null,
+   "methods": [],
+   "sinks": []
+  },
+  {
+   "name": "extensionRecommendationNotification",
+   "file": "workbench/workbench.glass.main.js",
+   "resolved_ref": null,
+   "binding": null,
+   "methods": [],
+   "sinks": []
+  },
+  {
+   "name": "continuousProfiling",
+   "file": "out/main.js",
+   "resolved_ref": null,
+   "binding": null,
+   "methods": [],
+   "sinks": []
+  },
+  {
+   "name": "continuousProfiling",
+   "file": "out/main.js",
+   "resolved_ref": null,
+   "binding": null,
+   "methods": [],
+   "sinks": []
+  },
+  {
+   "name": "pathInspection",
+   "file": "out/main.js",
+   "resolved_ref": null,
+   "binding": null,
+   "methods": [],
+   "sinks": []
+  },
+  {
+   "name": "fileAppend",
+   "file": "out/main.js",
+   "resolved_ref": null,
+   "binding": null,
+   "methods": [],
+   "sinks": []
+  },
+  {
+   "name": "agentAnalyticsOperations",
+   "file": "out/main.js",
+   "resolved_ref": null,
+   "binding": null,
+   "methods": [],
+   "sinks": []
+  },
+  {
+   "name": "performanceTelemetry",
+   "file": "out/main.js",
+   "resolved_ref": null,
+   "binding": null,
+   "methods": [],
+   "sinks": []
+  },
+  {
+   "name": "launch",
+   "file": "out/main.js",
+   "resolved_ref": "e",
+   "binding": "this._register(new ve),i=Me.fromService(e.get(OD),s,{disableMarshalling:!0})",
+   "methods": [],
+   "sinks": []
+  },
+  {
+   "name": "diagnostics",
+   "file": "out/main.js",
+   "resolved_ref": null,
+   "binding": null,
+   "methods": [],
+   "sinks": []
+  },
+  {
+   "name": "browserView",
+   "file": "out/main.js",
+   "resolved_ref": null,
+   "binding": null,
+   "methods": [],
+   "sinks": []
+  },
+  {
+   "name": "tracing",
+   "file": "out/main.js",
+   "resolved_ref": null,
+   "binding": null,
+   "methods": [],
+   "sinks": []
+  },
+  {
+   "name": "tracing",
+   "file": "out/main.js",
+   "resolved_ref": "t",
+   "binding": "",
+   "methods": [],
+   "sinks": []
+  },
+  {
+   "name": "abuse",
+   "file": "out/main.js",
+   "resolved_ref": "e",
+   "binding": "this._register(new ve),i=Me.fromService(e.get(OD),s,{disableMarshalling:!0})",
+   "methods": [],
+   "sinks": []
+  },
+  {
+   "name": "browserSessionData",
+   "file": "out/main.js",
+   "resolved_ref": null,
+   "binding": null,
+   "methods": [],
+   "sinks": []
+  },
+  {
+   "name": "policy",
+   "file": "out/main.js",
+   "resolved_ref": null,
+   "binding": null,
+   "methods": [],
+   "sinks": []
+  },
+  {
+   "name": "policy",
+   "file": "out/main.js",
+   "resolved_ref": null,
+   "binding": null,
+   "methods": [],
+   "sinks": []
+  },
+  {
+   "name": "userDataProfiles",
+   "file": "out/main.js",
+   "resolved_ref": null,
+   "binding": null,
+   "methods": [],
+   "sinks": []
+  },
+  {
+   "name": "userDataProfiles",
+   "file": "out/main.js",
+   "resolved_ref": null,
+   "binding": null,
+   "methods": [],
+   "sinks": []
+  },
+  {
+   "name": "update",
+   "file": "out/main.js",
+   "resolved_ref": null,
+   "binding": null,
+   "methods": [],
+   "sinks": []
+  },
+  {
+   "name": "systemNotification",
+   "file": "out/main.js",
+   "resolved_ref": "e",
+   "binding": "this._register(new ve),i=Me.fromService(e.get(OD),s,{disableMarshalling:!0})",
+   "methods": [],
+   "sinks": []
+  },
+  {
+   "name": "tray",
+   "file": "out/main.js",
+   "resolved_ref": "e",
+   "binding": "this._register(new ve),i=Me.fromService(e.get(OD),s,{disableMarshalling:!0})",
+   "methods": [],
+   "sinks": []
+  },
+  {
+   "name": "localAgentStorageService",
+   "file": "out/main.js",
+   "resolved_ref": "e",
+   "binding": "this._register(new ve),i=Me.fromService(e.get(OD),s,{disableMarshalling:!0})",
+   "methods": [],
+   "sinks": []
+  },
+  {
+   "name": "localModeDataImportService",
+   "file": "out/main.js",
+   "resolved_ref": null,
+   "binding": null,
+   "methods": [],
+   "sinks": []
+  },
+  {
+   "name": "worktreeCleanupMainService",
+   "file": "out/main.js",
+   "resolved_ref": null,
+   "binding": null,
+   "methods": [],
+   "sinks": []
+  },
+  {
+   "name": "localScheduledTasksMainService",
+   "file": "out/main.js",
+   "resolved_ref": null,
+   "binding": null,
+   "methods": [],
+   "sinks": []
+  },
+  {
+   "name": "localSubscriptionMailboxMainService",
+   "file": "out/main.js",
+   "resolved_ref": "e",
+   "binding": "this._register(new ve),i=Me.fromService(e.get(OD),s,{disableMarshalling:!0})",
+   "methods": [],
+   "sinks": []
+  },
+  {
+   "name": "process",
+   "file": "out/main.js",
+   "resolved_ref": null,
+   "binding": null,
+   "methods": [],
+   "sinks": []
+  },
+  {
+   "name": "power",
+   "file": "out/main.js",
+   "resolved_ref": null,
+   "binding": null,
+   "methods": [],
+   "sinks": []
+  },
+  {
+   "name": "extensionMonitor",
+   "file": "out/main.js",
+   "resolved_ref": "e",
+   "binding": "this._register(new ve),i=Me.fromService(e.get(OD),s,{disableMarshalling:!0})",
+   "methods": [],
+   "sinks": []
+  },
+  {
+   "name": "encryption",
+   "file": "out/main.js",
+   "resolved_ref": "e",
+   "binding": "this._register(new ve),i=Me.fromService(e.get(OD),s,{disableMarshalling:!0})",
+   "methods": [],
+   "sinks": []
+  },
+  {
+   "name": "sign",
+   "file": "out/main.js",
+   "resolved_ref": "e",
+   "binding": "this._register(new ve),i=Me.fromService(e.get(OD),s,{disableMarshalling:!0})",
+   "methods": [],
+   "sinks": []
+  },
+  {
+   "name": "keyboardLayout",
+   "file": "out/main.js",
+   "resolved_ref": null,
+   "binding": null,
+   "methods": [],
+   "sinks": []
+  },
+  {
+   "name": "nativeHost",
+   "file": "out/main.js",
+   "resolved_ref": null,
+   "binding": null,
+   "methods": [],
+   "sinks": []
+  },
+  {
+   "name": "nativeHost",
+   "file": "out/main.js",
+   "resolved_ref": "e",
+   "binding": "this._register(new ve),i=Me.fromService(e.get(OD),s,{disableMarshalling:!0})",
+   "methods": [],
+   "sinks": []
+  },
+  {
+   "name": "webContentExtractor",
+   "file": "out/main.js",
+   "resolved_ref": "e",
+   "binding": "this._register(new ve),i=Me.fromService(e.get(OD),s,{disableMarshalling:!0})",
+   "methods": [],
+   "sinks": []
+  },
+  {
+   "name": "workspaces",
+   "file": "out/main.js",
+   "resolved_ref": "e",
+   "binding": "this._register(new ve),i=Me.fromService(e.get(OD),s,{disableMarshalling:!0})",
+   "methods": [],
+   "sinks": []
+  },
+  {
+   "name": "menubar",
+   "file": "out/main.js",
+   "resolved_ref": "e",
+   "binding": "this._register(new ve),i=Me.fromService(e.get(OD),s,{disableMarshalling:!0})",
+   "methods": [],
+   "sinks": []
+  },
+  {
+   "name": "url",
+   "file": "out/main.js",
+   "resolved_ref": "e",
+   "binding": "this._register(new ve),i=Me.fromService(e.get(OD),s,{disableMarshalling:!0})",
+   "methods": [],
+   "sinks": []
+  },
+  {
+   "name": "webview",
+   "file": "out/main.js",
+   "resolved_ref": null,
+   "binding": null,
+   "methods": [],
+   "sinks": []
+  },
+  {
+   "name": "storage",
+   "file": "out/main.js",
+   "resolved_ref": null,
+   "binding": null,
+   "methods": [],
+   "sinks": []
+  },
+  {
+   "name": "storage",
+   "file": "out/main.js",
+   "resolved_ref": null,
+   "binding": null,
+   "methods": [],
+   "sinks": []
+  },
+  {
+   "name": "profileStorageListener",
+   "file": "out/main.js",
+   "resolved_ref": "s",
+   "binding": "",
+   "methods": [
+    "n"
+   ],
+   "sinks": []
+  },
+  {
+   "name": "externalTerminal",
+   "file": "out/main.js",
+   "resolved_ref": "s",
+   "binding": "",
+   "methods": [
+    "n"
+   ],
+   "sinks": []
+  },
+  {
+   "name": "logger",
+   "file": "out/main.js",
+   "resolved_ref": null,
+   "binding": null,
+   "methods": [],
+   "sinks": []
+  },
+  {
+   "name": "logger",
+   "file": "out/main.js",
+   "resolved_ref": null,
+   "binding": null,
+   "methods": [],
+   "sinks": []
+  },
+  {
+   "name": "extensionhostdebugservice",
+   "file": "out/main.js",
+   "resolved_ref": "s",
+   "binding": "",
+   "methods": [
+    "n"
+   ],
+   "sinks": []
+  },
+  {
+   "name": "processSampler",
+   "file": "out/main.js",
+   "resolved_ref": "s",
+   "binding": "",
+   "methods": [
+    "n"
+   ],
+   "sinks": []
+  }
+ ],
+ "stats": {
+  "files_scanned": 26,
+  "roles_seen": [
+   "preload",
+   "renderer",
+   "main"
+  ],
+  "web_preferences_blocks": 6,
+  "ipc_channels": 5,
+  "main_handlers": 0,
+  "service_channels": 64,
+  "exposed_globals": 2,
+  "remote_url_literals": 1,
+  "nav_guard_tokens": [
+   "new-window",
+   "will-navigate",
+   "setWindowOpenHandler"
+  ],
+  "misc_flags": [
+   "sandbox:false",
+   "webviewTag:true",
+   "cert-verifyproc"
+  ]
+ },
+ "per_file": [
+  {
+   "file": "electron-main/preload-browser.js",
+   "role": "preload",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "node/ptyHostMain.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "electron-sandbox/profileAnalysisWorkerMain.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "watcher/watcherMain.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "mcpProcess/mcpProcessMain.js",
+   "role": "main",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "sharedProcess/sharedProcessMain.js",
+   "role": "main",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "conversationSearch/conversationSearchMain.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "node/cliProcessMain.js",
+   "role": "main",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "extensionMonitor/extensionMonitorMain.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "processExplorer/processExplorerMain.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "effects/effectsWorkerMain.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "workbench/workbench.anysphere-ui-automations.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "workbench/workbench.desktop.main.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 2,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": [
+    {
+     "flag": "sandbox:false",
+     "file": "workbench/workbench.desktop.main.js"
+    }
+   ]
+  },
+  {
+   "file": "workbench/workbench.glass.main.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 2,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": [
+    {
+     "flag": "sandbox:false",
+     "file": "workbench/workbench.glass.main.js"
+    }
+   ]
+  },
+  {
+   "file": "browser/preload-webview-browser.js",
+   "role": "preload",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 1,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "common/outputLinkComputerMain.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "services/notebookWebWorkerMain.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "workbench/workbench.xai-commerce-prepaid.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "worker/extensionHostWorkerMain.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "browser/languageDetectionWebWorkerMain.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "worker/textMateTokenizationWorker.workerMain.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "browser/cloudAgentTranscriptIndexWorkerMain.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "node/storageSizeScanMain.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "electron-sandbox/preload.js",
+   "role": "preload",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 1,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "services/editorWebWorkerMain.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "out/main.js",
+   "role": "main",
+   "web_preferences_blocks": 6,
+   "ipc_sites": 3,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 8,
+   "misc_flags": [
+    {
+     "flag": "webviewTag:true",
+     "file": "out/main.js"
+    },
+    {
+     "flag": "cert-verifyproc",
+     "file": "out/main.js"
+    }
+   ]
+  }
+ ]
+}

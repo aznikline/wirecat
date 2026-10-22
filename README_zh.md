@@ -6,7 +6,7 @@
 
 ### 静态还原编译进应用客户端代码里的内部 API 定义。
 
-**从已安装应用的 JavaScript 中提取 protobuf 描述符与 IPC 定义——不抓包、不运行目标——输出版本化 `.proto` 文件 + 发版差异。**
+**从已安装应用的 JavaScript 中提取 protobuf 描述符与 IPC 定义——不抓包、不运行目标——输出版本化 `.proto` 文件 + 发版差异。同时审计它发现的 Electron 攻击面:哪些特权 IPC handler 能从不可信内容触达,给出证据。**
 
 [![CI: track-cursor](https://img.shields.io/github/actions/workflow/status/aznikline/wirecat/track-cursor.yml?style=flat-square&label=track-cursor)](https://github.com/aznikline/wirecat/actions/workflows/track-cursor.yml)
 [![Node.js](https://img.shields.io/badge/Node.js-%E2%89%A518-339933?style=flat-square&logo=nodedotjs&logoColor=white)](#快速开始)
@@ -82,6 +82,12 @@ node tools/emit-proto.mjs catalog.json --out protos/
 
 # 5. 渲染可读规范文档
 node tools/render-spec.mjs catalog.json [--packages aiserver.v1,agent.v1]
+
+# 6. 审计 Electron 攻击面
+node tools/audit-electron.mjs app/out/main.js app/out/**/preload*.js ... --out audit.json --md audit.md
+
+# 7. 对比两版攻击面
+node tools/audit-electron.mjs --diff audits/app/old.json audits/app/new.json
 ```
 
 纯静态分析——只解析目标 bundle,绝不执行。
@@ -98,6 +104,37 @@ node tools/render-spec.mjs catalog.json [--packages aiserver.v1,agent.v1]
 
 诚实性保证:无法解析或有歧义的引用一律输出 `unresolved:<ident>`,
 绝不猜测。生成的 `.proto` 以 `Unresolved_*` 占位符保留缺口。
+
+## 攻击面审计
+
+`tools/audit-electron.mjs` 回答的是赏金猎人目前手工回答的那个问题:
+*特权 `ipcMain` handler 能否从不可信内容触达,攻击者输入能否到达危险 sink?*
+
+它**不是**全程序污点分析(在 50MB 混淆 bundle 上不可行)——做的是
+边界协议可达性:把压缩混淆后仍存活的信任边界边一条条接起来,每条
+finding 带置信度分层(`observed` / `derived` / `inferred` / `unknown`),
+未知如实标未知。
+
+检测能力(以 Cursor 3.26.16 真实输出为例):
+
+- **contextBridge 暴露形态**——区分裸 `ipcRenderer` 直通(critical,
+  即 Discord-2020-RCE 那类)与 Cursor 的真实姿态:转发调用方可控的
+  channel 名但强制 `vscode:` 前缀白名单的*受限通配*
+- **可达性合成判定**——把桥和它门后的特权面连起来:
+  `bridgeable-privileged-surface`——被攻破的 renderer 可触达
+  **52 个已注册 `registerChannel` 服务通道 + 传输通道**
+- **`webPreferences` 标志**——`contextIsolation`、`nodeIntegration`、
+  `sandbox`、`webSecurity`、`webviewTag`,含解析块外出现的字面量
+- **handler 级检查**——sender 校验存在性(`senderFrame`/`getURL`/origin
+  检查)× 危险 sink 分类(代码执行、导航、文件写、会话/网络、宿主桥接)
+- **TLS 姿态**——证书绕过与*正确分类*的自定义 pinning(朴素规则在所有
+  VS Code 系应用上都会误报;已在 Devin.app 上验证)
+- **攻击面 diff**——`audit-electron.mjs --diff` 输出两版 findings +
+  新增/移除的特权服务通道
+
+验证:Discord-2020-RCE 形态(未隔离窗口 + 裸 `ipcRenderer` 桥 + 无校验
+`child_process` handler)回放命中 `critical` + `high`;有 sender 校验的
+handler 正确豁免。全部已跟踪应用的审计产物在 `audits/`。
 
 ## 目录现状
 
@@ -121,8 +158,9 @@ catalogs/<app>/<version>.json   机器目录(services/messages/enums/ipc/endpoin
 protos/<app>/<version>/         生成的 .proto3 文件——可直接用于 codegen
 specs/<app>/<version>-*.md      渲染的规范文档 + 认证面
 diffs/<app>-<a>-to-<b>.md       逐版本协议演进报告
+audits/<app>/<version>.{json,md} 攻击面 findings + 逐版本攻击面 diff
 docs/target-assessment.md       哪些应用适合本流水线(fat vs thin bundle)
-tools/                          提取器 · 对比器 · 渲染器 · proto 生成器 · 版本跟踪器
+tools/                          提取器 · 对比器 · 渲染器 · proto 生成器 · 审计器 · 版本跟踪器
 ```
 
 ## 自动化
@@ -148,6 +186,10 @@ tools/                          提取器 · 对比器 · 渲染器 · proto 生
 
 ## 路线图
 
+- 更深的审计可达性:`registerChannel` 体的跨模块 DI/服务令牌解析(当前
+  为面清单 + 文件内解析;完整方法级 sink 分析需要模块表恢复)
+- renderer 侧暴露圈定:哪个加载远程内容的*窗口*能触达哪个桥(需要
+  window↔preload↔webPreferences 关联)
 - 认证流关联:把 header/凭证键绑定到具体服务
 - protobufjs pass 的真实目标验证(Discord web bundle 有 auth 门禁)
 - 动态 IPC channel 展开(运行期拼接的 channel 名,如 `DISCORD_${event}`、

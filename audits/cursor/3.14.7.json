@@ -1,0 +1,201 @@
+{
+ "generated_by": "wirecat audit-electron",
+ "app": "cursor",
+ "version": "3.14.7",
+ "scope_note": "boundary-protocol reachability + bounded intra-handler scan; NOT whole-program taint. Absence of a finding is not proof of safety.",
+ "findings": [
+  {
+   "rule": "unpaired-renderer-sends",
+   "severity": "info",
+   "confidence": "derived",
+   "title": "2 channel(s) sent but no handler found",
+   "detail": "Either the handler lives in an unscanned file/native module, or the channel is registered dynamically.",
+   "evidence": {
+    "channels": [
+     "vscode:extensionProcessSpawned",
+     "vscode:registerAuxiliaryWindow"
+    ]
+   }
+  }
+ ],
+ "service_channels": [
+  {
+   "name": "download",
+   "file": "workbench/workbench.desktop.main.js",
+   "resolved_ref": null,
+   "binding": null,
+   "methods": [],
+   "sinks": []
+  },
+  {
+   "name": "urlHandler",
+   "file": "workbench/workbench.desktop.main.js",
+   "resolved_ref": null,
+   "binding": null,
+   "methods": [],
+   "sinks": []
+  },
+  {
+   "name": "extensionRecommendationNotification",
+   "file": "workbench/workbench.desktop.main.js",
+   "resolved_ref": null,
+   "binding": null,
+   "methods": [],
+   "sinks": []
+  },
+  {
+   "name": "download",
+   "file": "workbench/workbench.glass.main.js",
+   "resolved_ref": null,
+   "binding": null,
+   "methods": [],
+   "sinks": []
+  },
+  {
+   "name": "urlHandler",
+   "file": "workbench/workbench.glass.main.js",
+   "resolved_ref": null,
+   "binding": null,
+   "methods": [],
+   "sinks": []
+  },
+  {
+   "name": "extensionRecommendationNotification",
+   "file": "workbench/workbench.glass.main.js",
+   "resolved_ref": null,
+   "binding": null,
+   "methods": [],
+   "sinks": []
+  }
+ ],
+ "stats": {
+  "files_scanned": 11,
+  "roles_seen": [
+   "renderer",
+   "preload"
+  ],
+  "web_preferences_blocks": 0,
+  "ipc_channels": 2,
+  "main_handlers": 0,
+  "service_channels": 6,
+  "exposed_globals": 1,
+  "remote_url_literals": 0,
+  "nav_guard_tokens": [
+   "will-navigate",
+   "new-window"
+  ],
+  "misc_flags": []
+ },
+ "per_file": [
+  {
+   "file": "workbench/workbench.anysphere-ui-automations.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "workbench/workbench.desktop.main.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 2,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "workbench/workbench.glass.main.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 2,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "browser/preload-webview-browser.js",
+   "role": "preload",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 1,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "common/outputLinkComputerMain.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "services/notebookWebWorkerMain.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "worker/extensionHostWorkerMain.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "browser/languageDetectionWebWorkerMain.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "worker/textMateTokenizationWorker.workerMain.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "worker/localFileSearchMain.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "browser/cloudAgentTranscriptIndexWorkerMain.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  }
+ ]
+}
