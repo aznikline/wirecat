@@ -4,9 +4,9 @@
 
 # Wirecat
 
-### Extract the private API contract out of shipped desktop apps — and keep it up to date.
+### Read an app's JavaScript. Recover the undocumented APIs it uses to talk to its servers.
 
-**Point it at an Electron app. Get back every RPC service, method, message field, IPC channel, and backend endpoint it ships — as versioned `.proto` files + release diffs.**
+**Point it at an installed app (Cursor, Slack, Discord…). Get back every RPC service, method, message field, IPC channel, and backend host it calls — as `.proto` files + release diffs.**
 
 [![CI: track-cursor](https://img.shields.io/github/actions/workflow/status/aznikline/wirecat/track-cursor.yml?style=flat-square&label=track-cursor)](https://github.com/aznikline/wirecat/actions/workflows/track-cursor.yml)
 [![Node.js](https://img.shields.io/badge/Node.js-%E2%89%A518-339933?style=flat-square&logo=nodedotjs&logoColor=white)](#quick-start)
@@ -21,15 +21,16 @@
 
 ---
 
-Apps like Cursor ship an entire private API inside their minified JavaScript:
-the protobuf services their client calls, the IPC channels between Electron
-processes, the backend hosts they talk to. Want to build a client for one of
-these apps, or just know what its agent protocol looks like? Today that means
-days of grepping bundled code by hand — and your notes go stale on the next
-release.
+Apps like Cursor call their servers through APIs that are never documented
+publicly — but the full definition sits inside the app's own minified
+JavaScript: every protobuf service it calls, every IPC channel between its
+Electron processes, every backend host it talks to. Want to build a client
+for one of these apps, or just know what its agent protocol looks like?
+Today that means days of grepping bundled code by hand — and your notes go
+stale on the next release.
 
-**Wirecat is a tool that does this extraction mechanically.** It reads shipped
-JS bundles statically and produces a *typed catalog* of everything the app
+**Wirecat is a tool that does this extraction mechanically.** It reads the JS
+bundles installed with the app (no execution) and produces a *typed catalog* of everything the app
 exposes — then a CI job re-runs it on every new release, so the spec stays
 current. This repo is both the tool (`tools/`) and the published catalogs it
 produces (`catalogs/`, `protos/`, `diffs/`, `specs/`).

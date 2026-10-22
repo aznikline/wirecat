@@ -4,9 +4,9 @@
 
 # Wirecat
 
-### 从交付的桌面应用中提取私有 API 契约——并持续保持更新。
+### 读应用的 JavaScript,还原它和服务器通信用的那套没文档的 API。
 
-**把一个 Electron 应用交给它,拿回其中所有 RPC 服务、方法、消息字段、IPC channel 和后端端点——以版本化 `.proto` 文件 + 发版 diff 的形式。**
+**指向一个装好的应用(Cursor、Slack、Discord……),拿回它的全部 RPC 服务、方法、消息字段、IPC channel 和后端主机——以 `.proto` 文件 + 发版差异的形式。**
 
 [![CI: track-cursor](https://img.shields.io/github/actions/workflow/status/aznikline/wirecat/track-cursor.yml?style=flat-square&label=track-cursor)](https://github.com/aznikline/wirecat/actions/workflows/track-cursor.yml)
 [![Node.js](https://img.shields.io/badge/Node.js-%E2%89%A518-339933?style=flat-square&logo=nodedotjs&logoColor=white)](#快速开始)
@@ -21,12 +21,13 @@
 
 ---
 
-像 Cursor 这样的应用,在它压缩混淆的 JavaScript 里藏着一整套私有 API:
-客户端调用的 protobuf 服务、Electron 进程间的 IPC channel、通信的后端
+像 Cursor 这样的应用,跟自家服务器通信用的是一套从未公开文档的 API
+——但完整定义就躺在应用自带的混淆 JavaScript 里:它调用的每个
+protobuf 服务、Electron 进程间的每个 IPC channel、它联系的每个后端
 主机。想给它写个客户端,或者想知道它的 agent 协议长什么样?今天这
 意味着几天手工 grep bundle——而且笔记在下个版本就过时了。
 
-**Wirecat 是把这件事机械化的工具。** 它对交付的 JS bundle 做静态分析,
+**Wirecat 是把这件事机械化的工具。** 它对应用自带的 JS bundle 做静态分析,
 产出应用全部暴露面的*类型化目录*——然后 CI 在每个新版本上重跑,
 规范永远保鲜。本仓库既是工具(`tools/`),也是它产出的公开目录
 (`catalogs/`、`protos/`、`diffs/`、`specs/`)。
