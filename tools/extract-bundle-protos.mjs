@@ -74,6 +74,98 @@ function parseObjectBody(body) {
 const str = (v) => (v ? v.replace(/^["']|["']$/g, "") : undefined);
 const ident = (v) => (v && /^[A-Za-z_$][\w$]*$/.test(v) ? v : undefined);
 
+// Minimal JS-literal -> value parser for descriptor objects (objects, arrays,
+// strings, numbers, booleans, null). Unknown expressions become {__raw: text}.
+function parseJsLiteral(text) {
+  const t = text.trim();
+  if (t.startsWith("{")) {
+    const close = findBalanced(t, 0, "{", "}");
+    if (close === -1) return { __raw: t };
+    const obj = {};
+    for (const part of splitTop(t.slice(1, close))) {
+      const m = part.match(/^\s*(?:"([^"]*)"|'([^']*)'|`([^`]*)`|([A-Za-z_$][\w$]*)|(-?\d+))\s*:\s*([\s\S]*)$/);
+      if (!m) continue;
+      obj[m[1] ?? m[2] ?? m[3] ?? m[4] ?? m[5]] = parseJsLiteral(m[6]);
+    }
+    return obj;
+  }
+  if (t.startsWith("[")) {
+    const close = findBalanced(t, 0, "[", "]");
+    if (close === -1) return { __raw: t };
+    return splitTop(t.slice(1, close)).filter((p) => p.trim()).map(parseJsLiteral);
+  }
+  const sm = t.match(/^(?:"([^"]*)"|'([^']*)'|`([^`]*)`)\s*$/);
+  if (sm) return sm[1] ?? sm[2] ?? sm[3];
+  if (/^-?\d+(\.\d+)?$/.test(t)) return Number(t);
+  if (t === "true") return true;
+  if (t === "false") return false;
+  if (t === "null") return null;
+  return { __raw: t };
+}
+
+const PBJS_SCALAR = new Set([
+  "double","float","int32","int64","uint32","uint64","sint32","sint64",
+  "fixed32","fixed64","sfixed32","sfixed64","bool","string","bytes",
+]);
+
+// Walk a protobufjs JSON descriptor tree (Root.fromJSON/.setJSON/.addJSON)
+// into catalog maps. `nsPrefix` accumulates the dotted package+type path.
+function walkPbjsNode(node, nsPrefix, out) {
+  if (!node || typeof node !== "object" || node.__raw) return;
+  if (node.fields && typeof node.fields === "object") {
+    // message
+    const fields = [];
+    const oneofMembers = {};
+    if (node.oneofs) for (const [on, od] of Object.entries(node.oneofs))
+      for (const fn of od.oneof ?? []) oneofMembers[fn] = on;
+    for (const [fname, fd] of Object.entries(node.fields)) {
+      if (typeof fd !== "object") continue;
+      const f = { no: Number(fd.id), name: fname };
+      const ftype = fd.type;
+      if (fd.keyType) {
+        f.kind = "map";
+        f.key_type = PBJS_SCALAR.has(fd.keyType) ? fd.keyType : `unresolved:${fd.keyType}`;
+        f.value_type = PBJS_SCALAR.has(ftype) ? ftype : `unresolved:${ftype}`;
+      } else if (PBJS_SCALAR.has(ftype)) {
+        f.kind = "scalar"; f.type = ftype;
+      } else {
+        // type ref: resolve later against collected type names
+        f.kind = "ref"; f.type = String(ftype);
+      }
+      if (fd.rule === "repeated") f.repeated = true;
+      if (fd.rule === "required") f.required = true;
+      if (fd.rule === "optional") f.optional = true;
+      if (oneofMembers[fname]) f.oneof = oneofMembers[fname];
+      fields.push(f);
+    }
+    fields.sort((a, b) => a.no - b.no);
+    out.messages[nsPrefix] = { kind: "message", name: nsPrefix, fields };
+  }
+  if (node.values && typeof node.values === "object") {
+    const values = Object.entries(node.values).map(([name, no]) => ({ no: Number(no), name }));
+    values.sort((a, b) => a.no - b.no);
+    out.enums[nsPrefix] = { kind: "enum", name: nsPrefix, values };
+  }
+  if (node.methods && typeof node.methods === "object") {
+    const methods = {};
+    for (const [mk, md] of Object.entries(node.methods)) {
+      if (typeof md !== "object") continue;
+      const name = md.name && typeof md.name === "string" ? md.name : mk;
+      methods[name] = {
+        request: String(md.requestType ?? ""),
+        response: String(md.responseType ?? ""),
+        kind: md.requestStream && md.responseStream ? "bidi_streaming"
+          : md.responseStream ? "server_streaming"
+          : md.requestStream ? "client_streaming" : "unary",
+      };
+    }
+    out.services[nsPrefix] = { kind: "service", name: nsPrefix, methods };
+  }
+  if (node.nested && typeof node.nested === "object")
+    for (const [name, child] of Object.entries(node.nested))
+      walkPbjsNode(child, nsPrefix ? `${nsPrefix}.${name}` : name, out);
+}
+
 // ---- extraction ------------------------------------------------------------
 export function extractFromSource(src, fileLabel) {
   const messages = {};
@@ -253,6 +345,56 @@ export function extractFromSource(src, fileLabel) {
     if (!(m[1] in services)) {
       services[m[1]] = { kind: "service", name: m[1], methods: {}, note: "methods not statically decoded (makeService variant)" };
     }
+  }
+
+  // pass 5b: protobufjs descriptors — Root.fromJSON/setJSON/addJSON({nested:{...}})
+  {
+    const pbjs = { messages: {}, enums: {}, services: {} };
+    for (const m of src.matchAll(/\b(?:setJSON|addJSON|fromJSON)\s*\(\s*\{/g)) {
+      const openBrace = m.index + m[0].length - 1;
+      const close = findBalanced(src, openBrace, "{", "}");
+      if (close === -1) continue;
+      // cap literal size to avoid pathological parse on huge non-descriptor objects
+      if (close - openBrace > 15_000_000) { notes.push("skipped >15MB literal in JSON-descriptor pass"); continue; }
+      const obj = parseJsLiteral(src.slice(openBrace, close + 1));
+      if (obj && obj.nested) walkPbjsNode(obj, "", pbjs);
+    }
+    // resolve refs: leading-dot absolute, same-namespace relative, then unique suffix
+    const allNames = new Set([...Object.keys(pbjs.messages), ...Object.keys(pbjs.enums)]);
+    const resolvePbjs = (ref, scope) => {
+      if (!ref || ref === "undefined") return `unresolved:${ref}`;
+      const r = ref.startsWith(".") ? ref.slice(1) : ref;
+      if (allNames.has(r)) return r;
+      // walk scope prefixes: pkg.Msg.Sub -> try pkg.Msg.ref, pkg.ref, ref
+      const parts = scope.split(".");
+      for (let i = parts.length - 1; i >= 0; i--) {
+        const cand = parts.slice(0, i).concat(r).join(".");
+        if (allNames.has(cand)) return cand;
+      }
+      const suffix = allNames.size ? [...allNames].filter((n) => n === r || n.endsWith(`.${r}`)) : [];
+      if (suffix.length === 1) return suffix[0];
+      return `unresolved:${ref}`;
+    };
+    for (const [tn, msg] of Object.entries(pbjs.messages))
+      for (const f of msg.fields) {
+        if (f.kind === "ref") {
+          const r = resolvePbjs(f.type, tn);
+          const isEnum = r in pbjs.enums;
+          f.kind = isEnum ? "enum" : "message";
+          f.type = r;
+        } else if (f.kind === "map" && f.value_type?.startsWith("unresolved:")) {
+          const r = resolvePbjs(f.value_type.slice(11), tn);
+          f.value_type = r;
+        }
+      }
+    for (const [tn, svc] of Object.entries(pbjs.services))
+      for (const m of Object.values(svc.methods)) {
+        if (!m.request.startsWith("unresolved:")) m.request = resolvePbjs(m.request, tn);
+        if (!m.response.startsWith("unresolved:")) m.response = resolvePbjs(m.response, tn);
+      }
+    for (const [k, v] of Object.entries(pbjs.messages)) if (!messages[k]) messages[k] = v;
+    for (const [k, v] of Object.entries(pbjs.enums)) if (!enums[k]) enums[k] = v;
+    for (const [k, v] of Object.entries(pbjs.services)) if (!services[k]) services[k] = v;
   }
 
   // pass 6: Electron IPC surface ------------------------------------------------

@@ -24,6 +24,11 @@ diffed release-over-release.
   messages / 2,092 methods plus its IPC surface; `catalogs/vscode/1.141.0.json`
   confirms the IPC extractor on upstream VS Code (protobuf-es absence is a
   correct negative: VS Code proper ships no protobuf services).
+- **Honest-negative catalogs**: `catalogs/signal/8.32.0.json` (360 IPC
+  channels — its preload bridge *is* the client API; protos live in a
+  native Rust lib), `catalogs/slack/4.52.182.json` and
+  `catalogs/discord/0.0.418.json` (thin shells: bridge IPC + endpoint
+  vocabulary only). See `docs/target-assessment.md`.
 
 ## Layout
 

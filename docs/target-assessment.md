@@ -32,7 +32,8 @@ separate legal/technical posture (documented gap, not planned work).
 |---|---|---|
 | protobuf-es | `makeMessageType`/`makeEnum` + `{typeName,methods}` literals | Cursor |
 | protobuf-ts | `X.typeName=` + `X.fields=...newFieldList`, webpack `t.X=I` exports | Devin/Exafunction |
-| protobufjs | `Root.fromJSON` / `pbjs` static modules | Signal (public info), Discord (web bundles — not yet captured) |
+| protobufjs | `Root.fromJSON`/`setJSON`/`addJSON` descriptor literals | implemented; validated on synthetic descriptors (no live target yet — Discord web bundles carry it but are auth-gated) |
+| native-bundled proto | descriptors in Rust/native lib, not JS | Signal Desktop 8.32.0 — its `.asar` yields IPC-only (360 channels, preload `Signal`/`SignalContext` globals); protos live in `@signalapp/libsignal-client` native code |
 | none | correct negative | VS Code, Obsidian, Slack/Discord shells |
 
 ## Extractor gaps documented
@@ -41,5 +42,8 @@ separate legal/technical posture (documented gap, not planned work).
   runtime (`redux-action` multiplexing, `DISCORD_${event}` templates,
   `${U.I0.WindowIdRequest}-${e}`). Literal pass captures the template
   literals; the channel-space expansion is not recovered — honest unknown.
-- **protobufjs descriptors**: not yet extracted (needs a `fromJSON`/
-  descriptor-literal pass). Unlocks Signal and Discord web bundles.
+- **protobufjs descriptors**: pass implemented (`setJSON`/`addJSON`/
+  `fromJSON` literals → nested descriptor walk with scope-relative ref
+  resolution, oneofs, maps, streaming methods). Awaiting a live target —
+  Discord web bundles are the natural first validation once an acquisition
+  path exists.

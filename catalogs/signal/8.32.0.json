@@ -1,0 +1,2378 @@
+{
+ "generated_by": "wirecat extract-bundle-protos",
+ "sources": [
+  "messages-BnglX6ci2.js",
+  "messages-YyCdSPyX.js",
+  "messages-9hXtTkOX.js",
+  "messages-C4eKjCpj.js",
+  "messages-DGn4F83X2.js",
+  "messages-Cn3p7KsD2.js",
+  "messages-DC6GIOjs.js",
+  "messages-8auWBOg_2.js",
+  "messages-BXzynB-M.js",
+  "messages-CHSgZtJE.js",
+  "messages-Czd2RbZF.js",
+  "messages-BYFkwaFF.js",
+  "messages-DrToWvpF.js",
+  "messages-BHz_sEL2.js",
+  "messages-BWMoFRjV2.js",
+  "messages-CIJmTpZB.js",
+  "messages-BS2cHZuO2.js",
+  "messages-DaF1vO3j.js",
+  "messages-CRChzmWR.js",
+  "messages-BhkY9cmD.js",
+  "messages-BY1qrBnn.js",
+  "messages-DfVUeM0m2.js",
+  "messages-CIFD6tbB2.js",
+  "messages-CeRmXYyr.js",
+  "messages-DsvoHuWa.js",
+  "messages-DkynT_9j.js",
+  "messages-DoiwiTEL2.js",
+  "messages-CxCzPB9L.js",
+  "messages-BIgjwurd2.js",
+  "messages-B0PLmEEn.js",
+  "messages-BglMviJh.js",
+  "messages-BVySr1VM2.js",
+  "messages-YVZMzvcG2.js",
+  "messages-BcTsHV6z.js",
+  "messages-UifkvhN2.js",
+  "messages-LDO5gywG2.js",
+  "messages-Dc7x3Ekd.js",
+  "messages-BSVk1A122.js",
+  "messages-ENp_fbSi.js",
+  "messages-D3LWdkVt2.js",
+  "messages-4cRbrFmh2.js",
+  "messages-D7nPU0ZH.js",
+  "messages-CObIzWDY.js",
+  "messages-Ba4PX-hV.js",
+  "messages-BDPp8ias.js",
+  "messages-Di1IAd5o.js",
+  "messages-pJ9gLyWh2.js",
+  "messages-gAtzvxdm.js",
+  "messages-_m3M3cVS.js",
+  "messages-Ci-QTAl82.js",
+  "index-Cw5mnsPs.js",
+  "messages-D7eHTUwN.js",
+  "messages-CsnrDrfR.js",
+  "messages-Cenq5BFz2.js",
+  "messages-Aacj7oaX.js",
+  "messages-BWx8glNA2.js",
+  "messages-CHD9K13Q2.js",
+  "messages-BD0FfcpQ.js",
+  "messages-C2Rj-Mx12.js",
+  "messages-yOEnQDPS.js",
+  "messages-C7nGBQ70.js",
+  "messages-BSnhpTxD2.js",
+  "messages-CXTOvzJ62.js",
+  "messages-C36WkhxH2.js",
+  "messages-guJQSU3R.js",
+  "messages-D3AOcZ2L.js",
+  "messages-DWlnpAr-2.js",
+  "messages-BZScATf8.js",
+  "index.js",
+  "index.js",
+  "index.js",
+  "index.js",
+  "pt.js",
+  "vi.js",
+  "pl.js",
+  "is.js",
+  "sl.js",
+  "ko.js",
+  "ms.js",
+  "fi.js",
+  "th.js",
+  "ru.js",
+  "mk.js",
+  "no.js",
+  "yo.js",
+  "ja.js",
+  "ka.js",
+  "he.js",
+  "bg.js",
+  "hy.js",
+  "uz.js",
+  "index.js",
+  "id.js",
+  "az.js",
+  "ca.js",
+  "ta.js",
+  "ua.js",
+  "be.js",
+  "zh-CN.js",
+  "zh-TW.js",
+  "ota.js",
+  "da.js",
+  "fa.js",
+  "de.js",
+  "en.js",
+  "sv.js",
+  "uk.js",
+  "cs.js",
+  "km.js",
+  "fr.js",
+  "nl.js",
+  "fr-CA.js",
+  "hu.js",
+  "lt.js",
+  "ar.js",
+  "kh.js",
+  "it.js",
+  "es.js",
+  "eo.js",
+  "ur.js",
+  "ps.js",
+  "tr.js",
+  "checks.js",
+  "json-schema-processors.js",
+  "util.js",
+  "to-json-schema.js",
+  "core.js",
+  "index.js",
+  "parse.js",
+  "versions.js",
+  "errors.js",
+  "json-schema-generator.js",
+  "registries.js",
+  "schemas.js",
+  "api.js",
+  "standard-schema.js",
+  "regexes.js",
+  "json-schema.js",
+  "doc.js",
+  "checks.js",
+  "index.js",
+  "external.js",
+  "iso.js",
+  "parse.js",
+  "schemas.js",
+  "coerce.js",
+  "checks.js",
+  "index.js",
+  "compat.js",
+  "external.js",
+  "iso.js",
+  "parse.js",
+  "errors.js",
+  "from-json-schema.js",
+  "schemas.js",
+  "coerce.js",
+  "index.js",
+  "ZodError.js",
+  "en.js",
+  "types.js",
+  "index.js",
+  "external.js",
+  "errors.js",
+  "standard-schema.js",
+  "enumUtil.js",
+  "util.js",
+  "partialUtil.js",
+  "errorUtil.js",
+  "typeAliases.js",
+  "parseUtil.js",
+  "bin.js",
+  "index.js",
+  "build-test.js",
+  "optional.js",
+  "node-gyp-build.js",
+  "index.js",
+  "helpers.js",
+  "conversion.js",
+  "clang-format.js",
+  "check-napi.js",
+  "index.js",
+  "index.js",
+  "index.js",
+  "index.js",
+  "test.js",
+  "libphonenumber.js",
+  "index.js",
+  "base64js.min.js",
+  "index.js",
+  "index.js",
+  "index.js",
+  "index.js",
+  "index.js",
+  "constants.js",
+  "index.js",
+  "constants.js",
+  "index.js",
+  "min-version.js",
+  "outside.js",
+  "ltr.js",
+  "gtr.js",
+  "min-satisfying.js",
+  "simplify.js",
+  "to-comparators.js",
+  "max-satisfying.js",
+  "valid.js",
+  "subset.js",
+  "intersects.js",
+  "preload.js",
+  "semver.js",
+  "range.js",
+  "index.js",
+  "comparator.js",
+  "semver.js",
+  "constants.js",
+  "identifiers.js",
+  "parse-options.js",
+  "re.js",
+  "lrucache.js",
+  "debug.js",
+  "index.js",
+  "gt.js",
+  "sort.js",
+  "rsort.js",
+  "neq.js",
+  "gte.js",
+  "eq.js",
+  "lte.js",
+  "compare-build.js",
+  "patch.js",
+  "rcompare.js",
+  "clean.js",
+  "valid.js",
+  "satisfies.js",
+  "compare-loose.js",
+  "parse.js",
+  "minor.js",
+  "compare.js",
+  "coerce.js",
+  "inc.js",
+  "lt.js",
+  "diff.js",
+  "cmp.js",
+  "major.js",
+  "prerelease.js",
+  "index.js",
+  "index.js",
+  "index.js",
+  "index.js",
+  "CallSummary.js",
+  "CallLinks.js",
+  "Native.js",
+  "Service.js",
+  "index.js",
+  "conversion.js",
+  "clang-format.js",
+  "check-napi.js",
+  "index.js",
+  "zkgroup.js",
+  "io.js",
+  "net.js",
+  "CiphertextMessage.js",
+  "KeyTransparency.js",
+  "RegistrationSession.js",
+  "SingleOutboundMessage.js",
+  "UnauthProfilesService.js",
+  "UnauthKeysService.js",
+  "CdnCredentials.js",
+  "AuthBackupsService.js",
+  "UnauthCredentialsService.js",
+  "AuthKeysService.js",
+  "UnauthBackupsService.js",
+  "AuthDevicesService.js",
+  "AuthStickersService.js",
+  "UnauthCallQualityService.js",
+  "PurchaseTypes.js",
+  "UnauthLoginPurchaseService.js",
+  "AuthMessagesService.js",
+  "UnauthUsernamesService.js",
+  "AuthPaymentsService.js",
+  "UnauthMessagesService.js",
+  "AuthUsernamesService.js",
+  "UnauthSubscriptionsService.js",
+  "AuthAccountsService.js",
+  "SvrB.js",
+  "Registration.js",
+  "Svr2.js",
+  "CDSI.js",
+  "Chat.js",
+  "FakeChat.js",
+  "Mp4Sanitizer.js",
+  "Native.js",
+  "ReceiptCredentialRequestContext.js",
+  "ServerZkReceiptOperations.js",
+  "ReceiptCredentialPresentation.js",
+  "ReceiptCredentialRequest.js",
+  "ReceiptCredentialResponse.js",
+  "ReceiptSerial.js",
+  "ReceiptCredential.js",
+  "ClientZkReceiptOperations.js",
+  "CreateCallLinkCredentialRequestContext.js",
+  "CallLinkAuthCredentialResponse.js",
+  "CallLinkSecretParams.js",
+  "CreateCallLinkCredentialResponse.js",
+  "CallLinkPublicParams.js",
+  "CreateCallLinkCredentialPresentation.js",
+  "CallLinkAuthCredentialPresentation.js",
+  "CreateCallLinkCredentialRequest.js",
+  "CreateCallLinkCredential.js",
+  "CallLinkAuthCredential.js",
+  "AuthCredentialPresentation.js",
+  "AuthCredentialWithPniResponse.js",
+  "ServerZkAuthOperations.js",
+  "ClientZkAuthOperations.js",
+  "AuthCredentialWithPni.js",
+  "DonationPermit.js",
+  "AvatarUploadCredential.js",
+  "ServerSecretParams.js",
+  "GenericServerSecretParams.js",
+  "Constants.js",
+  "ByteArray.js",
+  "index.js",
+  "GroupMasterKey.js",
+  "UuidCiphertext.js",
+  "ProfileKeyCiphertext.js",
+  "GroupSecretParams.js",
+  "GroupIdentifier.js",
+  "GroupPublicParams.js",
+  "ClientZkGroupCipher.js",
+  "GroupSendEndorsementsResponse.js",
+  "GroupSendEndorsement.js",
+  "GroupSendDerivedKeyPair.js",
+  "GroupSendToken.js",
+  "GroupSendFullToken.js",
+  "ServerPublicParams.js",
+  "GenericServerPublicParams.js",
+  "ZkCredentialKey.js",
+  "NotarySignature.js",
+  "ProfileKeyCommitment.js",
+  "ProfileKey.js",
+  "ProfileKeyCredentialPresentation.js",
+  "ClientZkProfileOperations.js",
+  "ExpiringProfileKeyCredential.js",
+  "ProfileKeyCredentialRequestContext.js",
+  "ServerZkProfileOperations.js",
+  "ProfileKeyCredentialRequest.js",
+  "ExpiringProfileKeyCredentialResponse.js",
+  "ProfileKeyVersion.js",
+  "BackupAuthCredentialResponse.js",
+  "BackupAuthCredentialPresentation.js",
+  "BackupCredentialType.js",
+  "BackupLevel.js",
+  "BackupAuthCredentialRequestContext.js",
+  "BackupAuthCredential.js",
+  "BackupAuthCredentialRequest.js",
+  "internal.js",
+  "KemKeys.js",
+  "Address.js",
+  "usernames.js",
+  "NiceConverters.js",
+  "WebpSanitizer.js",
+  "NativeNice.js",
+  "index.js",
+  "incremental_mac.js",
+  "SealedSenderMultiRecipientMessage.js",
+  "ProtocolTypes.js",
+  "Errors.js",
+  "Minidump.js",
+  "uuid.js",
+  "MessageBackup.js",
+  "RngForTesting.js",
+  "EcKeys.js",
+  "AccountKeys.js",
+  "bindings.js",
+  "index.js",
+  "parse-proxy-response.js",
+  "index.js",
+  "index.js",
+  "index.js",
+  "index.js",
+  "sha1.js",
+  "stringify.js",
+  "rng.js",
+  "types.js",
+  "native.js",
+  "v4.js",
+  "max.js",
+  "v1.js",
+  "index.js",
+  "v5.js",
+  "v35.js",
+  "version.js",
+  "v1ToV6.js",
+  "v6.js",
+  "parse.js",
+  "v7.js",
+  "uuid-bin.js",
+  "md5.js",
+  "v3.js",
+  "regex.js",
+  "v6ToV1.js",
+  "validate.js",
+  "nil.js",
+  "sha1.js",
+  "stringify.js",
+  "rng.js",
+  "types.js",
+  "native.js",
+  "v4.js",
+  "max.js",
+  "v1.js",
+  "index.js",
+  "v5.js",
+  "v35.js",
+  "version.js",
+  "v1ToV6.js",
+  "v6.js",
+  "parse.js",
+  "v7.js",
+  "uuid-bin.js",
+  "md5.js",
+  "v3.js",
+  "regex.js",
+  "v6ToV1.js",
+  "validate.js",
+  "nil.js",
+  "index.js",
+  "index.js",
+  "node.js",
+  "common.js",
+  "browser.js",
+  "index.js",
+  "config.js",
+  "main.js",
+  "sandboxedInit.dom-C0Ae-Rm_.js",
+  "Reactions.std-B39jChaY.js",
+  "tw.dom-B9nXfnYr.js",
+  "emoji.std-BOI1Watb.js",
+  "config.main-gOZEunKS.js",
+  "useEscapeHandling.dom-3SVECTZR.js",
+  "AxoButton.dom-B8YfF6xM.js",
+  "chunk-DzJ5_V0X.js",
+  "setDocumentLocale.dom-B7WLVHxs.js",
+  "Button.dom-CYVTRpGs.js",
+  "notifications.std-BX1kvCKH.js",
+  "multipart-parser-CyqSQe4_.js",
+  "log.std-BxHXWNJw.js",
+  "errors.std-7sZchtic.js",
+  "about.js",
+  "pdf.js",
+  "loading.js",
+  "screenShare.js",
+  "debuglog.js",
+  "calldiagnostic.js",
+  "permissions.js",
+  "mp3Encoder.js",
+  "sql.js",
+  "heic.js",
+  "about.js",
+  "pdf.js",
+  "wrapper.js",
+  "sticker-creator.js",
+  "main.js",
+  "screenShare.js",
+  "debuglog.js",
+  "calldiagnostic.js",
+  "permissions.js"
+ ],
+ "counts": {
+  "services": 0,
+  "messages": 0,
+  "enums": 0,
+  "methods": 0,
+  "ipc_channels": 360
+ },
+ "services": {},
+ "messages": {},
+ "enums": {},
+ "ipc": {
+  "channels": {
+   "crash-reports:get-count": {
+    "sends": 0,
+    "invokes": 1,
+    "listeners": 0,
+    "handlers": 1,
+    "sites": [
+     "ipcMain.handle",
+     "ipcRenderer.invoke"
+    ]
+   },
+   "crash-reports:write-to-log": {
+    "sends": 0,
+    "invokes": 1,
+    "listeners": 0,
+    "handlers": 1,
+    "sites": [
+     "ipcMain.handle",
+     "ipcRenderer.invoke"
+    ]
+   },
+   "crash-reports:erase": {
+    "sends": 0,
+    "invokes": 1,
+    "listeners": 0,
+    "handlers": 1,
+    "sites": [
+     "ipcMain.handle",
+     "ipcRenderer.invoke"
+    ]
+   },
+   "erase-temp": {
+    "sends": 0,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 1,
+    "sites": [
+     "ipcMain.handle"
+    ]
+   },
+   "erase-attachments": {
+    "sends": 0,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 1,
+    "sites": [
+     "ipcMain.handle"
+    ]
+   },
+   "erase-stickers": {
+    "sends": 0,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 1,
+    "sites": [
+     "ipcMain.handle"
+    ]
+   },
+   "erase-drafts": {
+    "sends": 0,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 1,
+    "sites": [
+     "ipcMain.handle"
+    ]
+   },
+   "erase-downloads": {
+    "sends": 0,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 1,
+    "sites": [
+     "ipcMain.handle"
+    ]
+   },
+   "cleanup-orphaned-attachments": {
+    "sends": 0,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 1,
+    "sites": [
+     "ipcMain.handle"
+    ]
+   },
+   "cleanup-downloads": {
+    "sends": 0,
+    "invokes": 1,
+    "listeners": 0,
+    "handlers": 1,
+    "sites": [
+     "ipcMain.handle",
+     "ipcRenderer.invoke"
+    ]
+   },
+   "context-menu": {
+    "sends": 0,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 1,
+    "sites": [
+     "webContents.on"
+    ]
+   },
+   "bounce-app-icon-start": {
+    "sends": 1,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 1,
+    "sites": [
+     "ipcMain.on",
+     "ipcRenderer.send"
+    ]
+   },
+   "bounce-app-icon-stop": {
+    "sends": 1,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 1,
+    "sites": [
+     "ipcMain.on",
+     "ipcRenderer.send"
+    ]
+   },
+   "show-update-dialog": {
+    "sends": 7,
+    "invokes": 0,
+    "listeners": 1,
+    "handlers": 0,
+    "sites": [
+     "webContents.send",
+     "ipcRenderer.on"
+    ]
+   },
+   "updater/force-check": {
+    "sends": 0,
+    "invokes": 1,
+    "listeners": 0,
+    "handlers": 1,
+    "sites": [
+     "ipcMain.handle",
+     "ipcRenderer.invoke"
+    ]
+   },
+   "start-update": {
+    "sends": 0,
+    "invokes": 1,
+    "listeners": 0,
+    "handlers": 2,
+    "sites": [
+     "ipcMain.handleOnce",
+     "ipcMain.handle",
+     "ipcRenderer.invoke"
+    ]
+   },
+   "select-capture-sources:${r}:response": {
+    "sends": 0,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 1,
+    "sites": [
+     "ipcMain.once"
+    ]
+   },
+   "OptionalResourceService:getData": {
+    "sends": 0,
+    "invokes": 2,
+    "listeners": 0,
+    "handlers": 1,
+    "sites": [
+     "ipcMain.handle",
+     "ipcRenderer.invoke"
+    ]
+   },
+   "logging-error": {
+    "sends": 1,
+    "invokes": 0,
+    "listeners": 1,
+    "handlers": 0,
+    "sites": [
+     "webContents.send",
+     "ipcRenderer.on"
+    ]
+   },
+   "fetch-log": {
+    "sends": 0,
+    "invokes": 3,
+    "listeners": 0,
+    "handlers": 1,
+    "sites": [
+     "ipcMain.handle",
+     "ipcRenderer.invoke"
+    ]
+   },
+   "delete-all-logs": {
+    "sends": 0,
+    "invokes": 1,
+    "listeners": 0,
+    "handlers": 1,
+    "sites": [
+     "ipcMain.handle",
+     "ipcRenderer.invoke"
+    ]
+   },
+   "additional-log-data-request": {
+    "sends": 1,
+    "invokes": 0,
+    "listeners": 1,
+    "handlers": 0,
+    "sites": [
+     "webContents.send",
+     "ipcRenderer.on"
+    ]
+   },
+   "additional-log-data-response": {
+    "sends": 0,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 1,
+    "sites": [
+     "ipcMain.once"
+    ]
+   },
+   "erase-sql-key": {
+    "sends": 0,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 1,
+    "sites": [
+     "ipcMain.handle"
+    ]
+   },
+   "resume-sql-writes": {
+    "sends": 0,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 1,
+    "sites": [
+     "ipcMain.handle"
+    ]
+   },
+   "challenge:request": {
+    "sends": 1,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 1,
+    "sites": [
+     "ipcMain.on",
+     "ipcRenderer.send"
+    ]
+   },
+   "native-theme:init": {
+    "sends": 0,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 1,
+    "sites": [
+     "ipcMain.on"
+    ]
+   },
+   "native-theme:changed": {
+    "sends": 1,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 0,
+    "sites": [
+     "webContents.send"
+    ]
+   },
+   "open-settings-tab": {
+    "sends": 1,
+    "invokes": 0,
+    "listeners": 1,
+    "handlers": 0,
+    "sites": [
+     "webContents.send",
+     "ipcRenderer.on"
+    ]
+   },
+   "settings:get:mediaPermissions": {
+    "sends": 0,
+    "invokes": 1,
+    "listeners": 0,
+    "handlers": 1,
+    "sites": [
+     "ipcMain.handle",
+     "ipcRenderer.invoke"
+    ]
+   },
+   "settings:get:mediaCameraPermissions": {
+    "sends": 0,
+    "invokes": 1,
+    "listeners": 0,
+    "handlers": 1,
+    "sites": [
+     "ipcMain.handle",
+     "ipcRenderer.invoke"
+    ]
+   },
+   "settings:set:mediaPermissions": {
+    "sends": 0,
+    "invokes": 1,
+    "listeners": 0,
+    "handlers": 1,
+    "sites": [
+     "ipcMain.handle",
+     "ipcRenderer.invoke"
+    ]
+   },
+   "settings:set:mediaCameraPermissions": {
+    "sends": 0,
+    "invokes": 1,
+    "listeners": 0,
+    "handlers": 1,
+    "sites": [
+     "ipcMain.handle",
+     "ipcRenderer.invoke"
+    ]
+   },
+   "settings:get:${e}": {
+    "sends": 1,
+    "invokes": 8,
+    "listeners": 1,
+    "handlers": 1,
+    "sites": [
+     "ipcMain.handle",
+     "ipcRenderer.invoke",
+     "ipcRenderer.on",
+     "ipcRenderer.send"
+    ]
+   },
+   "settings:set:${e}": {
+    "sends": 0,
+    "invokes": 8,
+    "listeners": 1,
+    "handlers": 1,
+    "sites": [
+     "ipcMain.handle",
+     "ipcRenderer.invoke",
+     "ipcRenderer.on"
+    ]
+   },
+   "settings:update:${e}": {
+    "sends": 1,
+    "invokes": 0,
+    "listeners": 1,
+    "handlers": 0,
+    "sites": [
+     "webContents.send",
+     "ipcRenderer.on"
+    ]
+   },
+   "SignalClipboard.clear": {
+    "sends": 1,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 1,
+    "sites": [
+     "ipcMain.on",
+     "ipcRenderer.send"
+    ]
+   },
+   "SignalClipboard.clearIfNeeded": {
+    "sends": 1,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 1,
+    "sites": [
+     "ipcMain.on",
+     "ipcRenderer.send"
+    ]
+   },
+   "SignalClipboard.copyTextTemporarily": {
+    "sends": 1,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 1,
+    "sites": [
+     "ipcMain.on",
+     "ipcRenderer.send"
+    ]
+   },
+   "getZoomFactor": {
+    "sends": 0,
+    "invokes": 1,
+    "listeners": 0,
+    "handlers": 1,
+    "sites": [
+     "ipcMain.handle",
+     "ipcRenderer.invoke"
+    ]
+   },
+   "setZoomFactor": {
+    "sends": 1,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 1,
+    "sites": [
+     "ipcMain.on",
+     "ipcRenderer.send"
+    ]
+   },
+   "zoomFactorChanged": {
+    "sends": 1,
+    "invokes": 0,
+    "listeners": 1,
+    "handlers": 0,
+    "sites": [
+     "webContents.send",
+     "ipcRenderer.on"
+    ]
+   },
+   "zoom-changed": {
+    "sends": 0,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 1,
+    "sites": [
+     "webContents.on"
+    ]
+   },
+   "windows-notifications:show": {
+    "sends": 0,
+    "invokes": 1,
+    "listeners": 0,
+    "handlers": 1,
+    "sites": [
+     "ipcMain.handle",
+     "ipcRenderer.invoke"
+    ]
+   },
+   "windows-notifications:clear-all": {
+    "sends": 0,
+    "invokes": 1,
+    "listeners": 0,
+    "handlers": 1,
+    "sites": [
+     "ipcMain.handle",
+     "ipcRenderer.invoke"
+    ]
+   },
+   "will-navigate": {
+    "sends": 0,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 1,
+    "sites": [
+     "webContents.on"
+    ]
+   },
+   "preload-error": {
+    "sends": 0,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 2,
+    "sites": [
+     "webContents.on"
+    ]
+   },
+   "set-window-focus": {
+    "sends": 2,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 0,
+    "sites": [
+     "webContents.send"
+    ]
+   },
+   "did-stop-loading": {
+    "sends": 0,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 1,
+    "sites": [
+     "webContents.on"
+    ]
+   },
+   "destroyed": {
+    "sends": 0,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 1,
+    "sites": [
+     "webContents.on"
+    ]
+   },
+   "window:set-window-stats": {
+    "sends": 1,
+    "invokes": 0,
+    "listeners": 1,
+    "handlers": 0,
+    "sites": [
+     "webContents.send",
+     "ipcRenderer.on"
+    ]
+   },
+   "set-media-playback-disabled": {
+    "sends": 2,
+    "invokes": 0,
+    "listeners": 1,
+    "handlers": 0,
+    "sites": [
+     "webContents.send",
+     "ipcRenderer.on"
+    ]
+   },
+   "full-screen-change": {
+    "sends": 2,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 0,
+    "sites": [
+     "webContents.send"
+    ]
+   },
+   "activate": {
+    "sends": 2,
+    "invokes": 0,
+    "listeners": 1,
+    "handlers": 0,
+    "sites": [
+     "webContents.send",
+     "ipcRenderer.on"
+    ]
+   },
+   "devtools-reload-page": {
+    "sends": 0,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 1,
+    "sites": [
+     "webContents.on"
+    ]
+   },
+   "dom-ready": {
+    "sends": 0,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 1,
+    "sites": [
+     "webContents.on"
+    ]
+   },
+   "ci:event": {
+    "sends": 1,
+    "invokes": 0,
+    "listeners": 1,
+    "handlers": 0,
+    "sites": [
+     "webContents.send",
+     "ipcRenderer.on"
+    ]
+   },
+   "did-finish-load": {
+    "sends": 0,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 2,
+    "sites": [
+     "webContents.once",
+     "webContents.on"
+    ]
+   },
+   "database-ready": {
+    "sends": 0,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 1,
+    "sites": [
+     "ipcMain.handle"
+    ]
+   },
+   "art-creator:uploadStickerPack": {
+    "sends": 1,
+    "invokes": 1,
+    "listeners": 1,
+    "handlers": 1,
+    "sites": [
+     "ipcMain.handle",
+     "webContents.send",
+     "ipcRenderer.invoke",
+     "ipcRenderer.on"
+    ]
+   },
+   "art-creator:uploadStickerPack:done": {
+    "sends": 0,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 1,
+    "sites": [
+     "ipcMain.once"
+    ]
+   },
+   "art-creator:sanitizeWebp": {
+    "sends": 0,
+    "invokes": 1,
+    "listeners": 0,
+    "handlers": 1,
+    "sites": [
+     "ipcMain.handle",
+     "ipcRenderer.invoke"
+    ]
+   },
+   "art-creator:onUploadProgress": {
+    "sends": 2,
+    "invokes": 0,
+    "listeners": 1,
+    "handlers": 1,
+    "sites": [
+     "ipcMain.on",
+     "webContents.send",
+     "ipcRenderer.on",
+     "ipcRenderer.send"
+    ]
+   },
+   "show-window": {
+    "sends": 2,
+    "invokes": 0,
+    "listeners": 1,
+    "handlers": 1,
+    "sites": [
+     "ipcMain.on",
+     "webContents.send",
+     "ipcRenderer.send",
+     "ipcRenderer.on"
+    ]
+   },
+   "start-tracking-query-stats": {
+    "sends": 1,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 1,
+    "sites": [
+     "ipcMain.on",
+     "ipcRenderer.send"
+    ]
+   },
+   "stop-tracking-query-stats": {
+    "sends": 1,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 1,
+    "sites": [
+     "ipcMain.on",
+     "ipcRenderer.send"
+    ]
+   },
+   "title-bar-double-click": {
+    "sends": 1,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 1,
+    "sites": [
+     "ipcMain.on",
+     "ipcRenderer.send"
+    ]
+   },
+   "pdf:generate": {
+    "sends": 0,
+    "invokes": 1,
+    "listeners": 0,
+    "handlers": 1,
+    "sites": [
+     "ipcMain.handle",
+     "ipcRenderer.invoke"
+    ]
+   },
+   "set-is-call-active": {
+    "sends": 1,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 1,
+    "sites": [
+     "ipcMain.on",
+     "ipcRenderer.send"
+    ]
+   },
+   "convert-image": {
+    "sends": 1,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 1,
+    "sites": [
+     "ipcMain.on",
+     "ipcRenderer.send"
+    ]
+   },
+   "prompt-os-auth": {
+    "sends": 1,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 1,
+    "sites": [
+     "ipcMain.on",
+     "ipcRenderer.send"
+    ]
+   },
+   "ready-for-updates": {
+    "sends": 1,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 1,
+    "sites": [
+     "ipcMain.once",
+     "ipcRenderer.send"
+    ]
+   },
+   "show-release-notes": {
+    "sends": 1,
+    "invokes": 0,
+    "listeners": 1,
+    "handlers": 0,
+    "sites": [
+     "webContents.send",
+     "ipcRenderer.on"
+    ]
+   },
+   "show-keyboard-shortcuts": {
+    "sends": 1,
+    "invokes": 0,
+    "listeners": 1,
+    "handlers": 0,
+    "sites": [
+     "webContents.send",
+     "ipcRenderer.on"
+    ]
+   },
+   "set-up-as-new-device": {
+    "sends": 1,
+    "invokes": 0,
+    "listeners": 1,
+    "handlers": 0,
+    "sites": [
+     "webContents.send",
+     "ipcRenderer.on"
+    ]
+   },
+   "set-up-as-standalone": {
+    "sends": 1,
+    "invokes": 0,
+    "listeners": 1,
+    "handlers": 0,
+    "sites": [
+     "webContents.send",
+     "ipcRenderer.on"
+    ]
+   },
+   "stage-local-backup-for-import": {
+    "sends": 1,
+    "invokes": 0,
+    "listeners": 1,
+    "handlers": 0,
+    "sites": [
+     "webContents.send",
+     "ipcRenderer.on"
+    ]
+   },
+   "sql-error": {
+    "sends": 1,
+    "invokes": 0,
+    "listeners": 1,
+    "handlers": 0,
+    "sites": [
+     "webContents.send",
+     "ipcRenderer.on"
+    ]
+   },
+   "database-readonly": {
+    "sends": 0,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 1,
+    "sites": [
+     "ipcMain.on"
+    ]
+   },
+   "signal-app-loaded": {
+    "sends": 1,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 1,
+    "sites": [
+     "ipcMain.once",
+     "ipcRenderer.send"
+    ]
+   },
+   "window:set-menu-options": {
+    "sends": 1,
+    "invokes": 0,
+    "listeners": 1,
+    "handlers": 0,
+    "sites": [
+     "webContents.send",
+     "ipcRenderer.on"
+    ]
+   },
+   "received-close-confirmation": {
+    "sends": 2,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 1,
+    "sites": [
+     "ipcMain.once",
+     "ipcRenderer.send"
+    ]
+   },
+   "requested-close-confirmation": {
+    "sends": 1,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 1,
+    "sites": [
+     "ipcMain.once",
+     "ipcRenderer.send"
+    ]
+   },
+   "maybe-request-close-confirmation": {
+    "sends": 1,
+    "invokes": 0,
+    "listeners": 1,
+    "handlers": 0,
+    "sites": [
+     "webContents.send",
+     "ipcRenderer.on"
+    ]
+   },
+   "now-ready-for-shutdown": {
+    "sends": 3,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 1,
+    "sites": [
+     "ipcMain.once",
+     "ipcRenderer.send"
+    ]
+   },
+   "get-ready-for-shutdown": {
+    "sends": 1,
+    "invokes": 0,
+    "listeners": 1,
+    "handlers": 0,
+    "sites": [
+     "webContents.send",
+     "ipcRenderer.on"
+    ]
+   },
+   "set-badge-count": {
+    "sends": 1,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 1,
+    "sites": [
+     "ipcMain.on",
+     "ipcRenderer.send"
+    ]
+   },
+   "remove-setup-menu-items": {
+    "sends": 1,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 1,
+    "sites": [
+     "ipcMain.on",
+     "ipcRenderer.send"
+    ]
+   },
+   "add-setup-menu-items": {
+    "sends": 1,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 1,
+    "sites": [
+     "ipcMain.on",
+     "ipcRenderer.send"
+    ]
+   },
+   "draw-attention": {
+    "sends": 1,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 1,
+    "sites": [
+     "ipcMain.on",
+     "ipcRenderer.send"
+    ]
+   },
+   "restart": {
+    "sends": 7,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 1,
+    "sites": [
+     "ipcMain.on",
+     "ipcRenderer.send"
+    ]
+   },
+   "shutdown": {
+    "sends": 2,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 1,
+    "sites": [
+     "ipcMain.on",
+     "ipcRenderer.send"
+    ]
+   },
+   "set-auto-hide-menu-bar": {
+    "sends": 1,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 1,
+    "sites": [
+     "ipcMain.on",
+     "ipcRenderer.send"
+    ]
+   },
+   "set-menu-bar-visibility": {
+    "sends": 1,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 1,
+    "sites": [
+     "ipcMain.on",
+     "ipcRenderer.send"
+    ]
+   },
+   "screen-share:status-change": {
+    "sends": 3,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 1,
+    "sites": [
+     "ipcMain.on",
+     "ipcRenderer.send"
+    ]
+   },
+   "status-change": {
+    "sends": 1,
+    "invokes": 0,
+    "listeners": 1,
+    "handlers": 0,
+    "sites": [
+     "webContents.send",
+     "ipcRenderer.on"
+    ]
+   },
+   "stop-screen-share": {
+    "sends": 2,
+    "invokes": 0,
+    "listeners": 1,
+    "handlers": 1,
+    "sites": [
+     "ipcMain.on",
+     "webContents.send",
+     "ipcRenderer.on",
+     "ipcRenderer.send"
+    ]
+   },
+   "show-screen-share": {
+    "sends": 1,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 1,
+    "sites": [
+     "ipcMain.on",
+     "ipcRenderer.send"
+    ]
+   },
+   "update-tray-icon": {
+    "sends": 1,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 1,
+    "sites": [
+     "ipcMain.on",
+     "ipcRenderer.send"
+    ]
+   },
+   "show-debug-log": {
+    "sends": 1,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 1,
+    "sites": [
+     "ipcMain.on",
+     "ipcRenderer.send"
+    ]
+   },
+   "show-debug-log-save-dialog": {
+    "sends": 1,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 1,
+    "sites": [
+     "ipcMain.on",
+     "ipcRenderer.send"
+    ]
+   },
+   "show-call-diagnostic": {
+    "sends": 1,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 1,
+    "sites": [
+     "ipcMain.on",
+     "ipcRenderer.send"
+    ]
+   },
+   "get-call-diagnostic-data": {
+    "sends": 0,
+    "invokes": 1,
+    "listeners": 0,
+    "handlers": 1,
+    "sites": [
+     "ipcMain.handle",
+     "ipcRenderer.invoke"
+    ]
+   },
+   "close-call-diagnostic": {
+    "sends": 1,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 1,
+    "sites": [
+     "ipcMain.on",
+     "ipcRenderer.send"
+    ]
+   },
+   "close-debug-log": {
+    "sends": 1,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 1,
+    "sites": [
+     "ipcMain.on",
+     "ipcRenderer.send"
+    ]
+   },
+   "update-call-diagnostic-data": {
+    "sends": 1,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 1,
+    "sites": [
+     "ipcMain.on",
+     "ipcRenderer.send"
+    ]
+   },
+   "call-diagnostic-data-updated": {
+    "sends": 1,
+    "invokes": 0,
+    "listeners": 1,
+    "handlers": 0,
+    "sites": [
+     "webContents.send",
+     "ipcRenderer.on"
+    ]
+   },
+   "show-permissions-popup": {
+    "sends": 0,
+    "invokes": 1,
+    "listeners": 0,
+    "handlers": 1,
+    "sites": [
+     "ipcMain.handle",
+     "ipcRenderer.invoke"
+    ]
+   },
+   "add-dark-overlay": {
+    "sends": 1,
+    "invokes": 0,
+    "listeners": 1,
+    "handlers": 0,
+    "sites": [
+     "webContents.send",
+     "ipcRenderer.on"
+    ]
+   },
+   "remove-dark-overlay": {
+    "sends": 1,
+    "invokes": 0,
+    "listeners": 1,
+    "handlers": 0,
+    "sites": [
+     "webContents.send",
+     "ipcRenderer.on"
+    ]
+   },
+   "get-config": {
+    "sends": 7,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 1,
+    "sites": [
+     "ipcMain.on",
+     "ipcRenderer.sendSync"
+    ]
+   },
+   "locale-data": {
+    "sends": 7,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 1,
+    "sites": [
+     "ipcMain.on",
+     "ipcRenderer.sendSync"
+    ]
+   },
+   "locale-display-names": {
+    "sends": 7,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 1,
+    "sites": [
+     "ipcMain.on",
+     "ipcRenderer.sendSync"
+    ]
+   },
+   "country-display-names": {
+    "sends": 7,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 1,
+    "sites": [
+     "ipcMain.on",
+     "ipcRenderer.sendSync"
+    ]
+   },
+   "OS.getClassName": {
+    "sends": 7,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 1,
+    "sites": [
+     "ipcMain.on",
+     "ipcRenderer.sendSync"
+    ]
+   },
+   "DebugLogs.getLogs": {
+    "sends": 0,
+    "invokes": 3,
+    "listeners": 0,
+    "handlers": 1,
+    "sites": [
+     "ipcMain.handle",
+     "ipcRenderer.invoke"
+    ]
+   },
+   "DebugLogs.upload": {
+    "sends": 0,
+    "invokes": 3,
+    "listeners": 0,
+    "handlers": 1,
+    "sites": [
+     "ipcMain.handle",
+     "ipcRenderer.invoke"
+    ]
+   },
+   "get-user-data-path": {
+    "sends": 1,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 1,
+    "sites": [
+     "ipcMain.on",
+     "ipcRenderer.sendSync"
+    ]
+   },
+   "preferences-changed": {
+    "sends": 2,
+    "invokes": 0,
+    "listeners": 7,
+    "handlers": 1,
+    "sites": [
+     "webContents.send",
+     "ipcMain.on",
+     "ipcRenderer.on",
+     "ipcRenderer.send"
+    ]
+   },
+   "show-sticker-pack": {
+    "sends": 1,
+    "invokes": 0,
+    "listeners": 1,
+    "handlers": 0,
+    "sites": [
+     "webContents.send",
+     "ipcRenderer.on"
+    ]
+   },
+   "show-group-via-link": {
+    "sends": 1,
+    "invokes": 0,
+    "listeners": 1,
+    "handlers": 0,
+    "sites": [
+     "webContents.send",
+     "ipcRenderer.on"
+    ]
+   },
+   "show-conversation-via-signal.me": {
+    "sends": 2,
+    "invokes": 0,
+    "listeners": 1,
+    "handlers": 0,
+    "sites": [
+     "webContents.send",
+     "ipcRenderer.on"
+    ]
+   },
+   "show-conversation-via-token": {
+    "sends": 1,
+    "invokes": 0,
+    "listeners": 1,
+    "handlers": 0,
+    "sites": [
+     "webContents.send",
+     "ipcRenderer.on"
+    ]
+   },
+   "start-call-lobby": {
+    "sends": 1,
+    "invokes": 0,
+    "listeners": 1,
+    "handlers": 0,
+    "sites": [
+     "webContents.send",
+     "ipcRenderer.on"
+    ]
+   },
+   "start-call-link": {
+    "sends": 1,
+    "invokes": 0,
+    "listeners": 1,
+    "handlers": 0,
+    "sites": [
+     "webContents.send",
+     "ipcRenderer.on"
+    ]
+   },
+   "cancel-presenting": {
+    "sends": 1,
+    "invokes": 0,
+    "listeners": 1,
+    "handlers": 0,
+    "sites": [
+     "webContents.send",
+     "ipcRenderer.on"
+    ]
+   },
+   "donation-validation-complete": {
+    "sends": 1,
+    "invokes": 0,
+    "listeners": 1,
+    "handlers": 0,
+    "sites": [
+     "webContents.send",
+     "ipcRenderer.on"
+    ]
+   },
+   "donation-paypal-approved": {
+    "sends": 1,
+    "invokes": 0,
+    "listeners": 1,
+    "handlers": 0,
+    "sites": [
+     "webContents.send",
+     "ipcRenderer.on"
+    ]
+   },
+   "donation-paypal-canceled": {
+    "sends": 1,
+    "invokes": 0,
+    "listeners": 1,
+    "handlers": 0,
+    "sites": [
+     "webContents.send",
+     "ipcRenderer.on"
+    ]
+   },
+   "unknown-sgnl-link": {
+    "sends": 1,
+    "invokes": 0,
+    "listeners": 1,
+    "handlers": 0,
+    "sites": [
+     "webContents.send",
+     "ipcRenderer.on"
+    ]
+   },
+   "install-sticker-pack": {
+    "sends": 1,
+    "invokes": 1,
+    "listeners": 1,
+    "handlers": 1,
+    "sites": [
+     "ipcMain.handle",
+     "webContents.send",
+     "ipcRenderer.invoke",
+     "ipcRenderer.on"
+    ]
+   },
+   "ensure-file-permissions": {
+    "sends": 0,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 1,
+    "sites": [
+     "ipcMain.handle"
+    ]
+   },
+   "get-media-access-status": {
+    "sends": 0,
+    "invokes": 1,
+    "listeners": 0,
+    "handlers": 1,
+    "sites": [
+     "ipcMain.handle",
+     "ipcRenderer.invoke"
+    ]
+   },
+   "open-system-media-permissions": {
+    "sends": 0,
+    "invokes": 1,
+    "listeners": 0,
+    "handlers": 1,
+    "sites": [
+     "ipcMain.handle",
+     "ipcRenderer.invoke"
+    ]
+   },
+   "get-auto-launch": {
+    "sends": 0,
+    "invokes": 1,
+    "listeners": 0,
+    "handlers": 1,
+    "sites": [
+     "ipcMain.handle",
+     "ipcRenderer.invoke"
+    ]
+   },
+   "set-auto-launch": {
+    "sends": 0,
+    "invokes": 1,
+    "listeners": 0,
+    "handlers": 1,
+    "sites": [
+     "ipcMain.handle",
+     "ipcRenderer.invoke"
+    ]
+   },
+   "show-message-box": {
+    "sends": 0,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 1,
+    "sites": [
+     "ipcMain.on"
+    ]
+   },
+   "show-item-in-folder": {
+    "sends": 1,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 1,
+    "sites": [
+     "ipcMain.on",
+     "ipcRenderer.send"
+    ]
+   },
+   "show-save-dialog": {
+    "sends": 0,
+    "invokes": 1,
+    "listeners": 0,
+    "handlers": 1,
+    "sites": [
+     "ipcMain.handle",
+     "ipcRenderer.invoke"
+    ]
+   },
+   "show-open-folder-dialog": {
+    "sends": 0,
+    "invokes": 4,
+    "listeners": 0,
+    "handlers": 1,
+    "sites": [
+     "ipcMain.handle",
+     "ipcRenderer.invoke"
+    ]
+   },
+   "executeMenuRole": {
+    "sends": 0,
+    "invokes": 7,
+    "listeners": 0,
+    "handlers": 1,
+    "sites": [
+     "ipcMain.handle",
+     "ipcRenderer.invoke"
+    ]
+   },
+   "getMainWindowStats": {
+    "sends": 0,
+    "invokes": 7,
+    "listeners": 0,
+    "handlers": 1,
+    "sites": [
+     "ipcMain.handle",
+     "ipcRenderer.invoke"
+    ]
+   },
+   "getMenuOptions": {
+    "sends": 0,
+    "invokes": 7,
+    "listeners": 0,
+    "handlers": 1,
+    "sites": [
+     "ipcMain.handle",
+     "ipcRenderer.invoke"
+    ]
+   },
+   "net.resolveHost": {
+    "sends": 0,
+    "invokes": 1,
+    "listeners": 0,
+    "handlers": 1,
+    "sites": [
+     "ipcMain.handle",
+     "ipcRenderer.invoke"
+    ]
+   },
+   "ci:test-electron:getArgv": {
+    "sends": 0,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 1,
+    "sites": [
+     "ipcMain.on"
+    ]
+   },
+   "ci:test-electron:debug": {
+    "sends": 0,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 1,
+    "sites": [
+     "ipcMain.handle"
+    ]
+   },
+   "ci:test-electron:event": {
+    "sends": 0,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 1,
+    "sites": [
+     "ipcMain.handle"
+    ]
+   },
+   "challenge:response": {
+    "sends": 0,
+    "invokes": 0,
+    "listeners": 1,
+    "handlers": 0,
+    "sites": [
+     "ipcRenderer.on"
+    ]
+   },
+   "pdf:getProps": {
+    "sends": 1,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 0,
+    "sites": [
+     "ipcRenderer.sendSync"
+    ]
+   },
+   "settings:response": {
+    "sends": 5,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 0,
+    "sites": [
+     "ipcRenderer.send"
+    ]
+   },
+   "convert-image:${r}": {
+    "sends": 0,
+    "invokes": 0,
+    "listeners": 1,
+    "handlers": 0,
+    "sites": [
+     "ipcRenderer.once"
+    ]
+   },
+   "prompt-os-auth:${e}": {
+    "sends": 0,
+    "invokes": 0,
+    "listeners": 1,
+    "handlers": 0,
+    "sites": [
+     "ipcRenderer.once"
+    ]
+   },
+   "select-capture-sources": {
+    "sends": 0,
+    "invokes": 0,
+    "listeners": 1,
+    "handlers": 0,
+    "sites": [
+     "ipcRenderer.on"
+    ]
+   },
+   "select-capture-sources:${n}:response": {
+    "sends": 1,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 0,
+    "sites": [
+     "ipcRenderer.send"
+    ]
+   },
+   "close-about": {
+    "sends": 1,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 0,
+    "sites": [
+     "ipcRenderer.send"
+    ]
+   },
+   "show-settings": {
+    "sends": 1,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 0,
+    "sites": [
+     "ipcRenderer.send"
+    ]
+   },
+   "power-channel:suspend": {
+    "sends": 0,
+    "invokes": 0,
+    "listeners": 1,
+    "handlers": 0,
+    "sites": [
+     "ipcRenderer.on"
+    ]
+   },
+   "power-channel:resume": {
+    "sends": 0,
+    "invokes": 0,
+    "listeners": 1,
+    "handlers": 0,
+    "sites": [
+     "ipcRenderer.on"
+    ]
+   },
+   "power-channel:lock-screen": {
+    "sends": 0,
+    "invokes": 0,
+    "listeners": 1,
+    "handlers": 0,
+    "sites": [
+     "ipcRenderer.on"
+    ]
+   },
+   "challenge:conversations": {
+    "sends": 0,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 0,
+    "sites": []
+   },
+   "challenge:retry-message-ids": {
+    "sends": 0,
+    "invokes": 0,
+    "listeners": 0,
+    "handlers": 0,
+    "sites": []
+   }
+  },
+  "exposed_globals": [
+   "Signal",
+   "SignalContext",
+   "uploadStickerPack",
+   "sanitizeWebp",
+   "installStickerPack",
+   "getFilePath",
+   "SignalDebug",
+   "debug",
+   "SignalCI",
+   "showDebugLog",
+   "startApp"
+  ]
+ },
+ "endpoints": {
+  "urls": {
+   "https://react.dev/errors/": 6,
+   "http://www.w3.org/2000/svg": 32,
+   "http://www.w3.org/1998/Math/MathML": 10,
+   "http://www.w3.org/1999/xlink": 22,
+   "http://www.w3.org/XML/1998/namespace": 9,
+   "http://localhost": 3,
+   "https://support.signal.org/hc/articles/360031836512-Stickers#sticker_creator": 1,
+   "https://cdn.jsdelivr.net/npm/emoji-datasource-apple/img/apple/64/": 1,
+   "https://cdn.jsdelivr.net/npm/emoji-datasource-facebook/img/facebook/64/": 1,
+   "https://cdn.jsdelivr.net/npm/emoji-datasource-twitter/img/twitter/64/": 1,
+   "https://cdn.jsdelivr.net/npm/emoji-datasource-google/img/google/64/": 1,
+   "https://json-schema.org/draft/2020-12/schema": 5,
+   "http://json-schema.org/draft-07/schema#": 5,
+   "http://json-schema.org/draft-04/schema#": 5,
+   "https://proxy.example": 1,
+   "https://@proxy.example": 1,
+   "https://en.wikipedia.org/wiki/AES-GCM-SIV": 1,
+   "https://debuglogs.org": 1,
+   "https://support.signal.org/hc/articles/360007318471": 1,
+   "https://support.signal.org/hc/sections/360001602812": 1,
+   "https://community.signalusers.org/": 1,
+   "https://support.signal.org/hc/articles/9045714156314#desktop": 1,
+   "https://github.com/mcollina/thread-stream/issues": 1,
+   "https://github.com/mcollina/thread-stream#readme": 1,
+   "https://signal.org": 1,
+   "https://github.com/signalapp/Signal-Desktop/blob/main/ACKNOWLEDGMENTS.md": 1,
+   "https://signal.org/legal": 1,
+   "https://github.com/node-fetch/node-fetch/issues/1167": 1,
+   "https://api.stripe.com/v1/payment_methods": 1,
+   "https://support.signal.org/hc/articles/8997185514138-Re-connect-your-primary-device-to-continue-using-Signal-Desktop": 1,
+   "https://signal.org/download/": 2,
+   "https://support.signal.org/beta": 1,
+   "https://support.signal.org/hc/articles/5109141421850": 1,
+   "https://support.signal.org/hc/articles/360007320451#desktop_multiple_device": 1,
+   "https://support.signal.org/hc/articles/360007060632": 1,
+   "https://support.signal.org/hc/articles/10223569377562": 2,
+   "https://support.signal.org/hc/articles/360007320391": 1,
+   "https://quilljs.com": 2,
+   "https://support.signal.org/hc/articles/9932566320410-Staying-Safe-from-Phishing-Scams-and-Impersonation": 2,
+   "https://media0.giphy.com": 1,
+   "https://media1.giphy.com": 1,
+   "https://media2.giphy.com": 1,
+   "https://media3.giphy.com": 1,
+   "https://media4.giphy.com": 1,
+   "https://api.giphy.com": 1,
+   "https://support.signal.org/hc/articles/360007059792-Signal-PIN": 1,
+   "https://support.signal.org/hc/requests/new?desktop": 2,
+   "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd": 1,
+   "https://support.signal.org": 1,
+   "https://support.signal.org/hc/requests/new?desktop&chat_refreshed": 1,
+   "https://support.signal.org/hc/articles/4404859745690": 1,
+   "https://signal.org/download": 2,
+   "https://support.signal.org/hc/articles/360007319331": 1,
+   "https://support.signal.org/hc/articles/360007459591": 1,
+   "https://support.signal.org/hc/articles/360007319331-Group-chats": 1,
+   "https://apps.apple.com/app/signal-private-messenger/id1230208093": 1,
+   "https://support.signal.org/hc/articles/360007059752-Backup-and-Restore-Messages": 2,
+   "https://support.signal.org/hc/articles/9021007554074-Open-Signal-on-your-phone-to-keep-your-account-active": 1,
+   "https://support.signal.org/hc/articles/360007320551-Linked-Devices": 2,
+   "https://sfu.voip.signal.org": 1,
+   "https://support.signal.org/hc/articles/360031949872-Donor-FAQs": 2,
+   "https://support.signal.org/hc/articles/11197884108826/": 1,
+   "https://support.signal.org/hc/articles/360007459591-Signal-Profiles-and-Message-Requests": 1
+  },
+  "hosts": {
+   "react.dev": {
+    "urls": [
+     "https://react.dev/errors/"
+    ],
+    "files": [
+     "index-Cw5mnsPs.js",
+     "setDocumentLocale.dom-B7WLVHxs.js",
+     "notifications.std-BX1kvCKH.js",
+     "main.js"
+    ]
+   },
+   "www.w3.org": {
+    "urls": [
+     "http://www.w3.org/2000/svg",
+     "http://www.w3.org/1998/Math/MathML",
+     "http://www.w3.org/1999/xlink",
+     "http://www.w3.org/XML/1998/namespace",
+     "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd"
+    ],
+    "files": [
+     "index-Cw5mnsPs.js",
+     "AxoButton.dom-B8YfF6xM.js",
+     "setDocumentLocale.dom-B7WLVHxs.js",
+     "notifications.std-BX1kvCKH.js",
+     "main.js"
+    ]
+   },
+   "localhost": {
+    "urls": [
+     "http://localhost"
+    ],
+    "files": [
+     "index-Cw5mnsPs.js"
+    ]
+   },
+   "support.signal.org": {
+    "urls": [
+     "https://support.signal.org/hc/articles/360031836512-Stickers#sticker_creator",
+     "https://support.signal.org/hc/articles/360007318471",
+     "https://support.signal.org/hc/sections/360001602812",
+     "https://support.signal.org/hc/articles/9045714156314#desktop",
+     "https://support.signal.org/hc/articles/8997185514138-Re-connect-your-primary-device-to-continue-using-Signal-Desktop",
+     "https://support.signal.org/beta",
+     "https://support.signal.org/hc/articles/5109141421850",
+     "https://support.signal.org/hc/articles/360007320451#desktop_multiple_device",
+     "https://support.signal.org/hc/articles/360007060632",
+     "https://support.signal.org/hc/articles/10223569377562",
+     "https://support.signal.org/hc/articles/360007320391",
+     "https://support.signal.org/hc/articles/9932566320410-Staying-Safe-from-Phishing-Scams-and-Impersonation",
+     "https://support.signal.org/hc/articles/360007059792-Signal-PIN",
+     "https://support.signal.org/hc/requests/new?desktop",
+     "https://support.signal.org",
+     "https://support.signal.org/hc/requests/new?desktop&chat_refreshed",
+     "https://support.signal.org/hc/articles/4404859745690",
+     "https://support.signal.org/hc/articles/360007319331",
+     "https://support.signal.org/hc/articles/360007459591",
+     "https://support.signal.org/hc/articles/360007319331-Group-chats",
+     "https://support.signal.org/hc/articles/360007059752-Backup-and-Restore-Messages",
+     "https://support.signal.org/hc/articles/9021007554074-Open-Signal-on-your-phone-to-keep-your-account-active",
+     "https://support.signal.org/hc/articles/360007320551-Linked-Devices",
+     "https://support.signal.org/hc/articles/360031949872-Donor-FAQs",
+     "https://support.signal.org/hc/articles/11197884108826/",
+     "https://support.signal.org/hc/articles/360007459591-Signal-Profiles-and-Message-Requests"
+    ],
+    "files": [
+     "index-Cw5mnsPs.js",
+     "main.js"
+    ]
+   },
+   "cdn.jsdelivr.net": {
+    "urls": [
+     "https://cdn.jsdelivr.net/npm/emoji-datasource-apple/img/apple/64/",
+     "https://cdn.jsdelivr.net/npm/emoji-datasource-facebook/img/facebook/64/",
+     "https://cdn.jsdelivr.net/npm/emoji-datasource-twitter/img/twitter/64/",
+     "https://cdn.jsdelivr.net/npm/emoji-datasource-google/img/google/64/"
+    ],
+    "files": [
+     "index-Cw5mnsPs.js"
+    ]
+   },
+   "json-schema.org": {
+    "urls": [
+     "https://json-schema.org/draft/2020-12/schema",
+     "http://json-schema.org/draft-07/schema#",
+     "http://json-schema.org/draft-04/schema#"
+    ],
+    "files": [
+     "to-json-schema.js",
+     "from-json-schema.js",
+     "emoji.std-BOI1Watb.js",
+     "Button.dom-CYVTRpGs.js"
+    ]
+   },
+   "proxy.example": {
+    "urls": [
+     "https://proxy.example",
+     "https://@proxy.example"
+    ],
+    "files": [
+     "net.js"
+    ]
+   },
+   "en.wikipedia.org": {
+    "urls": [
+     "https://en.wikipedia.org/wiki/AES-GCM-SIV"
+    ],
+    "files": [
+     "index.js"
+    ]
+   },
+   "debuglogs.org": {
+    "urls": [
+     "https://debuglogs.org"
+    ],
+    "files": [
+     "main.js"
+    ]
+   },
+   "community.signalusers.org": {
+    "urls": [
+     "https://community.signalusers.org/"
+    ],
+    "files": [
+     "main.js"
+    ]
+   },
+   "github.com": {
+    "urls": [
+     "https://github.com/mcollina/thread-stream/issues",
+     "https://github.com/mcollina/thread-stream#readme",
+     "https://github.com/signalapp/Signal-Desktop/blob/main/ACKNOWLEDGMENTS.md",
+     "https://github.com/node-fetch/node-fetch/issues/1167"
+    ],
+    "files": [
+     "log.std-BxHXWNJw.js",
+     "about.js",
+     "main.js"
+    ]
+   },
+   "signal.org": {
+    "urls": [
+     "https://signal.org",
+     "https://signal.org/legal",
+     "https://signal.org/download/",
+     "https://signal.org/download"
+    ],
+    "files": [
+     "about.js",
+     "main.js"
+    ]
+   },
+   "api.stripe.com": {
+    "urls": [
+     "https://api.stripe.com/v1/payment_methods"
+    ],
+    "files": [
+     "main.js"
+    ]
+   },
+   "quilljs.com": {
+    "urls": [
+     "https://quilljs.com"
+    ],
+    "files": [
+     "main.js"
+    ]
+   },
+   "media0.giphy.com": {
+    "urls": [
+     "https://media0.giphy.com"
+    ],
+    "files": [
+     "main.js"
+    ]
+   },
+   "media1.giphy.com": {
+    "urls": [
+     "https://media1.giphy.com"
+    ],
+    "files": [
+     "main.js"
+    ]
+   },
+   "media2.giphy.com": {
+    "urls": [
+     "https://media2.giphy.com"
+    ],
+    "files": [
+     "main.js"
+    ]
+   },
+   "media3.giphy.com": {
+    "urls": [
+     "https://media3.giphy.com"
+    ],
+    "files": [
+     "main.js"
+    ]
+   },
+   "media4.giphy.com": {
+    "urls": [
+     "https://media4.giphy.com"
+    ],
+    "files": [
+     "main.js"
+    ]
+   },
+   "api.giphy.com": {
+    "urls": [
+     "https://api.giphy.com"
+    ],
+    "files": [
+     "main.js"
+    ]
+   },
+   "apps.apple.com": {
+    "urls": [
+     "https://apps.apple.com/app/signal-private-messenger/id1230208093"
+    ],
+    "files": [
+     "main.js"
+    ]
+   },
+   "sfu.voip.signal.org": {
+    "urls": [
+     "https://sfu.voip.signal.org"
+    ],
+    "files": [
+     "main.js"
+    ]
+   }
+  }
+ },
+ "notes": []
+}
