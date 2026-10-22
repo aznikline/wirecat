@@ -4,9 +4,9 @@
 
 # Wirecat
 
-### 桌面应用内部协议的版本化目录——"应用协议界的 SteamTracking"。
+### 从交付的桌面应用中提取私有 API 契约——并持续保持更新。
 
-**每个交付的应用都自带 RPC 契约。Wirecat 负责读取、版本化、差异对比。**
+**把一个 Electron 应用交给它,拿回其中所有 RPC 服务、方法、消息字段、IPC channel 和后端端点——以版本化 `.proto` 文件 + 发版 diff 的形式。**
 
 [![CI: track-cursor](https://img.shields.io/github/actions/workflow/status/aznikline/wirecat/track-cursor.yml?style=flat-square&label=track-cursor)](https://github.com/aznikline/wirecat/actions/workflows/track-cursor.yml)
 [![Node.js](https://img.shields.io/badge/Node.js-%E2%89%A518-339933?style=flat-square&logo=nodedotjs&logoColor=white)](#快速开始)
@@ -21,15 +21,22 @@
 
 ---
 
-每个商业桌面应用——IDE、聊天工具、AI 工具、设计软件——都在其
-JavaScript/Electron bundle 中内置了私有 RPC 面:protobuf 服务注册、
-消息与枚举定义、Electron IPC 契约、后端端点、认证头。今天,任何想
-做互操作的项目都在手工重复推导同一份 `.proto` 面——并在每次发版
-时腐烂失效。
+像 Cursor 这样的应用,在它压缩混淆的 JavaScript 里藏着一整套私有 API:
+客户端调用的 protobuf 服务、Electron 进程间的 IPC channel、通信的后端
+主机。想给它写个客户端,或者想知道它的 agent 协议长什么样?今天这
+意味着几天手工 grep bundle——而且笔记在下个版本就过时了。
 
-Wirecat 把提取自动化:**bundle 进 → 类型化目录出**,逐版本 diff,
-并可回写为可用的 `.proto` 文件。它是规范流水线,不是一次性逆向
-工程——目录本身就是产品。
+**Wirecat 是把这件事机械化的工具。** 它对交付的 JS bundle 做静态分析,
+产出应用全部暴露面的*类型化目录*——然后 CI 在每个新版本上重跑,
+规范永远保鲜。本仓库既是工具(`tools/`),也是它产出的公开目录
+(`catalogs/`、`protos/`、`diffs/`、`specs/`)。
+
+```
+Cursor.app/out/*.js  ──►  catalogs/cursor/3.26.16.json   (87 服务,1.7 万方法)
+                       ──►  protos/cursor/3.26.16/*.proto (可直接用于 codegen)
+                       ──►  diffs/cursor-3.24.12-to-3.26.16.md
+                       ──►  端点 host + IPC channel 清单
+```
 
 ## 产出长什么样
 

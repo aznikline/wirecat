@@ -4,9 +4,9 @@
 
 # Wirecat
 
-### Versioned internal-protocol catalogs for desktop applications — "SteamTracking for app protocols."
+### Extract the private API contract out of shipped desktop apps — and keep it up to date.
 
-**Every shipped app carries its own RPC contract. Wirecat reads it, versions it, diffs it.**
+**Point it at an Electron app. Get back every RPC service, method, message field, IPC channel, and backend endpoint it ships — as versioned `.proto` files + release diffs.**
 
 [![CI: track-cursor](https://img.shields.io/github/actions/workflow/status/aznikline/wirecat/track-cursor.yml?style=flat-square&label=track-cursor)](https://github.com/aznikline/wirecat/actions/workflows/track-cursor.yml)
 [![Node.js](https://img.shields.io/badge/Node.js-%E2%89%A518-339933?style=flat-square&logo=nodedotjs&logoColor=white)](#quick-start)
@@ -21,15 +21,25 @@
 
 ---
 
-Every commercial desktop app — IDEs, chat clients, AI tools, design apps — ships its own
-internal RPC surface inside its JavaScript/Electron bundles: protobuf service
-registrations, message and enum definitions, Electron IPC contracts, backend
-endpoints, auth headers. Today, every project that wants to interoperate re-derives
-that same `.proto` surface by hand — and it rots on every release.
+Apps like Cursor ship an entire private API inside their minified JavaScript:
+the protobuf services their client calls, the IPC channels between Electron
+processes, the backend hosts they talk to. Want to build a client for one of
+these apps, or just know what its agent protocol looks like? Today that means
+days of grepping bundled code by hand — and your notes go stale on the next
+release.
 
-Wirecat automates the extraction: **bundle in → typed catalog out**, diffed
-release-over-release, and emitted back as usable `.proto` files. It is a spec
-pipeline, not a one-shot reverse engineering exercise — the catalog is the product.
+**Wirecat is a tool that does this extraction mechanically.** It reads shipped
+JS bundles statically and produces a *typed catalog* of everything the app
+exposes — then a CI job re-runs it on every new release, so the spec stays
+current. This repo is both the tool (`tools/`) and the published catalogs it
+produces (`catalogs/`, `protos/`, `diffs/`, `specs/`).
+
+```
+Cursor.app/out/*.js  ──►  catalogs/cursor/3.26.16.json   (87 services, 17k methods)
+                       ──►  protos/cursor/3.26.16/*.proto (usable codegen input)
+                       ──►  diffs/cursor-3.24.12-to-3.26.16.md
+                       ──►  endpoint host + IPC channel inventory
+```
 
 ## What it looks like
 
