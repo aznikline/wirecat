@@ -101,6 +101,19 @@ const SENDER_CHECKS = [
 
 const CONF = { OBSERVED: "observed", DERIVED: "derived", INFERRED: "inferred", UNKNOWN: "unknown" };
 
+// Line-start index for offset→line mapping. Minified bundles can be
+// near-single-line, so records also keep the raw byte offset.
+function makeLineIndex(src) {
+  const starts = [0];
+  let i = -1;
+  while ((i = src.indexOf("\n", i + 1)) >= 0 && starts.length < 4_000_000) starts.push(i + 1);
+  return (off) => {
+    let lo = 0, hi = starts.length - 1;
+    while (lo < hi) { const mid = (lo + hi + 1) >> 1; if (starts[mid] <= off) lo = mid; else hi = mid - 1; }
+    return lo + 1;
+  };
+}
+
 function lit(v) {
   const t = v.trim();
   if (/^!0$|^true$/.test(t)) return true;
@@ -127,6 +140,7 @@ function auditFile(src, label) {
     service_channels: [],
     bulk_ipc: null,
   };
+  const lineOf = makeLineIndex(src);
 
   // 0. bulk IPC registration (DI-registry style) ---------------------------------
   // Unity Hub / VS Code-adjacent apps: a services map is iterated and every
@@ -141,6 +155,7 @@ function auditFile(src, label) {
         pattern: shell[0].slice(0, 160),
         event_discarded: /^_/.test(shell[2]),
         computed_handler_count: computedHandlers,
+        line: lineOf(shell.index), offset: shell.index,
       };
     }
   }
@@ -151,7 +166,7 @@ function auditFile(src, label) {
     const close = findBalanced(src, open, "{", "}");
     if (close < 0) continue;
     const body = src.slice(open + 1, close);
-    const wp = { file: label, keys: {}, raw_bytes: body.length };
+    const wp = { file: label, line: lineOf(m.index), offset: m.index, keys: {}, raw_bytes: body.length };
     for (const kv of splitTop(body)) {
       const km = kv.match(/^\s*(\w+)\s*:\s*([\s\S]+)$/);
       if (!km) continue;
@@ -169,7 +184,7 @@ function auditFile(src, label) {
     const [, target, op, ch] = m;
     const side = (target === "ipcMain" || target === "webContents") ? "main" : "renderer";
     const dir = (op === "invoke" || op === "send" || op === "sendSync" || op === "sendTo" || op === "postMessage") ? "send" : "listen";
-    const site = { channel: ch, api: `${target}.${op}`, side, dir, file: label };
+    const site = { channel: ch, api: `${target}.${op}`, side, dir, file: label, line: lineOf(m.index), offset: m.index };
     r.ipc_sites.push(site);
 
     // 2a. main-side handlers: capture the handler argument verbatim via
@@ -189,7 +204,7 @@ function auditFile(src, label) {
         for (const re of res)
           if (re.test(slice)) { sinks.push({ class: cls, pattern: re.source.slice(0, 60) }); break; }
       r.handlers.push({
-        channel: ch, op, file: label,
+        channel: ch, op, file: label, line: lineOf(m.index), offset: m.index,
         body_bytes: body.length, truncated,
         sender_validation: senderHits.length ? { status: "observed", evidence: senderHits.slice(0, 4) }
           : truncated ? { status: "unknown", reason: "handler body exceeds capture bound" }
@@ -257,7 +272,7 @@ function auditFile(src, label) {
       if (fm) fileGuard = { allowlist_prefix: fm[1], scope: "file_helper" };
     }
     r.exposures.push({
-      global: key, file: label,
+      global: key, file: label, line: lineOf(m.index), offset: m.index,
       forwards_ipc: forwarding,
       channel_arg_forwarded: forwarding && genericFwd,
       channel_guard: guard ? { allowlist_prefix: guard[1], enforced_by_throw: !!guardThrows } : fileGuard,
@@ -277,7 +292,7 @@ function auditFile(src, label) {
     const refExpr = splitTop(args)[1] ?? "";
     const refM = refExpr.match(/\bnew\s+(\w+)|^\s*(\w+)\s*$|\.(\w+)\s*\(/);
     const refIdent = refM?.[1] ?? refM?.[2] ?? refM?.[3] ?? null;
-    const svc = { name, file: label, ref: refIdent, methods: [], sinks: [], sender_validation: "n/a" };
+    const svc = { name, file: label, line: lineOf(m.index), offset: m.index, ref: refIdent, methods: [], sinks: [], sender_validation: "n/a" };
     // resolve the channel class in-file. Minified locals are rebound per
     // registration (`registerChannel("a",i)` where i=X.fromService(s,n)) —
     // scan BACKWARD from this call site for the nearest binding, then unwrap
@@ -320,12 +335,13 @@ function auditFile(src, label) {
   if (r.role === "main" || /ipcMain|BrowserWindow/.test(src)) {
     const GUARD = /startsWith\s*\(|ALLOWED|BLOCKED|allowlist|blocklist|protocol|scheme|new Set\(|isAllowed|allowedSchemes|canOpen|validate/i;
     const site = (re, cls) => {
-      let g = 0, u = 0;
+      let g = 0, u = 0, firstU = null;
       for (const m of src.matchAll(re)) {
         const ctx = src.slice(Math.max(0, m.index - 600), m.index);
-        GUARD.test(ctx) ? g++ : u++;
+        if (GUARD.test(ctx)) { g++; } else { u++; firstU ??= m.index; }
       }
-      if (g > 0 && u > 1) r.misc_flags.push({ flag: `dual-path:${cls}:${g}guarded+${u}unguarded`, file: label });
+      if (g > 0 && u > 1) r.misc_flags.push({ flag: `dual-path:${cls}:${g}guarded+${u}unguarded`, file: label,
+        line: firstU != null ? lineOf(firstU) : undefined, offset: firstU ?? undefined });
     };
     site(/shell\.openExternal\s*\(/g, "openExternal");
     site(/shell\.openPath\s*\(/g, "openPath");
@@ -335,11 +351,11 @@ function auditFile(src, label) {
 
   // 4. remote-content loading ---------------------------------------------------
   for (const m of src.matchAll(/\.loadURL\s*\(\s*["'`](https?:\/\/[^"'`]+)["'`]/g))
-    r.remote_loads.push({ kind: "loadURL", url: m[1].slice(0, 160), file: label });
+    r.remote_loads.push({ kind: "loadURL", url: m[1].slice(0, 160), file: label, line: lineOf(m.index), offset: m.index });
   for (const m of src.matchAll(/\.loadURL\s*\(\s*(?!["'`])/g))
-    r.remote_loads.push({ kind: "loadURL", url: { unresolved: true }, file: label });
+    r.remote_loads.push({ kind: "loadURL", url: { unresolved: true }, file: label, line: lineOf(m.index), offset: m.index });
   for (const m of src.matchAll(/openExternal\s*\(\s*["'`](https?:\/\/[^"'`]+)["'`]/g))
-    r.remote_loads.push({ kind: "openExternal", url: m[1].slice(0, 160), file: label });
+    r.remote_loads.push({ kind: "openExternal", url: m[1].slice(0, 160), file: label, line: lineOf(m.index), offset: m.index });
 
   // navigation guards — presence is a positive control
   for (const m of src.matchAll(/\b(setWindowOpenHandler|will-navigate|new-window)\b/g))
@@ -359,7 +375,8 @@ function auditFile(src, label) {
     "cert-switch-enabled": /appendSwitch\s*\(\s*["'`](?:ignore-certificate-errors|allow-insecure-localhost)["'`]/,
     "cert-verifyproc": /\bsetCertificateVerifyProc\s*\(/,
   })) {
-    if (re.test(src)) r.misc_flags.push({ flag: k, file: label });
+    const m = re.exec(src);
+    if (m) r.misc_flags.push({ flag: k, file: label, line: lineOf(m.index), offset: m.index });
   }
   // certificate-error event handler: classify by decision shape.
   //   blanket bypass: preventDefault + unconditional callback(true)
@@ -371,7 +388,7 @@ function auditFile(src, label) {
     r.misc_flags.push({
       flag: unconditional && !pinning ? "cert-handler-blanket-bypass"
         : pinning ? "cert-handler-custom-pinning" : "cert-handler-unknown",
-      file: label,
+      file: label, line: lineOf(m.index), offset: m.index,
     });
     break; // first handler is representative; duplicates deduped downstream
   }
@@ -410,22 +427,26 @@ function scoreApp(files) {
     for (const fl of f.misc_flags) {
       const key = typeof fl === "string" ? fl : fl.flag;
       flags.add(key);
-      (flagFiles[key] ??= new Set()).add(typeof fl === "string" ? f.file : fl.file);
+      (flagFiles[key] ??= new Set()).add(
+        typeof fl === "string" ? f.file : fl.line ? `${fl.file}:${fl.line}` : fl.file);
     }
   }
 
   const findings = [];
   const add = (rule, severity, confidence, title, detail, evidence) =>
     findings.push({ rule, severity, confidence, title, detail, evidence });
+  // file:line locators so verifiers jump straight to code instead of re-grepping
+  const loc = (o) => (o?.line ? `${o.file}:${o.line}` : o?.file);
 
   // R1: wildcard IPC exposure through contextBridge ---------------------------
   // same global exposed from multiple preload files = one finding, all files.
   const exposureGroups = new Map();
   for (const e of exposures) {
     const dk = `${e.global}|${e.channel_guard?.allowlist_prefix ?? ""}|${e.channel_arg_forwarded}`;
-    if (!exposureGroups.has(dk)) exposureGroups.set(dk, { ...e, files: [e.file] });
+    if (!exposureGroups.has(dk)) exposureGroups.set(dk, { ...e, files: [loc(e)] });
     const g = exposureGroups.get(dk);
-    if (g.files.at(-1) !== e.file) g.files.push(e.file);
+    const le = loc(e);
+    if (g.files.at(-1) !== le) g.files.push(le);
   }
   for (const e of exposureGroups.values()) {
     e.file = e.files.join(",");
@@ -452,7 +473,7 @@ function scoreApp(files) {
       add("service-channel-sink", "high", CONF.DERIVED,
         `service channel "${s.name}" resolves to ${s.sinks.map((x) => x.class).join("/")} sink(s)`,
         `registerChannel("${s.name}") is callable from any renderer connected to the transport. Its channel class touches ${s.sinks.map((x) => x.class).join(", ")}.${s.methods.length ? ` Callable commands: ${s.methods.slice(0, 12).join(", ")}${s.methods.length > 12 ? "…" : ""}` : " Command names unresolved."}`,
-        { file: s.file, channel: s.name, ref: s.ref, methods: s.methods.slice(0, 20), sinks: s.sinks });
+        { file: loc(s), channel: s.name, ref: s.ref, methods: s.methods.slice(0, 20), sinks: s.sinks });
   }
 
   // R2: dangerous window flags -------------------------------------------------
@@ -465,30 +486,30 @@ function scoreApp(files) {
     add("contextIsolation-off", "high", CONF.OBSERVED,
       "contextIsolation explicitly disabled",
       `${ci.anyFalse.length} webPreferences block(s) set contextIsolation:false — preload and page share a world; any XSS reaches the full preload surface.`,
-      { files: ci.anyFalse.map((w) => w.file) });
+      { files: ci.anyFalse.map(loc) });
   const ni = wpFlags("nodeIntegration");
   if (ni.anyTrue.length)
     add("nodeIntegration-on", "high", CONF.OBSERVED,
       "nodeIntegration enabled",
       `${ni.anyTrue.length} window(s) run with nodeIntegration:true — XSS becomes RCE directly.`,
-      { files: ni.anyTrue.map((w) => w.file) });
+      { files: ni.anyTrue.map(loc) });
   const ws = wpFlags("webSecurity");
   if (ws.anyFalse.length)
     add("webSecurity-off", "high", CONF.OBSERVED,
       "webSecurity disabled",
       "webSecurity:false removes same-origin policy — remote content can read local files and cross-origin responses.",
-      { files: ws.anyFalse.map((w) => w.file) });
+      { files: ws.anyFalse.map(loc) });
   const wt = wpFlags("webviewTag");
   if (wt.anyTrue.length)
     add("webviewTag-on", "medium", CONF.OBSERVED,
       "webviewTag enabled", "webviewTag:true embeds second-class renderers with their own preload/security posture — historically a top Electron bug source.",
-      { files: wt.anyTrue.map((w) => w.file) });
+      { files: wt.anyTrue.map(loc) });
   const sb = wpFlags("sandbox");
   if (sb.anyFalse.length)
     add("sandbox-off", "medium", CONF.OBSERVED,
       "renderer sandbox disabled in some window(s)",
       "sandbox:false removes the OS-level containment on that renderer.",
-      { files: sb.anyFalse.map((w) => w.file) });
+      { files: sb.anyFalse.map(loc) });
   // file-level dangerous flags that never landed inside a parsed
   // webPreferences block (conditional/dynamic construction) still count.
   const flagToRule = {
@@ -545,7 +566,7 @@ function scoreApp(files) {
     add("unvalidated-sink-handler", "high", conf,
       `ipcMain handler "${h.channel}" reaches ${h.sinks.map((s) => s.class).join("/")} sink(s) with no observed sender validation`,
       `Channel ${pairedSend ? "has a matching renderer call site" : "has NO observed renderer call site (may be internal-only or dynamically named)"}. Absence of senderFrame/sender.getURL checks means any compromised renderer can drive it.`,
-      { file: h.file, channel: h.channel, sinks: h.sinks.slice(0, 4), sender_validation: h.sender_validation.status });
+      { file: loc(h), channel: h.channel, sinks: h.sinks.slice(0, 4), sender_validation: h.sender_validation.status });
   }
 
   // R4: remote content + IPC surface coexistence --------------------------------
@@ -581,7 +602,7 @@ function scoreApp(files) {
     add("bulk-ipc-registration", "high", CONF.OBSERVED,
       `entire service registry exposed as IPC handlers${b.event_discarded ? " with the event argument discarded" : ""}`,
       `${b.file} registers every entry of a services map via ipcMain.handle — sender validation is ${b.event_discarded ? "structurally absent (parameter ignored)" : "unverified"}. ${b.computed_handler_count} computed-name handler(s) found in-file; combined with any renderer compromise + an ungated invoke bridge, every service method is callable.`,
-      { file: b.file, computed_handlers: b.computed_handler_count });
+      { file: loc(b), computed_handlers: b.computed_handler_count });
   }
 
   // R7: the synthesized reachability verdict — connect the gated bridge to
