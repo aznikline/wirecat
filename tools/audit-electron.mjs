@@ -139,8 +139,17 @@ function auditFile(src, label) {
     misc_flags: [],
     service_channels: [],
     bulk_ipc: null,
+    computed_handlers: 0,
   };
   const lineOf = makeLineIndex(src);
+  // computed-name handler bodies: `[CONST] = (...args) => this.#svc.m(...)` and
+  // the Vite-era `this[_computedKey] = (...args) => this.#svc.m(...)` — counted
+  // per-file because the registry loop and the method map may live in
+  // different bundle chunks (Unity Hub 3.22 moved them apart).
+  r.computed_handlers = [...src.matchAll(/\[\s*\w+\s*\]\s*=\s*(?:async\s*)?\(\s*\.\.\.\w+\s*\)\s*=>\s*this\./g)].length
+    // 3.22-era: every `this[_computedKeyN] = <fn>` in the registry class is a
+    // handler regardless of signature ((payload)=>, ()=>, = addEntry, ...)
+    + [...src.matchAll(/\bthis\[\s*\w+\s*\]\s*=/g)].length;
 
   // 0. bulk IPC registration (DI-registry style) ---------------------------------
   // Unity Hub / VS Code-adjacent apps: a services map is iterated and every
@@ -150,11 +159,10 @@ function auditFile(src, label) {
     const shell = src.match(/ipcMain\.handle\s*\(\s*(\w+)\s*,\s*\(\s*(_\w*|e|_event)\s*,\s*\.\.\.\w+\s*\)\s*=>/);
     const entriesFeed = src.match(/Object\.entries\([\s\S]{0,120}?forEach/);
     if (shell && entriesFeed) {
-      const computedHandlers = [...src.matchAll(/\[([A-Z][A-Z0-9_]{2,})\]\s*=\s*\(\.\.\.args\)\s*=>\s*this\./g)].length;
       r.bulk_ipc = {
         pattern: shell[0].slice(0, 160),
         event_discarded: /^_/.test(shell[2]),
-        computed_handler_count: computedHandlers,
+        computed_handler_count: r.computed_handlers,
         line: lineOf(shell.index), offset: shell.index,
       };
     }
@@ -610,8 +618,10 @@ function scoreApp(files) {
   // wildcard for prefix P + N service channels + M transport channels under
   // P = every one of them callable from any compromised renderer.
   const ungatedExposure = exposures.some((e) => e.channel_arg_forwarded && !e.channel_guard);
-  const bulkTotal = bulkIpc.reduce((n, b) => n + b.computed_handler_count, 0);
-  if (ungatedExposure && bulkTotal)
+  // computed-name handlers may live in a different chunk than the
+  // Object.entries registration loop — count across the whole bundle.
+  const bulkTotal = files.reduce((n, f) => n + (f.computed_handlers || 0), 0);
+  if (ungatedExposure && bulkIpc.length && bulkTotal)
     add("renderer-to-full-service-registry", "critical", CONF.OBSERVED,
       `ungated invoke bridge + bulk-registered service registry = ${bulkTotal} privileged methods callable from any compromised renderer`,
       `An unguarded contextBridge passthrough (wildcard-ipc-exposure) meets a DI registry where every entry is ipcMain.handle()'d with the event argument discarded. A single XSS, hostile webview, or navigation escape in the window holding the bridge yields the entire privileged surface — file writes, installs, credential and license operations — with no per-channel checks possible.`,
