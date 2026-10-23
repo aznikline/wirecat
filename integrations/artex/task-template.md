@@ -29,3 +29,23 @@ Notes for the operator:
   that's fine; it verifies reachability, not labels.
 - Baseline calibration (glm-5.3, Oct 2026): enumeration ~3min vs ~30min
   manual; verification dominates total time (~20min/app) by design.
+
+## MCP alternative
+
+Instead of the `wirecat_audit` custom command tool, register the MCP
+stdio server (`register-mcp.sh`): `POST /api/mcp` with
+`{"transport":"stdio","command":"node","args":["<dir>/tools/mcp-server.mjs"]}`,
+then PUT the server id into each agent's `/api/agents/{key}/visibility`
+`mcp` list. Agents then see the whole `mcp__wirecat__*` family (audit,
+diffs, catalog extract/emit, list) via `SearchExtraTools`/`ExecuteExtraTool`.
+
+Verified end-to-end: registration → server-side discovery (6 tools) →
+agent visibility → `ExecuteExtraTool(mcp__wirecat__wirecat_list_audits)`
+returns real output in a live task.
+
+Gotchas:
+
+- `args` must be a real JSON array; a string makes ARTEX spawn bare
+  `node` (REPL on stdin, never answers → 45s discovery timeout).
+- Visibility is per-agent: without it the MCP server exists but agents
+  never see its tools.

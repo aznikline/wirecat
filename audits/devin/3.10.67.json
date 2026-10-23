@@ -5,6 +5,21 @@
  "scope_note": "boundary-protocol reachability + bounded intra-handler scan; NOT whole-program taint. Absence of a finding is not proof of safety.",
  "findings": [
   {
+   "rule": "gated-wildcard-exposure",
+   "severity": "medium",
+   "confidence": "observed",
+   "title": "contextBridge global \"vscode\" forwards channel names gated to prefix \"vscode:\"",
+   "detail": "The bridge passes caller-controlled channel names to ipcRenderer but enforces a \"vscode:\" allowlist (enforcement mechanism unresolved). Any compromised renderer can still reach every privileged handler under that namespace — including internal service channels not meant for untrusted input.",
+   "evidence": {
+    "file": "electron-browser/preload.js,electron-browser/preload-aux.js",
+    "global": "vscode",
+    "guard": {
+     "allowlist_prefix": "vscode:",
+     "scope": "file_helper"
+    }
+   }
+  },
+  {
    "rule": "custom-cert-verifyproc",
    "severity": "medium",
    "confidence": "inferred",
@@ -32,23 +47,25 @@
    "rule": "remote-content-with-ipc",
    "severity": "medium",
    "confidence": "inferred",
-   "title": "app loads remote content (1 literal remote URL(s)) while exposing 13 IPC channel(s)",
+   "title": "app loads remote content (1 literal remote URL(s)) while exposing 15 IPC channel(s)",
    "detail": "Remote-loadable content and a privileged IPC surface coexist in this build. Whether any remote-reachable window can reach the handlers is unresolved — that requires runtime window/process mapping.",
    "evidence": {
     "remote_urls": [
      "https://aka.ms/vscode-windows-unc"
     ],
-    "channels": 13
+    "channels": 15
    }
   },
   {
    "rule": "unpaired-renderer-sends",
    "severity": "info",
    "confidence": "derived",
-   "title": "1 channel(s) sent but no handler found",
+   "title": "3 channel(s) sent but no handler found",
    "detail": "Either the handler lives in an unscanned file/native module, or the channel is registered dynamically.",
    "evidence": {
     "channels": [
+     "vscode:chatClientModuleSelection",
+     "vscode:openDevTools",
      "vscode:registerAuxiliaryWindow"
     ]
    }
@@ -73,6 +90,65 @@
      "render-process-gone",
      "did-fail-load",
      "before-input-event"
+    ]
+   }
+  },
+  {
+   "rule": "bridgeable-privileged-surface",
+   "severity": "high",
+   "confidence": "derived",
+   "title": "compromised renderer can reach 59 registered service channel(s) + 3 literal transport channel(s) via the exposed bridge",
+   "detail": "The preload forwards caller-controlled channel names gated to \"vscode:\". All 59 registerChannel service(s) and 3 literal channel(s) in that namespace are callable: a single XSS/navigation bug in any remote-loading window yields the full privileged surface. Channel-class resolution: 69/70 resolved in-file (rest are DI tokens behind cross-module bindings — method-level sink analysis unresolved, not absent).",
+   "evidence": {
+    "gated_prefixes": [
+     "vscode:"
+    ],
+    "service_channels": [
+     "agentHostLogger",
+     "agentHost",
+     "agentHostConnectionTracker",
+     "logger",
+     "heartbeat",
+     "ptyHost",
+     "ptyHostWindow",
+     "watcher",
+     "extensionGalleryManifest",
+     "mcpGalleryManifest",
+     "telemetryAppender",
+     "extensions",
+     "mcpManagement",
+     "languagePacks",
+     "diagnostics",
+     "extensionTipsService",
+     "checksum",
+     "v8InspectProfiling",
+     "userDataSyncMachines",
+     "customEndpointTelemetry",
+     "userDataSyncAccount",
+     "userDataSyncStoreManagement",
+     "userDataSync",
+     "userDataAutoSync",
+     "IUserDataSyncResourceProviderService",
+     "remoteTunnel",
+     "sharedWebContentExtractor",
+     "playwright",
+     "localGit",
+     "download",
+     "urlHandler",
+     "extensionRecommendationNotification",
+     "userDataSyncUtil",
+     "launch",
+     "policy",
+     "copilotManagedSettings",
+     "userDataProfiles",
+     "update",
+     "process",
+     "encryption"
+    ],
+    "literal_channels_in_scope": [
+     "vscode:chatClientModuleSelection",
+     "vscode:openDevTools",
+     "vscode:registerAuxiliaryWindow"
     ]
    }
   }
@@ -331,6 +407,30 @@
   },
   {
    "name": "download",
+   "file": "sessions/sessions.desktop.main.js",
+   "resolved_ref": null,
+   "binding": null,
+   "methods": [],
+   "sinks": []
+  },
+  {
+   "name": "urlHandler",
+   "file": "sessions/sessions.desktop.main.js",
+   "resolved_ref": null,
+   "binding": null,
+   "methods": [],
+   "sinks": []
+  },
+  {
+   "name": "extensionRecommendationNotification",
+   "file": "sessions/sessions.desktop.main.js",
+   "resolved_ref": null,
+   "binding": null,
+   "methods": [],
+   "sinks": []
+  },
+  {
+   "name": "download",
    "file": "workbench/workbench.desktop.main.js",
    "resolved_ref": null,
    "binding": null,
@@ -356,6 +456,14 @@
   {
    "name": "userDataSyncUtil",
    "file": "workbench/workbench.desktop.main.js",
+   "resolved_ref": null,
+   "binding": null,
+   "methods": [],
+   "sinks": []
+  },
+  {
+   "name": "telemetryAppender",
+   "file": "node/telemetryApp.js",
    "resolved_ref": null,
    "binding": null,
    "methods": [],
@@ -699,17 +807,17 @@
   }
  ],
  "stats": {
-  "files_scanned": 17,
+  "files_scanned": 115,
   "roles_seen": [
    "preload",
    "renderer",
    "main"
   ],
   "web_preferences_blocks": 6,
-  "ipc_channels": 13,
+  "ipc_channels": 15,
   "main_handlers": 0,
-  "service_channels": 66,
-  "exposed_globals": 1,
+  "service_channels": 70,
+  "exposed_globals": 3,
   "remote_url_literals": 1,
   "nav_guard_tokens": [
    "new-window",
@@ -793,10 +901,40 @@
    "misc_flags": []
   },
   {
+   "file": "workbench/workbench.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 2,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
    "file": "node/cliProcessMain.js",
    "role": "main",
    "web_preferences_blocks": 0,
    "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "sessions/sessions.desktop.main.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 1,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 4,
+   "misc_flags": []
+  },
+  {
+   "file": "electron-browser/sessions.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 1,
    "handlers": 0,
    "exposures": 0,
    "remote_loads": 0,
@@ -813,6 +951,26 @@
    "misc_flags": []
   },
   {
+   "file": "windsurf-chat-client/index.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "pre/service-worker.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
    "file": "common/outputLinkComputerMain.js",
    "role": "renderer",
    "web_preferences_blocks": 0,
@@ -824,6 +982,26 @@
   },
   {
    "file": "services/notebookWebWorkerMain.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "node/telemetryApp.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "node/extensionHostProcess.js",
    "role": "renderer",
    "web_preferences_blocks": 0,
    "ipc_sites": 0,
@@ -873,7 +1051,37 @@
    "misc_flags": []
   },
   {
+   "file": "electron-browser/preload.js",
+   "role": "preload",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 1,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "electron-browser/preload-aux.js",
+   "role": "preload",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 1,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
    "file": "services/editorWebWorkerMain.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "out/nls.messages.js",
    "role": "renderer",
    "web_preferences_blocks": 0,
    "ipc_sites": 0,
@@ -900,6 +1108,886 @@
      "file": "out/main.js"
     }
    ]
+  },
+  {
+   "file": "out/cli.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "out/bootstrap-fork.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "dist/terminalSuggestMain.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "dist/mergeConflictMain.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "dist/extension.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "media/videoPreview.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "media/audioPreview.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "media/imagePreview.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "out/extension.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "node/htmlServerMain.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "node/htmlClientMain.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "dist/extension.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "windsurf-remote-wsl/extension.webpack.config.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "dist/extension.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "media/index.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "node/jsonServerMain.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "node/jsonClientMain.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "dist/extension.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "dist/main.js",
+   "role": "main",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "dist/configurationEditingMain.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "node/cssServerMain.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "node/cssClientMain.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "dist/extension.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "dist/main.js",
+   "role": "main",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "dist/extension.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "dist/main.js",
+   "role": "main",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "notebook-out/cellAttachmentRenderer.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "dist/ipynbMain.node.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "dist/notebookSerializerWorker.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "renderer-out/index.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "dist/extension.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "windsurf-remote-devin/extension.webpack.config.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "src/diagnosticTool.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "src/renameWorker.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "src/watchdog.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "src/bootloader.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "src/hash.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "vendor/acorn-loose.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "vendor/acorn.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "src/extension.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "node/emmetNodeMain.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "dist/extension.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "dist/extension.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "dist/extension.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "notebook-out/index.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "dist/serverWorkerMain.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "dist/extension.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "markdown-editor-out/editor.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "media/index.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "media/pre.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "dist/extension.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "notebook-out/katex.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "dist/extension.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "dist/458.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "dist/extension.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "windsurf/postcss.config.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "customEditor/utils.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "shared/customDropdown.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "workflowEditor/workflowEditor.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "dist/extension.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "dist/extension.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "scripts/sshAskClient.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "windsurf-remote-openssh/extension.webpack.config.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "notebook-out/index.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "dist/extension.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "chat-webview-out/index.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "chat-webview-out/index-editor.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "markdown-preview-out/index.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "out/extension.web.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "out/848.extension.web.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "out/cpu-client.bundle.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "out/heap-client.bundle.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "out/heapsnapshotWorker.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "out/heapsnapshot-client.bundle.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "out/425.heapsnapshotWorker.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "out/extension.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "dist/phpMain.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "dist/extension.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "dist/extensionEditingMain.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "dist/npmMain.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "spec-node/devContainersSpecCLI.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "dist/extension.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "scripts/forwarder.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "windsurf-dev-containers/extension.webpack.config.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "dist/main.js",
+   "role": "main",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "dist/askpass-main.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "dist/git-editor-main.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "dist/extension.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
   }
  ]
 }
