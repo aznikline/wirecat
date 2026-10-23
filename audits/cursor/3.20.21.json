@@ -12,8 +12,8 @@
    "detail": "The flag literal appears in the bundle but not inside any webPreferences object the parser bound — the window it applies to is unresolved.",
    "evidence": {
     "files": [
-     "workbench/workbench.desktop.main.js",
-     "workbench/workbench.glass.main.js"
+     "workbench/workbench.desktop.main.js:19661",
+     "workbench/workbench.glass.main.js:17526"
     ]
    }
   },
@@ -123,7 +123,9 @@
    "misc_flags": [
     {
      "flag": "sandbox:false",
-     "file": "workbench/workbench.desktop.main.js"
+     "file": "workbench/workbench.desktop.main.js",
+     "line": 19661,
+     "offset": 35126450
     }
    ]
   },
@@ -138,7 +140,9 @@
    "misc_flags": [
     {
      "flag": "sandbox:false",
-     "file": "workbench/workbench.glass.main.js"
+     "file": "workbench/workbench.glass.main.js",
+     "line": 17526,
+     "offset": 26564497
     }
    ]
   },

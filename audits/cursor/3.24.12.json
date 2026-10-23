@@ -11,7 +11,7 @@
    "title": "contextBridge global \"vscode\" forwards channel names gated to prefix \"vscode:\"",
    "detail": "The bridge passes caller-controlled channel names to ipcRenderer but enforces a \"vscode:\" allowlist (enforcement mechanism unresolved). Any compromised renderer can still reach every privileged handler under that namespace — including internal service channels not meant for untrusted input.",
    "evidence": {
-    "file": "electron-sandbox/preload.js",
+    "file": "electron-sandbox/preload.js:3",
     "global": "vscode",
     "guard": {
      "allowlist_prefix": "vscode:",
@@ -27,7 +27,7 @@
    "detail": "webviewTag:true embeds second-class renderers with their own preload/security posture — historically a top Electron bug source.",
    "evidence": {
     "files": [
-     "out/main.js"
+     "out/main.js:39"
     ]
    }
   },
@@ -39,8 +39,20 @@
    "detail": "The flag literal appears in the bundle but not inside any webPreferences object the parser bound — the window it applies to is unresolved.",
    "evidence": {
     "files": [
-     "workbench/workbench.desktop.main.js",
-     "workbench/workbench.glass.main.js"
+     "workbench/workbench.desktop.main.js:20421",
+     "workbench/workbench.glass.main.js:18265"
+    ]
+   }
+  },
+  {
+   "rule": "inconsistent-sink-validation",
+   "severity": "medium",
+   "confidence": "observed",
+   "title": "process_spawn reachable via multiple paths with inconsistent argument validation (1guarded+2unguarded)",
+   "detail": "The same process_spawn sink is invoked from several call sites; some are preceded by allowlist/blocklist checks and some are not. When a sibling path enforces a policy the unguarded path bypasses it entirely — a classic \"two registration paths, one guarded\" pattern (verified live on Tencent WorkBuddy: direct-IPC had scheme allowlist + executable blocklist, the RPC path had neither).",
+   "evidence": {
+    "files": [
+     "out/main.js:67"
     ]
    }
   },
@@ -52,7 +64,7 @@
    "detail": "A custom certificate verifier exists. Whether it enforces pinning (correct) or rubber-stamps (bypass) is unresolved at this analysis depth.",
    "evidence": {
     "files": [
-     "out/main.js"
+     "out/main.js:148"
     ]
    }
   },
@@ -693,6 +705,7 @@
   ],
   "misc_flags": [
    "sandbox:false",
+   "dual-path:process_spawn:1guarded+2unguarded",
    "webviewTag:true",
    "cert-verifyproc"
   ]
@@ -829,7 +842,9 @@
    "misc_flags": [
     {
      "flag": "sandbox:false",
-     "file": "workbench/workbench.desktop.main.js"
+     "file": "workbench/workbench.desktop.main.js",
+     "line": 20421,
+     "offset": 36551959
     }
    ]
   },
@@ -844,7 +859,9 @@
    "misc_flags": [
     {
      "flag": "sandbox:false",
-     "file": "workbench/workbench.glass.main.js"
+     "file": "workbench/workbench.glass.main.js",
+     "line": 18265,
+     "offset": 27864427
     }
    ]
   },
@@ -968,12 +985,22 @@
    "remote_loads": 8,
    "misc_flags": [
     {
+     "flag": "dual-path:process_spawn:1guarded+2unguarded",
+     "file": "out/main.js",
+     "line": 67,
+     "offset": 599082
+    },
+    {
      "flag": "webviewTag:true",
-     "file": "out/main.js"
+     "file": "out/main.js",
+     "line": 39,
+     "offset": 349671
     },
     {
      "flag": "cert-verifyproc",
-     "file": "out/main.js"
+     "file": "out/main.js",
+     "line": 148,
+     "offset": 1801939
     }
    ]
   }

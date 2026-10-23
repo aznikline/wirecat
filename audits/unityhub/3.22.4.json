@@ -1,0 +1,5581 @@
+{
+ "generated_by": "wirecat audit-electron",
+ "app": "unityhub",
+ "version": "3.22.4",
+ "scope_note": "boundary-protocol reachability + bounded intra-handler scan; NOT whole-program taint. Absence of a finding is not proof of safety.",
+ "findings": [
+  {
+   "rule": "wildcard-ipc-exposure",
+   "severity": "critical",
+   "confidence": "observed",
+   "title": "contextBridge global \"api\" forwards caller-controlled channel names to ipcRenderer",
+   "detail": "A renderer with any code execution can reach EVERY ipcMain handler — including internal ELECTRON_* channels — through this bridge. This is the exact Discord 2020 RCE exposure class.",
+   "evidence": {
+    "file": "build/mainWindowPreload.cjs:1",
+    "global": "api"
+   }
+  },
+  {
+   "rule": "wildcard-ipc-exposure",
+   "severity": "critical",
+   "confidence": "observed",
+   "title": "contextBridge global \"bugReporterApi\" forwards caller-controlled channel names to ipcRenderer",
+   "detail": "A renderer with any code execution can reach EVERY ipcMain handler — including internal ELECTRON_* channels — through this bridge. This is the exact Discord 2020 RCE exposure class.",
+   "evidence": {
+    "file": "build/bugReporterPreload.cjs:1",
+    "global": "bugReporterApi"
+   }
+  },
+  {
+   "rule": "custom-cert-verifyproc",
+   "severity": "medium",
+   "confidence": "inferred",
+   "title": "setCertificateVerifyProc installed — decision logic needs manual review",
+   "detail": "A custom certificate verifier exists. Whether it enforces pinning (correct) or rubber-stamps (bypass) is unresolved at this analysis depth.",
+   "evidence": {
+    "files": [
+     "build/proxyHelper-BTMLq3y4.js:5924"
+    ]
+   }
+  },
+  {
+   "rule": "unvalidated-sink-handler",
+   "severity": "high",
+   "confidence": "derived",
+   "title": "ipcMain handler \"bugReporterApiWriteFileChunk\" reaches file_write sink(s) with no observed sender validation",
+   "detail": "Channel has a matching renderer call site. Absence of senderFrame/sender.getURL checks means any compromised renderer can drive it.",
+   "evidence": {
+    "file": "build/main-4HATRGC6.js:8360",
+    "channel": "bugReporterApiWriteFileChunk",
+    "sinks": [
+     {
+      "class": "file_write",
+      "pattern": "\\bwriteFile(Sync)?\\s*\\("
+     }
+    ],
+    "sender_validation": "absent"
+   }
+  },
+  {
+   "rule": "unpaired-renderer-sends",
+   "severity": "info",
+   "confidence": "derived",
+   "title": "2 channel(s) sent but no handler found",
+   "detail": "Either the handler lives in an unscanned file/native module, or the channel is registered dynamically.",
+   "evidence": {
+    "channels": [
+     "theme-changed",
+     "attachments-manifest-changed"
+    ]
+   }
+  },
+  {
+   "rule": "handler-without-observed-caller",
+   "severity": "info",
+   "confidence": "derived",
+   "title": "15 handler(s) with no observed renderer send",
+   "detail": "Internal channels or dynamically-composed names — potentially reachable only via wildcard bridges (see wildcard-ipc-exposure).",
+   "evidence": {
+    "channels": [
+     "did-finish-load",
+     "ipc-ready",
+     "renderer-notifiers-ready",
+     "login",
+     "bugReporterApiRestore",
+     "bugReporterApiIsMaximized",
+     "bugReporterApiShow",
+     "bugReporterApiGetEditorLicense",
+     "did-start-loading",
+     "destroyed",
+     "will-navigate",
+     "dom-ready",
+     "did-fail-load",
+     "did-create-window",
+     "render-process-gone"
+    ]
+   }
+  },
+  {
+   "rule": "bulk-ipc-registration",
+   "severity": "high",
+   "confidence": "observed",
+   "title": "entire service registry exposed as IPC handlers with the event argument discarded",
+   "detail": "build/IpcMainService-BZl39Vta.js registers every entry of a services map via ipcMain.handle — sender validation is structurally absent (parameter ignored). 0 computed-name handler(s) found in-file; combined with any renderer compromise + an ungated invoke bridge, every service method is callable.",
+   "evidence": {
+    "file": "build/IpcMainService-BZl39Vta.js:32",
+    "computed_handlers": 0
+   }
+  },
+  {
+   "rule": "renderer-to-full-service-registry",
+   "severity": "critical",
+   "confidence": "observed",
+   "title": "ungated invoke bridge + bulk-registered service registry = 830 privileged methods callable from any compromised renderer",
+   "detail": "An unguarded contextBridge passthrough (wildcard-ipc-exposure) meets a DI registry where every entry is ipcMain.handle()'d with the event argument discarded. A single XSS, hostile webview, or navigation escape in the window holding the bridge yields the entire privileged surface — file writes, installs, credential and license operations — with no per-channel checks possible.",
+   "evidence": {
+    "computed_handlers": 830
+   }
+  }
+ ],
+ "service_channels": [],
+ "stats": {
+  "files_scanned": 543,
+  "roles_seen": [
+   "renderer",
+   "preload"
+  ],
+  "web_preferences_blocks": 6,
+  "ipc_channels": 29,
+  "main_handlers": 18,
+  "service_channels": 0,
+  "exposed_globals": 2,
+  "remote_url_literals": 0,
+  "nav_guard_tokens": [
+   "setWindowOpenHandler",
+   "will-navigate",
+   "new-window"
+  ],
+  "misc_flags": [
+   "cert-verifyproc"
+  ]
+ },
+ "per_file": [
+  {
+   "file": "assets/bugReporter-CIs6ITha.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 18,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "assets/RendererEvents-HGjHNQkp.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "assets/popoutHost-oZi32vD1.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "assets/panelPopout-DPSmLuTX.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "assets/App-CVOi7jdH.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "assets/main-CTDS8EXr.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "assets/useRelativeTime-C5zCIL5z.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "assets/rolldown-runtime-hePW80VL.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "assets/ThemeProvider-DwgZjG8X.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/externalService-DFent7pz.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/installerContainerSetup-uBmDX_Q7.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/assistant-desktop-service-9-53VEzh.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/VisualStudioPlatformService_mac-hSxDukMi.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/UnityCloudAPIClient-KhiJ6Se5.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/proxy-helper-B9l5UHmZ.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/BaseController-BgtDOpcd.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/licensingSdk-fSAqj3MS.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/sign-out-helper-C7oPkGZy.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/zh_tw-I-oTu6FQ.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/hub-fs-darwin-BVziwuWM.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/AuthEvents-VbxsVN6w.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/TemplateService-D0U-hq3k.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/logger-factory-TEAdGZH3.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/UVCS-B5R4AG2r.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/isEqual-CktC9Rmf.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/DownloadItemType-90O4FVXW.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/visual-studio-service-D0bs7KtO.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/systemLanguage-KBC2Ek-F.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/rpc-contract.g-DsaKy_nb.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/on-exit-B6fCZ69I.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/contracts-Dz5d-wSI.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/install-analytics-helper-BtiGX0M9.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/download-helper-BPIhy2xs.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/PrivacyPreferencesService-nFEreZm3.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/hub-fs-unix-C8wDifJR.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/i18next-D8muwwO4.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/license-eula-manager-CRGGckAL.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/isPrototype-BAii7CDv.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/unityTemplateDownloadHelper-rh4dVnDE.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/live-platform-api-C7H9eEgJ.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/multi-account-token-manager-Cr05UN6D.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/diagnoseProxyFlow-C7NElJBh.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/theme-manager-BAOIt0-u.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/app-BylcBzjF.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 4,
+   "handlers": 2,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/themeManager-H--ECUXN.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/EngineProgressBridge-DTzi8P1W.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/uvcs-pending-check-in-service-C8vQ2aUG.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/range-Bu1OdcFg.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/unity-release-service-adapter-Dx5bpIEP.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/updater-D84GlKMR.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/editor-modules-preference-service-DeBFhXN3.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/ru-BJCN32pj.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/PreferenceIds-B94IuuJl.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/FeatureFlagsService-l32qU_BW.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/InstallationItemData-DG8VxGTV.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/archiveExtraction-DwfTGF3f.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/perforce-check-in-service-CxVyCCNr.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/os-recent-projects-service-WQXw1HzR.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/LicenseSdkStatus-qx-p6Til.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/hub-ipc-state-DVb4qgRd.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/__vite-optional-peer-dep_kerberos_proxy-agent-negotiate-B6qZRhFk.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/config-B8d5HH1s.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/engine-progress-bridge-Eg0Ndvig.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/SerializableError-DV8sG0mr.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/identity-BDjvtj7A.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/window-BmnfmHUD.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/WindowRoutes-DvZkKMTW.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/jsonSettingsStore-BSzseERC.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/error-box-CWLgxG2d.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/json-storage-BtTWVhG2.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/unityInstaller-BdNaJNBA.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/bootstrapApp-BXJULtnN.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/sourceControl-Buh5v36A.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/unityInstaller_darwin-CHPaa4cm.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/get-S7FHY1ih.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/terminationSignals-CYJr4qrP.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/baseBootstrap-C_voU8R6.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/VersionControlAPI-c5zOezqz.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/semver-CIsjpndO.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/gitCredentialManager-DNKe56oG.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/csharp-engine-service-Dw3VikY7.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/enqueueDownload-Dt2Oxeyd.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/bugReporterBootstrapConfig-CCwwoutd.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/git-installer-service-DR_Gi2Fu.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/unity-cloud-api-client-B5lBjJYo.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/hubIPCState-BkwcwjAR.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/config-Hwv7YVTc.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/DownloadManager-Dr3DKJg0.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/brokerSignedInCache-CeomhRxp.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/EditorReleaseType-D88yxRFU.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/CSharpEngineService-DWQ5lNrM.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/jsonStorageKeys-CBYoDjnU.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/ProjectIssues-O-lm36ld.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/cloud-analytics-AJiAxZxE.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/sqlite-runtime-adapter-hB_oiUbN.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/http-qcPMPTlc.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/logger-factory-Bil2TR_6.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/template-service-C68qwRx6.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/InstallStateReaderService-CK7YBR7t.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/paths-Cr4SovVD.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/privacy-preferences-service-B2AnsX0m.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/windowTheme-anoVtXJu.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/uvcsInitialCheckIn-DdkWrJ9z.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/container-Cw37DKKJ.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/EditorLocateAnalyticsService-1wxrqI5Q.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/banner-carousel-service-DbTRMAlf.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/FeatureFlagsUtils-BvFr6ZTk.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/ProjectService-BZn0S0EW.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/dist-8z3T3qVz.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/p4-installer-service-BMnUbTWw.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/hub-unity-window-messaging-DQNgJBcv.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/unityTemplateCache-Bvi0dESe.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/cloud-core-api-CgMrIpGs.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/argumentParser-CJMwP8K5.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/defaultSettings-BkzQCVqr.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/background-tasks-service-gKO7HfNo.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/license-notification-handler-CApTsYu8.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/isTypedArray-D9LLcCiz.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/argumentParser-DWComqy_.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/supports-color-Dxx0bR2m.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/knownDigests-BiRyrgIc.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/isAppSigned-CHySbKKR.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/ElectronRuntimeArguments-C6QojYNZ.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/assistant-service-B3evGv9z.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/IVersionControlAnalyticsService-DmOEOLz3.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/unity-template-download-helper-DRSK44lR.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/IpcError-xgfS894T.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/mainWindow-BsULzwZC.js",
+   "role": "renderer",
+   "web_preferences_blocks": 1,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/EditorRelease-CCDqa_-f.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/cloudAnalytics-C6ut1r2F.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/showMainWindowWithModal-Chsi-VBG.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/shams-C1Ua1Y7b.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/constants-CXJkcSvb.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/LocaleTransformationType-k9LgILuh.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/token-manager-DQOO_mQH.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/cloud-config-DoK1RAZW.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/getFileHash-DN4geZfi.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/Helpers-SKfHX_Rv.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/LocalConfig-T-BaWK3R.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/editor-C0BUJWAS.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/ProjectUtilities-IaJEgcvR.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/wrapper-D6Xu7cZH.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/createAuthToken-Sl_axw2C.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/cloudCore-fa_4hl2K.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/organizationUtils-C-0DhKs9.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/ShutdownCoordinator-Ceom-Sg3.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/checksum-CFqwE63w.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/getSetUpEnabled-gA0r390t.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/VisualStudioPlatformService_linux-CZEq_a2u.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/editor-helpers-DwTKm9IE.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/unityInstallerClass-MQ4M2sgV.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/AmplitudeService-BALV4xpd.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/InstallerError-uvxws8q1.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/system-info-D9nO1sTC.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/window-zKLNV_Y4.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/OkResponse-D5ny1IE5.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/gatewayAPI-BcsUAYmw.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/ElectronWindowFileDialog-DlEhLuLR.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/editorUtils_linux-D9JzXy6m.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/p4-auth-service-CKb-AjY4.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/credentialStore-ttEzDMuF.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/contracts-CbroqFTT.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/version-control-api-CFRrUztN.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/iteratee-Br39Nl9Q.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/local-project-CYewgbUN.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/InstallModule-RdKDzbGJ.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/surveySettings-BEUI86ju.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/engineMetrics-9D-ZuZiF.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/cdn-release-service-XPFTzjs7.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/de-zFjJeGwp.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/signOutHelper-Be7X3EDa.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/editorReleaseServiceUtils-SuNF763H.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/EngineGatePolicy-B2uFAQ_P.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/isSymbol-Ct0o-4rm.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/ProjectNotifierService-IjrAnotg.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/perforce-service-Dp9xyrEx.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/interface-id-B31jSIR_.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/git-pending-check-in-service-BC4oA5aw.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/proxyAuth407-CUjaPKlE.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/ProjectsPreferencesService-C1roxToS.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/uvcs-service-Dej8gm3M.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/RenderPipeline-muhntjwD.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/window-manager-_6VdlY3q.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/license-query-service-Chi40UB9.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/DownloadPersistence-BDJC9g9d.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/cloudCore-BMlVrNWA.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/common-B-9355C7.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/secondAppInstanceBootstrap-P1_xJ-DQ.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/InstallLifecycleOrchestrator-DqXhH2Zu.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/cloneDeep-CV7hKdy_.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/currentScopes-TQ292xfP.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/unity-installer-BjcC43ZS.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/ElectronRuntimeApp-CV_HcVIi.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/visual-studio-service-Dx4wSDNW.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/es-D0iWU2Bb.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/temp-dir-CBqCIN5C.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/p4Constants-CxUJjoam.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/trayMenu-DL_c26el.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/git-credential-manager-tso0MYws.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/EditorInventoryService-DkFIFVqs.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/InstallListEvent-DTnabZPq.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/engine-gate-policy-DFYBY5h6.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/output-service-Dj5dWZVi.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/EditorPathAvailability-fyqimjW0.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/UnityNotificationServiceAPI-CIfgzBvH.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/auth-DySDUpZA.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/installFailureSummary-BjksO-ab.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/p4InstallerService-CLimMIDP.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/hub-keyring-De1fEhRw.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/analytics-opt-in-helper-C_abx26E.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/i18next-DhYwhEs5.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/PostalTopic-B3GByfoq.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/installer-DoIIScRl.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/FeatureFlagsCache-D4UjirVo.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/tslib.es6-DWEQmYhR.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/tags-CFdIRE0_.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/unityTokenProvider-D_kRqgCX.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/TaskbarProgressService-C9rXJ8Pe.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/index.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/projectDataHelpers-CSrOr1rl.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/user-settings-service-CFACDHzO.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/hub-fs-win32-CQLoZpVQ.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/BackgroundTasks-Chzo8Mgz.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/sourceControl-D0-uix9q.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/unityInstallerProcess_win32-DRc7Jym0.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/download-manager-CHh4yC-7.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/hub-utils-BWqI_FK4.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/analytics-queue-B7q41Txa.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/pathContainment-BMwJwG_X.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/EditorCommunicationService-CYuvQ4By.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/debounce-DIhmThiT.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/ProjectValidatorService-BSDEElxX.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/rolldown-runtime-DfcP4MkH.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/proxyHelper-BTMLq3y4.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 1,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": [
+    {
+     "flag": "cert-verifyproc",
+     "file": "build/proxyHelper-BTMLq3y4.js",
+     "line": 5924,
+     "offset": 252764
+    }
+   ]
+  },
+  {
+   "file": "build/distributionMode-4h0h2qOa.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/main-4HATRGC6.js",
+   "role": "renderer",
+   "web_preferences_blocks": 1,
+   "ipc_sites": 19,
+   "handlers": 16,
+   "exposures": 0,
+   "remote_loads": 1,
+   "misc_flags": []
+  },
+  {
+   "file": "build/ProxyAuthCoordinator-BqPbclDF.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/analyticsOptInHelper-CdKYq2n_.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/zip-utility-Cc9Fs7LZ.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/Platform-DglKXA1X.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/zh_cn-Cuu717xm.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/window-file-dialog-BCWH4WxZ.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/bannerCarouselService-CdMybZ8Z.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/templateIdentifier-DZr1u5U-.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/RendererEvents-CvZlMJhd.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/servicesConfigPath-DLG3JC1L.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/FilesystemCaseSensitivityService-DORxNhTT.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/errorUtils-BMRXgRE1.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/isJsonObject-DKAXytaN.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/resolveRendererRootPath-cFZLVkPx.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/paths-kXATo8Jj.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/editor-helper-linux-D9dRLwOV.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/lib-DANdSs8Z.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/trayMenuBuilder-B7M7YeEV.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/unity-template-cache-Cx4-ztmE.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/elevated-ownership-_3j0C1y_.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/unique-file-name-BdqFCPFy.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/promiseWithTimeout-BWQVveEz.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/editorInstallRoot-1WvhZn-t.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/state-dir-CI-koGrL.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/dist-CenvHT_2.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/fr-JnAl8l2B.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/dist-izmOHxDd.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/tools-menu-DHC6-tFm.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/fetchBanners-Cxy5NCZP.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/gitInstallerService-BFf0CblI.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/injectable-Dru91XUC.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/VisualStudioPlatformService_win-BZtHvj87.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/health-ikEMp3xT.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/feature-flags-cache-C28Nvn7R.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/ProjectAnalyticsService-DImR2rLh.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/unityhubProtocolHandler-BU5i2Bfe.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/defaultTemplateCode-CX0ig3Xe.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/proxyReady-C9mUiG8H.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/types-sIY8NiyI.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/seamOperationSampling-BwqHTG3N.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/editor-app-factory-BfPf5sg8.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/ChipArchitecture-DnSc41iY.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/unity-template-service-BeylCGOO.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/editor-communication-service-DNLbgmhv.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/window-actions-CVGNN-wR.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/InstallAnalyticsHelper-58Nh4Zo_.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/shutdown-coordinator-DtMejOoN.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/HubKeyringConsumer-Bd7LDWkJ.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/localSettings-DfyBQvq1.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/waitForEditorInstallAndOpenProject-uDUTQLZM.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/cloudConfig-DtID32n8.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/projectCustomEditorHelper-DzDgG-Vu.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/license-service-CPXFDM0F.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/unity-notification-service-api-BXRmwcBf.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/projectConstants-okk0UznZ.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/licenseEulaManager-Cwa42jIj.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/LicenseType-ChtsEcLZ.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/accountStore-CMyj4OpX.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/userSettings-Bp9NAYSo.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/meteredBillingV2-BMTTS0hS.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/handleOpenPageArg-Dtf46d-K.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/PerformancesReporter-Idq6GTjs.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/auto-updater-BerWboWv.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/ElectronExternalOpener-J_jQrJOf.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/matchesProperty-fP9OAiL5.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/localProject-Dz81YjQu.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/window-31am7YVI.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/ExternalModules-BcmpmNqw.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/case-sensitivity-o0bqXGp1.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/CoCreateRuntimeSlot-DytQ32lj.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/types-CORtRDKw.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/appDefaultProtocolClientHelpers-9L9kQzJD.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/service-account-auth-flow-CjMLFtf1.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/externalService-r51wljeM.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/error-box-service-BTDGx_a2.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/toString-DmSavw1x.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/projects-preferences-service-BGqGTsmY.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/eq-xamzKEMK.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/dist-Dh7GOQMl.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/backgroundRefresh-Bs-ERBA4.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/exports-CQVWsO0j.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/cliBootstrap-CaqxmDKZ.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/user-notifier-Bb_oZEg4.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/InstallationStates-WSbaWVQ9.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/NoopServiceAccountAuthFlow-imn3riVU.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/project-notifier-service-ZyPrXVbi.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/NodeDownloaderEvents-D2XI8HMB.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/hub-launch--1svO9I6.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/system-helpers-DF4cpDWv.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/hubBootstrapConfig-DwxgaheF.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/licenseService-jA0SQC6x.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/defaultReleases-win32-Z1waoVC0.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/network-interceptors-Clzzc-dh.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/BackgroundTasksService-CiQQjqN-.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/hub-elevate-Bulz_Vjl.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/cdnReleaseService-93hfQu_f.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/editorModulesPreference-rOkhFnVD.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/APMMain-BI0xM1jF.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/DefaultLocalConfig-BfXcBpE1.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/tray-menu-service-PajuzmYM.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/getTag-UzuLbaqE.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/module-B-PfNoG5.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/DownloadAnalyticsHelper-BinhEo9h.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/editorManager-DPqgaFhz.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/unityReleaseServiceAdapter-CcEH8VfD.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/esm-CGGO73Xc.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/hub-keyring-DE35cyZA.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/exposure-tracker-CTqi32Cy.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/userSettings-P9_qB5VS.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/themeSettings-C3M-TS7p.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/project-utilities-h72F2aJH.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/dist-cfnt_kzM.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/onboarding-survey-service-bH0qzVzS.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/unityVersionUtilities-C9wa9HrM.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/LocalProjectService-BVJgo1wz.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/correlation-id-provider-CFK7qjty.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/assertShellSafeInstallPath-BN-6YiaQ.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/protocol-g6dUyodp.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/modulesDefaultConfig-BepnfLyf.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/proxyAuthSubmitBridge-C_w250wj.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/memoize-AtlhlApX.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/DownloadStates-zD8gzLVz.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/httpClient-CubzCzEd.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/templatesDir-2SVHy5ak.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/git-service-Bkll_til.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/persistedSettingsFileName-CsTNSudI.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/dist-DjY3fi58.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/projectUtilities-CRTr3cG4.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/editor-helper-win32-ByhQ_36l.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/feature-flags-service-Bj4cUYcq.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/DownloadManagerUtilities-rFi-9OXN.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/dist-EE3VJpwd.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/localConfig-BmBNFseW.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/cloud-core-DzHwb-jq.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/ja_jp-_QXnFowf.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/identity-provider-CaXpcixc.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/app-ClT__6D5.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/visual-studio-service-yuXRzdJn.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/IdentityProvider-B-K6sBtI.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/ElectronToolsMenu-D7_T5dtb.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/fs-Re3H_-v6.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/AssistantService-B3O9gz-X.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/buildInfoUtils-rW9K2xJV.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/perforceInitialCheckIn-WF2nrw1O.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/editor-helper-CGhRPluZ.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/defaultReleases-darwin-CRy4XnSV.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/protocolUrlQueue-eM8xhVox.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/engineEditorScan-Dj3yVLC8.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/MainServices-CG-WD8Vq.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/editorUtils_darwin-7FmiHYv7.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/UVCS-BVDFnixH.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/on-exit-leak-free-DiCLpyJI.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/unityInstaller_linux-CHRgXoBm.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/external-service-DhwxcZX_.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/installation-manager-COOHve1u.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/ErrorBase---c4Q6Q5.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/livePlatformAPI-sY8hksAC.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/moduleChecksumGate-DcTBu8nG.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/temporalDate-DgeYZ5W-.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/plist-c-A7gID7.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/system-dialog-BKoTeS_X.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/mainWindowPreload.cjs",
+   "role": "preload",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 1,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/AuthService-tKusSP0J.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/resolvePreloadPath-DSKTEcOK.js",
+   "role": "preload",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 8,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 3,
+   "misc_flags": []
+  },
+  {
+   "file": "build/ElectronBugReporterLauncher-CfQZRxEs.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/hub-fs-linux-B-LUw-sn.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/hub-fs-DWQ_mHKe.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/tray-menu-builder-service-C1n3B4Hr.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/event-broadcaster-DXmDVR12.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/cloudCore.api-DFJkmRpj.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/unity-hub-protocol-handler-uabtD4l5.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/BrokerAwareTokenManager-Dr7mOvbi.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/linuxEditorVersionDesktopEntry-C67BxYfd.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/json-storage-BBtU25uJ.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/bug-reporter-launcher-cGve8wWb.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/once-Dl3jnpYr.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/dist-n_Xp5Udz.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/local-settings-D3n15z98.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/install-state-reader-DZgX2TTg.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/download-manager-utilities-BcVEehof.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/module-helpers-CAWxhcY_.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/write-file-atomic-Cul-FMiA.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/bugReporterPreload.cjs",
+   "role": "preload",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 1,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/defaultTemplates-BMYKguoD.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/gitInitialCheckIn-BpwgWGdx.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/editor-manager-DItau7jz.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/runtime-app-B8yS5kYY.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/editor-locate-analytics-CbdQ0uq1.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/UnityIPCServer-D13U06HE.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/unityIPCNameFormatter-CoH6pd0u.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/EntitlementVerdict-BM9kOxQ_.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/licenseNotificationHandler-CJ8FXv0O.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/systemInfo-CP6KqvqQ.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/Status-tUHxtoT9.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/KeyringTokenManager-BcJuAVUb.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/userSettingsConstants-D9eKW_dO.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/registry-C4FSsxXS.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/hubAppName-Clx8bdDY.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/ElectronRuntimePowerMonitor-BrI278kX.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/licensing-sdk-H3A0retd.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/seamSampling-eEbz8AUq.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/ElectronSystemDialog-DnPWM-tH.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/ErrorResponse-Ctv_fuUX.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/main-services-uaiClpNe.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/survey-settings-vQIaWm2W.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/EditorApp-D29zQwDQ.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/download-analytics-helper-pmZcbV2L.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/main-constants-BmMKsTF_.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/project-service-eF-XP_E4.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/unityTemplateService-DfMsC5In.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/sanityQueries-qB8YD3J7.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/terminationSignals-Bm15_EDS.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/fetchNUOHeader-CKQCBGad.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/TemplateArchiveValidationResult-w15CO3Wo.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/cli-B_sgpmt-.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/dist-BdgClFno.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/appImageEnvScrub-BBAiqifd.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/installerProcess.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/perforceCredentialManager-Yj3_4Eso.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/EditorAppFactory-CCqaA3fC.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/runtime-power-monitor-DbUDsPoT.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/gitService-tY8j0t3y.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/onboardingSurveyService-DFMVOj9o.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/external-opener-DatVFuXv.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/translate-CBzR5imJ.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/keyring-consumer-C-9lCopX.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/engine-metrics-C198Q6WJ.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/json-storage-DyjSO3AH.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/VersionControlAnalyticsService-BkFKnLPo.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/constants-DKGmelg5.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/proxy-auth-coordinator-Ddrzb8dO.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/HubAuthBrokerClient-BPI46aCc.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/editor-inventory-Di6XpON6.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/logger-factory-DOd1l3oZ.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/unityReleaseService-CLv4Jxl5.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/FeatureFlags-45rRubJf.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/ExposureTracker-CNqaxd3J.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/gitHostSeam-DIT1WUw8.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/hub-fs-DUJRU9gO.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/auth-broker-client-DsCeRUez.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/analyticsQueue-BHiNxgbZ.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/engineDeleteTree-DqVQqu-W.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/editor-helper-darwin-DGIhcj84.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/UnityIPCClient-CDaPJfIP.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/EventBroadcaster-DEVw-kNH.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/ProcessPlatform-G-TCTPDE.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/engineExtract-CvSlTGln.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/p4-credential-manager-C7HBinuh.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/IpcMainService-BZl39Vta.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/local-config-D9VWRJC1.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/windowManager-3rnj33bf.js",
+   "role": "renderer",
+   "web_preferences_blocks": 4,
+   "ipc_sites": 2,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 4,
+   "misc_flags": []
+  },
+  {
+   "file": "build/engineFileHexDigest-B8jWvZDM.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/values-CgrAeUF4.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/trace-72TNqxXK.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/featuresByVersionsUtils-BfZtSd6Y.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/jsonStorageFileName-BJmcCODn.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/window-Cfx8d2qW.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/pino-pretty-Vc70ZBCv.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/PollingClient-C9SYX563.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/Template-COkpmilo.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/isBuffer-Qg3pQea_.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/InstallationManager-Dw788WnO.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/pt_br-nrWx-_EL.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/locatedEditorResolver-CLEpzMu4.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/unityInstaller_win32-BbY0Ts4R.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/engineDownload-HEVVt-lW.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/ElectronUserNotifier-bFaLy6DX.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/build-DYr1H_ks.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/OSRecentProjectsService-Dy0bSyHy.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/graphql-ClisbR-N.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/editorUtils_win32-DskydeDo.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/runtime-arguments-96OwRhDh.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/OpenProjectSource-yxYDvmRI.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/server-BSCHz1W3.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/perforceAuthService-CLUeI3FE.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/apm-main-D69QRI8-.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/sanity-banners-service-B3KrM5YN.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/CoCreateRuntimeSlot-1HqeOr2F.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/userIsUnityEmployee-DwjviKCj.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/recoverySampling-Dfz9jlFE.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/editorSessionState-B5lf9sUz.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/projectRenderPipelineHelper-BCBf0rIB.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/networkInterceptors-OLxx-Hwq.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/isomorphic-git-Bxm5BEBv.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/CorrelationIdProvider-DwDvHnTK.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/container-CtHH9on8.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/forEach-E4-0GgSc.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/Actions-C7SyYQjD.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/perforceService-DcfZq6B0.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/defaultReleases-linux-BiXUyvJd.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/en-Dwc3qL8G.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/licenseQueryService--EQEUoEM.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/project-DEJwnoOJ.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/localProject-Bt5UDS4z.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/amplitude-service-l8sBAHE5.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/ko_kr-Cdbhg0oU.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/auth-service-CBJe-gKS.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/local-project-service-Ckd2zfUl.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/i18next-k8dCG7wD.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/sudo-prompt-D6KbgP-l.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/is-errno-exception-O7GuSYhv.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/lib-CwgSbSae.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/validateExtractedFiles-Ctvmd92M.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/engineSeams-DWpOcFDc.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/bug-reporter-BX50i1pi.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/download-Cs2T6WhM.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  },
+  {
+   "file": "build/entitlementMappings-D03_up8K.js",
+   "role": "renderer",
+   "web_preferences_blocks": 0,
+   "ipc_sites": 0,
+   "handlers": 0,
+   "exposures": 0,
+   "remote_loads": 0,
+   "misc_flags": []
+  }
+ ]
+}
