@@ -4,9 +4,9 @@
 
 # Wirecat
 
-### Statically recover the internal API schema embedded in an app's client code.
+### Statically recover the API schema and audit the privileged boundaries of shipped code.
 
-**Wirecat extracts the protobuf descriptors and IPC definitions compiled into an installed app's JavaScript — no traffic capture, no execution — and publishes the result as versioned `.proto` files + release diffs. It also audits the Electron attack surface it finds: which privileged IPC handlers are reachable from untrusted content, with evidence.**
+**Wirecat extracts the protobuf descriptors and IPC definitions compiled into an installed app's JavaScript — no traffic capture, no execution — and publishes the result as versioned `.proto` files + release diffs. On top of that recovery it runs two boundary auditors: an Electron attack-surface audit (which privileged IPC handlers are reachable from untrusted content) and an HTTP route×guard audit for Node services (which routes lack an authorization token in their registration chain) — both with confidence-tiered, file:line-cited findings. Everything is also exposed over MCP so agent-driven audits can call the tools directly.**
 
 [![CI: track-cursor](https://img.shields.io/github/actions/workflow/status/aznikline/wirecat/track-cursor.yml?style=flat-square&label=track-cursor)](https://github.com/aznikline/wirecat/actions/workflows/track-cursor.yml)
 [![Node.js](https://img.shields.io/badge/Node.js-%E2%89%A518-339933?style=flat-square&logo=nodedotjs&logoColor=white)](#quick-start)
@@ -97,6 +97,21 @@ node tools/audit-routes.mjs src/controllers src/webhooks --out routes.json --md 
 ```
 
 Static analysis only — target bundles are parsed, never executed.
+
+## Tools
+
+| Tool | What it does | Key flags |
+|---|---|---|
+| `extract-bundle-protos.mjs` | Recover protobuf descriptors (protobuf-es / protobuf-ts / protobufjs), Electron IPC surface, and literal endpoint URLs from shipped JS | `<bundle.js>... --files list.txt --out catalog.json` |
+| `diff-catalogs.mjs` | Added/removed/changed services, methods, messages, enums, fields, IPC channels, endpoints between two catalogs | `old.json new.json [--md]` |
+| `emit-proto.mjs` | Emit usable `.proto3` files per package; unresolved refs become named `Unresolved_*` placeholders | `catalog.json --out protos/ [--packages a.v1,b.v1]` |
+| `render-spec.mjs` | Render a catalog as a readable markdown spec grouped by package | `catalog.json [--packages a.v1] [--full]` |
+| `audit-electron.mjs` | Electron attack-surface audit: contextBridge exposure shape, webPreferences, handler sender-validation × dangerous sinks, TLS posture, service-channel reachability; `--diff` compares two audits | `<bundle.js>... --out audit.json [--md] [--diff old.json new.json]` |
+| `audit-routes.mjs` | HTTP route×guard inventory for Node services: Express middleware chains + NestJS/n8n decorators, guard-status classification, bounded in-handler sink scan | `<src-file-or-dir>... --out routes.json [--md] [--files list.txt]` |
+| `mcp-server.mjs` | stdio MCP adapter exposing the pipeline to MCP-capable agents (see below) | runs as an MCP server — no CLI args |
+| `track-cursor-release.sh` | Poll the official Cursor update feed, extract a new release, regenerate catalog + spec + diff + protos | `[--app-dir <extracted-app>] [--dry-run]` |
+
+All tools are zero-dependency Node ≥18 ESM scripts.
 
 ## What gets extracted
 
@@ -194,6 +209,45 @@ and `{ allowSkipMFA }` routes correctly marked explicit-public;
 (the endpoint an auditor should verify in-handler — it turns out guarded by
 `replaceCredentialContentsForSharee`, which is exactly the follow-up this
 kind of finding is for).
+
+## Audit output contract
+
+Both auditors emit the same schema: `{ rule, severity, confidence, title,
+detail, evidence }` findings plus a route/endpoint inventory and summary
+stats. `severity` ∈ `critical | high | medium | info`; `confidence` ∈
+`observed` (direct literal evidence) / `derived` (cross-file join) /
+`inferred` (heuristic audit lead) / `unknown` (explicitly unresolved).
+Every finding carries `file:line` evidence where the pattern allows.
+
+## MCP adapter
+
+`tools/mcp-server.mjs` exposes the pipeline over stdio JSON-RPC so
+MCP-capable agents (Claude Code, Devin, …) can call it as first-class
+tools instead of shelling out:
+
+| MCP tool | Wraps |
+|---|---|
+| `wirecat_audit` | `audit-electron.mjs` — markdown findings report |
+| `wirecat_audit_diff` | `audit-electron.mjs --diff` |
+| `wirecat_extract_protos` | `extract-bundle-protos.mjs` |
+| `wirecat_catalog_diff` | `diff-catalogs.mjs` |
+| `wirecat_emit_proto` | `emit-proto.mjs` |
+| `wirecat_list_audits` | lists `audits/` artifacts |
+
+Host config:
+
+```json
+{
+  "mcpServers": {
+    "wirecat": {
+      "command": "node",
+      "args": ["/path/to/wirecat/tools/mcp-server.mjs"]
+    }
+  }
+}
+```
+
+Accepts both newline-delimited and Content-Length-framed stdio transport.
 
 ## Catalogs
 

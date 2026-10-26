@@ -4,9 +4,9 @@
 
 # Wirecat
 
-### 静态还原编译进应用客户端代码里的内部 API 定义。
+### 静态还原交付代码中的 API 定义并审计其特权边界。
 
-**从已安装应用的 JavaScript 中提取 protobuf 描述符与 IPC 定义——不抓包、不运行目标——输出版本化 `.proto` 文件 + 发版差异。同时审计它发现的 Electron 攻击面:哪些特权 IPC handler 能从不可信内容触达,给出证据。**
+**从已安装应用的 JavaScript 中提取 protobuf 描述符与 IPC 定义——不抓包、不运行目标——输出版本化 `.proto` 文件 + 发版差异。在提取结果之上运行两个边界审计器:Electron 攻击面审计(哪些特权 IPC handler 能从不可信内容触达)与 Node 服务 HTTP 路由×鉴权对账(哪些路由的注册链上没有鉴权标记)——所有 findings 均带置信度分层与 file:line 证据。整条流水线同时通过 MCP 暴露,agent 可直接以工具方式调用。**
 
 [![CI: track-cursor](https://img.shields.io/github/actions/workflow/status/aznikline/wirecat/track-cursor.yml?style=flat-square&label=track-cursor)](https://github.com/aznikline/wirecat/actions/workflows/track-cursor.yml)
 [![Node.js](https://img.shields.io/badge/Node.js-%E2%89%A518-339933?style=flat-square&logo=nodedotjs&logoColor=white)](#快速开始)
@@ -88,9 +88,27 @@ node tools/audit-electron.mjs app/out/main.js app/out/**/preload*.js ... --out a
 
 # 7. 对比两版攻击面
 node tools/audit-electron.mjs --diff audits/app/old.json audits/app/new.json
+
+# 8. 审计任意 Node 服务的 HTTP 路由×鉴权覆盖
+node tools/audit-routes.mjs src/controllers src/webhooks --out routes.json --md routes.md
 ```
 
 纯静态分析——只解析目标 bundle,绝不执行。
+
+## 工具一览
+
+| 工具 | 功能 | 关键参数 |
+|---|---|---|
+| `extract-bundle-protos.mjs` | 从交付 JS 中恢复 protobuf 描述符(protobuf-es / protobuf-ts / protobufjs)、Electron IPC 面与字面量端点 URL | `<bundle.js>... --files list.txt --out catalog.json` |
+| `diff-catalogs.mjs` | 两版 catalog 间服务/方法/消息/枚举/字段/IPC channel/端点的新增、移除、变更 | `old.json new.json [--md]` |
+| `emit-proto.mjs` | 按包生成可用的 `.proto3` 文件;未解析引用保留为 `Unresolved_*` 占位符 | `catalog.json --out protos/ [--packages a.v1,b.v1]` |
+| `render-spec.mjs` | 把 catalog 渲染为按包分组的可读 markdown 规范 | `catalog.json [--packages a.v1] [--full]` |
+| `audit-electron.mjs` | Electron 攻击面审计:contextBridge 暴露形态、webPreferences、handler sender 校验 × 危险 sink、TLS 姿态、服务通道可达性;`--diff` 对比两版审计 | `<bundle.js>... --out audit.json [--md] [--diff old.json new.json]` |
+| `audit-routes.mjs` | Node 服务 HTTP 路由×鉴权清单:Express 中间件链 + NestJS/n8n 装饰器,鉴权状态分类,有界 handler 内 sink 扫描 | `<src-file-or-dir>... --out routes.json [--md] [--files list.txt]` |
+| `mcp-server.mjs` | stdio MCP 适配器,把整条流水线暴露给 MCP 兼容 agent(见下文) | 作为 MCP server 运行,无 CLI 参数 |
+| `track-cursor-release.sh` | 轮询 Cursor 官方更新 feed,抽取新版本,重生成 catalog+spec+diff+protos | `[--app-dir <extracted-app>] [--dry-run]` |
+
+全部工具均为零依赖 Node ≥18 ESM 脚本。
 
 ## 提取内容
 
@@ -136,6 +154,83 @@ finding 带置信度分层(`observed` / `derived` / `inferred` / `unknown`),
 `child_process` handler)回放命中 `critical` + `high`;有 sender 校验的
 handler 正确豁免。全部已跟踪应用的审计产物在 `audits/`。
 
+## 路由×鉴权审计
+
+`tools/audit-routes.mjs` 把同一个边界清单思路应用到 Node HTTP 服务:
+*有哪些路由、哪些路由的注册链上存在鉴权标记、哪些变更型路由没有。*
+它把安全评审员手工做的"端点×scope 对账"机械化。
+
+识别的注册风格:
+
+- **Express 风格**——`app/router.METHOD(path, ...middleware, handler)`、
+  `app.use(prefix, middleware|router)` 挂载、跨文件 `require`/`import`
+  解析前缀挂载的 router
+- **装饰器风格**——NestJS/n8n `@Controller(base)`/`@RestController(base)`
+  + `@Get`/`@Post`/`@Put`/`@Patch`/`@Delete`/`@All` 方法装饰器;
+  路由装饰器上下两侧的堆叠装饰器都会收集(`@UseGuards`、
+  `@ProjectScope`、`@GlobalScope`、`@Licensed` 等)
+
+鉴权词表:Express 中间件名(`requireAuth`、`isAdmin`、
+`passport.authenticate` 等)与装饰器名按 auth/scope/permission 词表
+匹配;`{ skipAuth: true }` 路由选项与 `@Public()`/`skipAuth` 装饰器
+标记为 **explicit-public**。文件内若通过裸 `.use()` 挂载了形似鉴权的
+中间件,该文件路由报告 `guarded-inferred`(derived 而非 observed)。
+
+有界 handler 内扫描:每个 handler 体做一次安全相关 sink 类扫描
+(`code_exec`、`file_rw`、`path_traversal`、`ssrf`、`sql`、
+`session_jwt` 等),与 `req` 派生输入是否到达 sink 联合——
+`unauthed-sink`(critical)仅在鉴权缺口与 sink *同时*存在时触发。
+
+**读输出前先看 scope note。** "unguarded" 只表示注册链上无鉴权
+标记——handler 内部的服务层检查(如 `findCredentialForUser(id, user,
+scopes)`)对字面量扫描不可见。未扫描文件中挂载的中间件不做建模。
+这些 findings 是 `inferred` 置信度的*审计线索*——与产出真实发现的
+线索同类——不是未认证可达性的证明。无 finding 也不等于安全。
+
+已在 n8n `packages/cli/src` 验证:165 条路由入库;所有
+`@ProjectScope`/`@GlobalScope` 路由分类正确;`skipAuth` 的 e2e 路由与
+`{ allowSkipMFA }` 路由正确标为 explicit-public;`POST /credentials/test`
+正确浮出为 unguarded-mutation lead(该端点实际由
+`replaceCredentialContentsForSharee` 在 handler 内防护——正是此类
+finding 预期引导的人工验证动作)。
+
+## 审计输出契约
+
+两个审计器输出同一 schema:`{ rule, severity, confidence, title,
+detail, evidence }` findings + 路由/端点清单 + 汇总统计。`severity` ∈
+`critical | high | medium | info`;`confidence` ∈ `observed`(直接字面
+证据)/ `derived`(跨文件 join)/ `inferred`(启发式审计线索)/
+`unknown`(明示未解析)。每条 finding 尽量携带 `file:line` 证据。
+
+## MCP 适配器
+
+`tools/mcp-server.mjs` 通过 stdio JSON-RPC 把流水线暴露给 MCP 兼容
+agent(Claude Code、Devin 等),无需 shell 调用:
+
+| MCP 工具 | 封装 |
+|---|---|
+| `wirecat_audit` | `audit-electron.mjs`——markdown findings 报告 |
+| `wirecat_audit_diff` | `audit-electron.mjs --diff` |
+| `wirecat_extract_protos` | `extract-bundle-protos.mjs` |
+| `wirecat_catalog_diff` | `diff-catalogs.mjs` |
+| `wirecat_emit_proto` | `emit-proto.mjs` |
+| `wirecat_list_audits` | 列出 `audits/` 产物 |
+
+宿主配置:
+
+```json
+{
+  "mcpServers": {
+    "wirecat": {
+      "command": "node",
+      "args": ["/path/to/wirecat/tools/mcp-server.mjs"]
+    }
+  }
+}
+```
+
+同时兼容换行分隔与 Content-Length 框架两种 stdio 传输。
+
 ## 目录现状
 
 | 应用 | 协议面 | 备注 |
@@ -160,7 +255,7 @@ specs/<app>/<version>-*.md      渲染的规范文档 + 认证面
 diffs/<app>-<a>-to-<b>.md       逐版本协议演进报告
 audits/<app>/<version>.{json,md} 攻击面 findings + 逐版本攻击面 diff
 docs/target-assessment.md       哪些应用适合本流水线(fat vs thin bundle)
-tools/                          提取器 · 对比器 · 渲染器 · proto 生成器 · 审计器 · 版本跟踪器
+tools/                          提取器 · 对比器 · 渲染器 · proto 生成器 · 审计器 ×2 · 版本跟踪器 · MCP 适配器
 ```
 
 ## 自动化
