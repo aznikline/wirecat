@@ -1,0 +1,295 @@
+# Catalog diff: 3.27.12 -> 3.27.14
+
+- **services**: +0 / -0 / ~26
+- **messages**: +0 / -0 / ~91
+- **enums**: +0 / -0 / ~0
+- **ipc_channels**: +0 / -0 / ~0
+- **endpoint_hosts**: +0 / -0 / ~0
+
+## Changed services (26)
+- `agent.v1.TmuxSessionService`
+  - changed: `KillSession`
+- `aiserver.v1.AppPublishService`
+  - changed: `ListApps`
+  - changed: `ProposeAgentPublish`
+  - changed: `WidenAppSecretScope`
+- `aiserver.v1.SCMService`
+  - changed: `BatchGetPullRequests`
+  - changed: `GetPullRequestCheckLogExcerpt`
+  - changed: `ReopenPullRequest`
+- `aiserver.v1.RemoteAgentHostPresenceService`
+  - changed: `RevokeController`
+  - changed: `UpdateRemoteControlV2UserSettings`
+- `aiserver.v1.WebProfilingService`
+  - changed: `SubmitInteractionWindow`
+- `agent.v1.ControlService`
+  - changed: `ReadTextFile`
+  - changed: `RefreshGithubAccessToken`
+  - changed: `LoadMcpServers`
+- `aiserver.v1.AiProjectService`
+  - changed: `AiProjectAgentInit`
+  - changed: `AiProjectStepFeedback`
+- `aiserver.v1.AutomationsService`
+  - changed: `ReassignAutomationOwner`
+  - changed: `GetRunSummary`
+  - changed: `GetAutomationMemory`
+  - changed: `GetWorkflowTemplate`
+- `aiserver.v1.FullSelfDrivingService`
+  - changed: `DismissFullSelfDrivingOutput`
+- `aiserver.v1.BugbotAdminService`
+  - changed: `GetProUserTrialEnd`
+- `aiserver.v1.CustomerEvalsService`
+  - changed: `GetCustomerEvalRunAggregates`
+- `aiserver.v1.EnterpriseAdminService`
+  - changed: `CreateContractExpansion`
+  - changed: `GetBetaAccess`
+- `aiserver.v1.EvalTrackingService`
+  - changed: `LogRunMetrics`
+  - changed: `SetRayJobName`
+  - changed: `UpsertDataOpsJobStep`
+- `aiserver.v1.GitGraphService`
+  - changed: `InitGitGraphChallenge`
+- `aiserver.v1.GkwService`
+  - changed: `ConnectGkwConnectorCallback`
+  - changed: `ConnectGkwConnectorCallbackInternal`
+- `aiserver.v1.SandBoxService`
+  - changed: `CompleteSandBoxStoreMultipartWrites`
+  - changed: `AdminSnapshotSandBoxStore`
+  - changed: `KillTeamMemberSandBox`
+- `aiserver.v1.GrokBotService`
+  - changed: `CompleteSandBoxStoreMultipartWrites`
+  - changed: `AdminSnapshotSandBoxStore`
+  - changed: `KillTeamMemberSandBox`
+  - changed: `CompleteGrokBotAttachmentUpload`
+  - changed: `ListGrokBotLibraryDocs`
+  - changed: `ListGrokBotAgentRoutines`
+  - changed: `MarkGrokBotTermsSeen`
+  - changed: `AddGrokBotAgentAccessPrincipal`
+  - changed: `SetGrokBotAgentDraftingDisabled`
+  - changed: `CreateGrokBotEmailInbox`
+  - changed: `ReadGrokBotEmailAttachment`
+  - changed: `BeginGrokBotAgentFileUpload`
+  - changed: `ListGrokBotTemplates`
+  - changed: `RollBackGrokBotConversation`
+  - changed: `SendGrokBotDraft`
+  - changed: `FinishPasskeyRegistration`
+  - changed: `PullGrokBotMeetings`
+  - changed: `EnsureGrokBotPullRequestChat`
+  - changed: `AddGrokBotTeamsAppToTeam`
+  - changed: `ListGrokBotMarketplaceListingsInternal`
+  - changed: `DeleteGrokBotMarketplaceListingInternal`
+  - changed: `AdminResolveGrokBotAttachmentReads`
+  - changed: `AdminListGrokBotTeamAgents`
+  - changed: `AdminLookupGrokBotMeetingJoinConsentUsers`
+- `aiserver.v1.HallucinatedFunctionsService`
+  - changed: `Opus2ChainApplyPlan`
+- `aiserver.v1.MarketplaceService`
+  - changed: `CreateMarketplaceExtensionPublisher`
+- `aiserver.v1.RelayService`
+  - changed: `CreateSchedule`
+  - changed: `RetryBackfill`
+- `aiserver.v1.SchedulerService`
+  - changed: `ReportUsage`
+- `aiserver.v1.UnifiedDashboardService`
+  - changed: `UpdateTeam`
+- `aiserver.v1.XaiUnificationPartnerService`
+  - changed: `GetUnifyEligibility`
+  - changed: `ListCursorTeamsForMerge`
+- `aiserver.v1.UploadService`
+  - changed: `GetDoc`
+- `aiserver.v1.VmDaemonService`
+  - changed: `SyncIndex`
+  - changed: `GetExplicitContext`
+- `origin.v1.OriginService`
+  - changed: `WatchChangeSyncEventsV2`
+  - changed: `UpdateWatchChangeSyncSubscriptions`
+
+## Changed messages (91)
+- `aiserver.v1.CallMcpToolResponse`
+  - changed: `3 outcome -> outcome`
+  - changed: `4 elicitation_closed -> elicitation_closed`
+- `aiserver.v1.CrossExtHostHeaders`
+  - changed: `1 headers -> headers`
+- `aiserver.v1.StreamedBackToolCallV2`
+  - changed: `37 fix_lints_params -> fix_lints_params`
+  - changed: `64 create_plan_params -> create_plan_params`
+  - changed: `73 switch_mode_params -> switch_mode_params`
+- `agent.v1.RequestContextSubagentsPart`
+  - changed: `1 custom_subagents -> custom_subagents`
+- `agent.v1.AgentRunRequest`
+  - changed: `29 system_prompt_spec -> system_prompt_spec`
+- `aiserver.v1.StreamUnifiedChatRequest`
+  - changed: `15 current_file -> current_file`
+  - changed: `46 unified_mode -> unified_mode`
+  - changed: `58 project_layouts -> project_layouts`
+- `aiserver.v1.FSGetMultiFileContentsRequest`
+  - changed: `3 file_requests -> file_requests`
+- `aiserver.v1.StreamHoldCppRequest`
+  - changed: `1 current_file -> current_file`
+- `aiserver.v1.ReportEditFateResponse`
+  - changed: `2 current_file -> current_file`
+- `aiserver.v1.WarmApplyRequest`
+  - changed: `2 current_file -> current_file`
+- `aiserver.v1.TokenIndex`
+  - changed: `1 tokens_with_logprobs -> tokens_with_logprobs`
+- `aiserver.v1.RecordFullSelfDrivingAutoApplyConfigResponse`
+  - changed: `1 config -> config`
+- `aiserver.v1.ListFullSelfDrivingAutoApplyConfigsResponse`
+  - changed: `1 configs -> configs`
+- `aiserver.v1.DeclineAppSecretsRequest`
+  - added: `4 call_count`
+- `aiserver.v1.AppDeployment`
+  - changed: `3 status -> status`
+- `aiserver.v1.GetXaiTeamPlanManagementResponse`
+  - changed: `11 pending_payment_check -> pending_payment_check`
+  - changed: `12 seat_offers -> seat_offers`
+- `agent.v1.StreamLocalAgentMailboxHeartbeat`
+  - changed: `3 gap -> gap`
+- `agent.v1.StreamLocalAgentMailboxResponse`
+  - changed: `3 gap -> gap`
+- `aiserver.v1.Workflow`
+  - changed: `3 prompts -> prompts`
+- `aiserver.v1.GitTrigger`
+  - changed: `4 ci_completed -> ci_completed`
+- `aiserver.v1.AutomationWithOwner`
+  - changed: `1 workflow -> workflow`
+- `aiserver.v1.CreateWorkflowFromTemplateResponse`
+  - changed: `1 workflow -> workflow`
+- `aiserver.v1.TraceSpan`
+  - changed: `13 links -> links`
+- `agent.v1.WatchAgentHostSessionsEvent`
+  - changed: `1 snapshot -> snapshot`
+- `agent.v1.RequestContextDecoration`
+  - changed: `20 recently_added_plugin -> recently_added_plugin`
+- `agent.v1.AgentHostApprovalRequest`
+  - changed: `2 operation -> operation`
+- `agent.v1.AgentHostSessionEvent`
+  - changed: `11 subagent_started -> subagent_started`
+- `agent.v1.AgentHostTurnOptions`
+  - changed: `24 system_prompt_spec -> system_prompt_spec`
+- `agent.v1.BatchRefreshGithubAccessTokensRequest`
+  - changed: `1 requests -> requests`
+- `agent.v1.ArtifactUploadMetadata`
+  - changed: `4 status -> status`
+- `agent.v1.UploadArtifactsRequest`
+  - changed: `1 uploads -> uploads`
+- `origin.v1.AuthenticatedOriginViewer`
+  - changed: `3 gate -> gate`
+- `git_forge.v1.CommitFileUpsert`
+  - changed: `2 mode -> mode`
+- `origin.v1.ChangeAssignment`
+  - changed: `6 created_via -> created_via`
+- `origin.v1.ReviewRequestEvent`
+  - changed: `7 created_via -> created_via`
+- `origin.v1.ListReviewRequestEventsResponse`
+  - changed: `1 events -> events`
+- `origin.v1.ChangeCodeownersChangedPath`
+  - changed: `5 resolved_owner_rules -> resolved_owner_rules`
+- `origin.v1.SectionOfChangesFilter`
+  - changed: `20 num_lines_changed -> num_lines_changed`
+- `origin.v1.SectionOfChangesFilterTimeRange`
+  - changed: `1 field -> field`
+- `origin.v1.CreateOwnershipExemptionResponse`
+  - changed: `2 refused -> refused`
+- `agent.v1.AgentHostAgentStoreConflictNoticeResult`
+  - changed: `5 failed -> failed`
+- `agent.v1.AgentHostSurfaceAgentStoreRequest`
+  - changed: `8 apply_subagent_mounts -> apply_subagent_mounts`
+- `agent.v1.AgentHostSurfaceCloudSubagentRunResult`
+  - changed: `3 aborted -> aborted`
+- `agent.v1.ReadFileResponse`
+  - changed: `3 complete -> complete`
+- `aiserver.v1.AutopilotActionResponse`
+  - changed: `2 web_search -> web_search`
+- `aiserver.v1.CursorPredictionConfigResponse`
+  - changed: `1 models -> models`
+- `aiserver.v1.CustomerEvalStaticMetric`
+  - changed: `1 key -> key`
+- `aiserver.v1.ListCustomerEvalRunsResponse`
+  - changed: `1 runs -> runs`
+- `aiserver.v1.GetGkwConnectorStatsRequest`
+  - changed: `18 skip_counts -> skip_counts`
+- `aiserver.v1.GkwConnectorStats`
+  - changed: `18 skip_counts -> skip_counts`
+- `aiserver.v1.SandAssignedSetupManifest`
+  - changed: `5 entries -> entries`
+- `aiserver.v1.SandTeamSetupManifest`
+  - changed: `4 entries -> entries`
+- `aiserver.v1.SaveTeamSandSetupManifestRequest`
+  - changed: `3 entries -> entries`
+- `aiserver.v1.SaveTeamGroupSandSetupManifestRequest`
+  - changed: `4 entries -> entries`
+- `aiserver.v1.CommitSandBoxStoreManifestResponse`
+  - changed: `1 status -> status`
+- `aiserver.v1.GrokBotAgentSession`
+  - changed: `3 kind -> kind`
+- `aiserver.v1.GrokBotAutoReviewRuleSave`
+  - changed: `2 text_source -> text_source`
+- `aiserver.v1.SendGrokBotPullRequestChatMessageResponse`
+  - changed: `1 delivery -> delivery`
+- `aiserver.v1.ListGrokBotAgentsResponse`
+  - changed: `4 teams_connections -> teams_connections`
+- `aiserver.v1.ListGrokBotTeamAgentsResponse`
+  - changed: `3 teams_connections -> teams_connections`
+- `aiserver.v1.SendGrokBotUserMessageResponse`
+  - changed: `4 delivery -> delivery`
+- `aiserver.v1.ResolveGrokBotCredentialRequestRequest`
+  - changed: `3 resolution -> resolution`
+- `aiserver.v1.GrokBotUserComputerRequestFrame`
+  - changed: `12 discover_ai_tool -> discover_ai_tool`
+- `aiserver.v1.GetGrokBotMeetingRecordResponse`
+  - changed: `15 summary_versions -> summary_versions`
+- `aiserver.v1.RequestGrokBotRoomMemberTurnRequest`
+  - changed: `2 room -> room`
+- `aiserver.v1.RequestGrokBotRoomMemberTurnResponse`
+  - changed: `1 dispatch -> dispatch`
+- `aiserver.v1.GrokBotHarnessMigrationPassStatus`
+  - changed: `8 agents -> agents`
+- `aiserver.v1.DeleteTeamGrokBotResponse`
+  - changed: `1 slack_app_removal -> slack_app_removal`
+- `aiserver.v1.GrokBotMeetingRequestLogEvent`
+  - changed: `5 closed -> closed`
+- `aiserver.v1.AdminGetGrokBotMeetingSummaryVersionsResponse`
+  - changed: `2 versions -> versions`
+- `aiserver.v1.Opus2ChainPlanRequest`
+  - changed: `8 codebase_information -> codebase_information`
+- `aiserver.v1.InferenceToolResultContent`
+  - changed: `1 parts -> parts`
+- `aiserver.v1.RunInferenceClientMessage`
+  - changed: `6 agent_event -> agent_event`
+- `aiserver.v1.RelayPipelineRunRecord`
+  - changed: `5 run_kind -> run_kind`
+- `aiserver.v1.CreateRelayPipelineRunRequest`
+  - changed: `3 run_kind -> run_kind`
+- `aiserver.v1.ListRelayPipelineRunsRequest`
+  - changed: `4 run_kind -> run_kind`
+- `aiserver.v1.PreflightPairReleaseResponse`
+  - changed: `2 error -> error`
+- `aiserver.v1.ApplyPairReleaseResponse`
+  - changed: `2 error -> error`
+- `aiserver.v1.UnifiedDashboardUserSummary`
+  - changed: `4 state -> state`
+- `origin.v1.RepoGrantRow`
+  - changed: `1 principal -> principal`
+- `origin.v1.NamespaceGrantRow`
+  - changed: `1 principal -> principal`
+- `origin.v1.ListGroupGrantsInNamespaceResponse`
+  - changed: `1 principal -> principal`
+- `origin.v1.AddSshPublicKeyResponse`
+  - changed: `1 ssh_public_key -> ssh_public_key`
+- `origin.v1.ListSshPublicKeysRequest`
+  - changed: `1 ssh_public_keys -> ssh_public_keys`
+- `origin.v1.ListSshPublicKeysResponse`
+  - changed: `1 ssh_public_keys -> ssh_public_keys`
+- `origin.v1.CodeIntelligenceIndex`
+  - changed: `2 provenance -> provenance`
+- `origin.v1.MergeConflictResolutionStackStep`
+  - changed: `4 state -> state`
+- `origin.v1.GetOriginCiJobLogResponse`
+  - changed: `1 job -> job`
+- `origin.v1.UpdateAppRequest`
+  - changed: `11 default_scopes -> default_scopes`
+- `origin.v1.SetAtlasRepoConfigResponse`
+  - changed: `1 status -> status`
+- `aiserver.v1.Automation`
+  - changed: `19 appearance -> appearance`
