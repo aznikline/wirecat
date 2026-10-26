@@ -91,6 +91,9 @@ node tools/audit-electron.mjs app/out/main.js app/out/**/preload*.js ... --out a
 
 # 7. Diff the attack surface between two releases
 node tools/audit-electron.mjs --diff audits/app/old.json audits/app/new.json
+
+# 8. Audit HTTP route×guard coverage in any Node service
+node tools/audit-routes.mjs src/controllers src/webhooks --out routes.json --md routes.md
 ```
 
 Static analysis only — target bundles are parsed, never executed.
@@ -146,6 +149,52 @@ Validation: the Discord-2020-RCE shape (unisolated window + raw
 `critical` + `high` findings; sender-validated handlers are correctly
 exempted. Audits for all tracked apps live in `audits/`.
 
+## Route×guard audit
+
+`tools/audit-routes.mjs` applies the same boundary-inventory idea to Node
+HTTP services: *which routes exist, which have an authorization token in the
+registration chain, and which mutations lack one.* It is the mechanical
+version of the endpoint×scope reconciliation security reviewers do by hand.
+
+Recognized registration styles:
+
+- **Express-style** — `app/router.METHOD(path, ...middleware, handler)`,
+  `app.use(prefix, middleware|router)` mounts, cross-file `require`/`import`
+  joins for routers mounted under a prefix
+- **Decorator-style** — NestJS/n8n `@Controller(base)`/`@RestController(base)`
+  with `@Get`/`@Post`/`@Put`/`@Patch`/`@Delete`/`@All` method decorators,
+  stacked decorators collected both above and below the route decorator
+  (`@UseGuards`, `@ProjectScope`, `@GlobalScope`, `@Licensed`, …)
+
+Guard vocabularies: Express middleware names (`requireAuth`, `isAdmin`,
+`passport.authenticate`, …) and decorator names are matched against an
+auth/scope/permission vocabulary; route options like `{ skipAuth: true }`
+and `@Public()`/`skipAuth` decorators mark a route **explicit-public**.
+When a file mounts auth-looking middleware via bare `.use()`, routes in that
+file report `guarded-inferred` (derived, not observed).
+
+Bounded intra-handler scan: each handler body is scanned once for
+security-relevant sink classes (`code_exec`, `file_rw`, `path_traversal`,
+`ssrf`, `sql`, `session_jwt`, …) joined with whether `req`-derived input
+reaches them — `unauthed-sink` (critical) fires only when *both* the guard
+gap and the sink are present.
+
+**Read the scope note before trusting the output.** "Unguarded" means no
+guard token *in the registration chain* — service-layer checks inside the
+handler (e.g. `findCredentialForUser(id, user, scopes)`) are invisible to a
+literal scan. Middleware mounted in unscanned files is not modeled. These
+findings are *audit leads* with `inferred` confidence — the same class of
+lead that produces real findings — not proof of unauthenticated
+reachability. Absence of a finding is not proof of safety.
+
+Validated against n8n `packages/cli/src`: 165 routes inventoried; every
+`@ProjectScope`/`@GlobalScope` route correctly classified; `skipAuth` e2e
+and `{ allowSkipMFA }` routes correctly marked explicit-public;
+`POST /credentials/test` correctly surfaced as an unguarded-mutation lead
+(the endpoint an auditor should verify in-handler — it turns out guarded by
+`replaceCredentialContentsForSharee`, which is exactly the follow-up this
+kind of finding is for).
+
 ## Catalogs
 
 | App | Surface | Notes |
@@ -171,7 +220,7 @@ specs/<app>/<version>-*.md      rendered spec docs + auth surface
 diffs/<app>-<a>-to-<b>.md       release-over-release protocol evolution
 audits/<app>/<version>.{json,md} attack-surface findings + per-release surface diff
 docs/target-assessment.md       which apps fit the pipeline (fat vs thin bundles)
-tools/                          extractor · differ · renderer · proto emitter · auditor · release tracker
+tools/                          extractor · differ · renderer · proto emitter · auditors · release tracker · MCP server
 ```
 
 ## Automation

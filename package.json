@@ -1,0 +1,38 @@
+{
+  "name": "wirecat",
+  "version": "1.1.0",
+  "description": "Static security auditor for privileged boundaries: Electron IPC+webPreferences and HTTP route×guard inventory, with confidence-tiered findings and version diffs",
+  "license": "MIT",
+  "type": "commonjs",
+  "engines": { "node": ">=18" },
+  "bin": {
+    "wirecat-extract": "tools/extract-bundle-protos.mjs",
+    "wirecat-diff-catalogs": "tools/diff-catalogs.mjs",
+    "wirecat-emit-proto": "tools/emit-proto.mjs",
+    "wirecat-render-spec": "tools/render-spec.mjs",
+    "wirecat-audit-electron": "tools/audit-electron.mjs",
+    "wirecat-audit-routes": "tools/audit-routes.mjs",
+    "wirecat-mcp": "tools/mcp-server.mjs"
+  },
+  "files": [
+    "tools/",
+    "README.md",
+    "README_zh.md",
+    "docs/"
+  ],
+  "keywords": [
+    "electron",
+    "security",
+    "static-analysis",
+    "ipc",
+    "express",
+    "nestjs",
+    "route-audit",
+    "attack-surface",
+    "protobuf"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/aznikline/wirecat"
+  }
+}
