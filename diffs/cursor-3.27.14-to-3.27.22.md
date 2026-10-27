@@ -1,0 +1,554 @@
+# Catalog diff: 3.27.14 -> 3.27.22
+
+- **services**: +0 / -0 / ~22
+- **messages**: +0 / -0 / ~72
+- **enums**: +0 / -0 / ~0
+- **ipc_channels**: +0 / -0 / ~0
+- **endpoint_hosts**: +0 / -0 / ~0
+
+## Changed services (22)
+- `aiserver.v1.AgentStoreService`
+  - changed: `ListAgentStores`
+  - changed: `ListAgentStoreEntries`
+  - changed: `ReadAgentStoreFile`
+  - changed: `WriteAgentStoreDocument`
+  - changed: `SetAgentStoreDocumentVisibility`
+  - changed: `MintAgentStoreToken`
+  - changed: `ListAgentStoreFiles`
+  - changed: `ListAgentStoreDirectory`
+  - changed: `CheckAgentStoreVersions`
+  - changed: `RecordAgentStoreListingVersionAudit`
+  - changed: `PresignAgentStoreReads`
+  - changed: `PresignAgentStoreWrites`
+  - changed: `CompleteAgentStoreMultipartWrites`
+  - changed: `AbortAgentStoreMultipartWrites`
+  - changed: `AcquireAgentStoreFileLock`
+  - changed: `RenewAgentStoreFileLock`
+  - changed: `ReleaseAgentStoreFileLock`
+  - changed: `GetAgentStoreFileLock`
+  - changed: `DeleteAgentStoreFiles`
+  - changed: `RmdirAgentStore`
+  - changed: `UndeleteAgentStoreFiles`
+  - changed: `ListAgentStoreTombstones`
+  - changed: `ShareAgentStore`
+  - changed: `UnshareAgentStore`
+  - changed: `ListSharedAgentStores`
+- `aiserver.v1.CodebaseSnapshotService`
+  - changed: `CreatePackfileUpload`
+- `agent.v1.TmuxSessionService`
+  - changed: `KillSession`
+- `aiserver.v1.AiProjectService`
+  - changed: `AiProjectStepFeedback`
+- `aiserver.v1.WebProfilingService`
+  - changed: `SubmitInteractionWindow`
+- `aiserver.v1.AppPublishService`
+  - changed: `WidenAppSecretScope`
+- `aiserver.v1.AutomationsService`
+  - changed: `ReassignAutomationOwner`
+  - changed: `GetWorkflowTemplate`
+- `aiserver.v1.SCMService`
+  - changed: `ReopenPullRequest`
+- `aiserver.v1.BugbotAdminService`
+  - changed: `GetProUserTrialEnd`
+- `aiserver.v1.CustomerEvalsService`
+  - changed: `GetCustomerEvalRunAggregates`
+- `aiserver.v1.EnterpriseAdminService`
+  - changed: `GetBetaAccess`
+- `aiserver.v1.EvalTrackingService`
+  - changed: `SetRayJobName`
+- `aiserver.v1.GitGraphService`
+  - changed: `InitGitGraphChallenge`
+- `aiserver.v1.SandBoxService`
+  - changed: `CompleteSandBoxStoreMultipartWrites`
+  - changed: `KillTeamMemberSandBox`
+- `aiserver.v1.GrokBotService`
+  - changed: `CompleteSandBoxStoreMultipartWrites`
+  - changed: `KillTeamMemberSandBox`
+  - changed: `CompleteGrokBotAttachmentUpload`
+  - changed: `ListGrokBotAgentRoutines`
+  - changed: `SetGrokBotAgentDraftingDisabled`
+  - changed: `ReadGrokBotEmailAttachment`
+  - changed: `ListGrokBotTemplates`
+  - changed: `SendGrokBotDraft`
+  - changed: `EnsureGrokBotPullRequestChat`
+  - changed: `DeleteGrokBotMarketplaceListingInternal`
+- `aiserver.v1.RelayService`
+  - changed: `RetryBackfill`
+- `aiserver.v1.RemoteAgentHostPresenceService`
+  - changed: `RevokeController`
+- `aiserver.v1.SchedulerService`
+  - changed: `ReportUsage`
+- `aiserver.v1.XaiUnificationPartnerService`
+  - changed: `GetUnifyEligibility`
+  - changed: `ListCursorTeamsForMerge`
+- `aiserver.v1.UploadService`
+  - changed: `GetDoc`
+- `aiserver.v1.VmDaemonService`
+  - changed: `SyncIndex`
+- `origin.v1.OriginService`
+  - added: `ListHostedRepos`
+  - added: `CreateRepo`
+  - added: `CreateRepoAndEnsureUserNamespace`
+  - added: `PublishAgentTempRepo`
+  - added: `CreateMirroredRepo`
+  - added: `FilterMirrorableGithubRepos`
+  - added: `DeleteRepo`
+  - added: `DeleteMirroredRepo`
+  - added: `GetRepo`
+  - added: `GetRepoWithMirrorInfo`
+  - added: `GetRepoByGithubMirror`
+  - added: `RecordCloneKitUsage`
+  - added: `UpdateRepoMergeSettings`
+  - added: `UpdateRepoBranchDeletionSetting`
+  - added: `ListRepoOwnerNoticeTeamSlackChannels`
+  - added: `SetRepoOwnerNoticeTeamSlackChannel`
+  - added: `DeleteRepoOwnerNoticeTeamSlackChannel`
+  - added: `GetRepoOwnerNoticeDefaultSlackChannel`
+  - added: `SetRepoOwnerNoticeDefaultSlackChannel`
+  - added: `DeleteRepoOwnerNoticeDefaultSlackChannel`
+  - added: `ListRepoOwnerNoticeMappableGroups`
+  - added: `ListRepoCloneKits`
+  - added: `UpdateRepoVisibility`
+  - added: `UpdateRepoDefaultBranch`
+  - added: `DetachRepoMirror`
+  - added: `ReattachRepoMirror`
+  - added: `TransitionRepoMirrorStatus`
+  - added: `ForceRepoMirrorCutover`
+  - added: `SyncMirror`
+  - added: `CreateRepoMirrorDeployKey`
+  - added: `GetRepoMirrorDeployKey`
+  - added: `DeleteRepoMirrorDeployKey`
+  - added: `GetMirrorTransitionJob`
+  - added: `GetActiveMirrorTransitionJob`
+  - added: `GetRepoNamespace`
+  - added: `DoesNamespaceExistForTeam`
+  - added: `GetAuthorizedNamespaces`
+  - added: `CreateOriginNamespace`
+  - added: `SetupTeamNamespace`
+  - added: `SetupUserNamespace`
+  - added: `SuggestOriginNamespace`
+  - added: `ListRepoAssignablePolicies`
+  - added: `GetRepoTeamAccess`
+  - added: `ListRepoGrants`
+  - added: `SetRepoTeamAccess`
+  - added: `SetRepoUserAccess`
+  - added: `CreateRepoShareInvite`
+  - added: `CreateRepoShareBatchInvites`
+  - added: `UpdateRepoShareInvite`
+  - added: `RevokeRepoShareInvite`
+  - added: `ListRepoShareInvites`
+  - added: `GetShareInviteByToken`
+  - added: `DeclineShareInvite`
+  - added: `AcceptShareInvite`
+  - added: `ListMyShareInvites`
+  - added: `ListMyExternalRepositories`
+  - added: `LeaveMyExternalRepository`
+  - added: `SetRepoGroupAccess`
+  - added: `HasOriginPermission`
+  - added: `GetNamespaceTeamAccess`
+  - added: `SetNamespaceTeamAccess`
+  - added: `ListNamespaceGrants`
+  - added: `SetNamespaceUserAccess`
+  - added: `SetNamespaceGroupAccess`
+  - added: `ListNamespaceAssignablePolicies`
+  - added: `ListGroupGrantsInNamespace`
+  - added: `GetNamespaceSshCertificateAuthorities`
+  - added: `AddNamespaceSshCertificateAuthority`
+  - added: `RemoveNamespaceSshCertificateAuthority`
+  - added: `SetNamespaceSshRequireCertificates`
+  - added: `GetNamespaceInboundIpAllowlist`
+  - added: `AddNamespaceInboundIpAllowlistEntry`
+  - added: `UpdateNamespaceInboundIpAllowlistEntry`
+  - added: `DeleteNamespaceInboundIpAllowlistEntry`
+  - added: `SetNamespaceInboundIpAllowlistEnabled`
+  - added: `AddSshPublicKey`
+  - added: `ListSshPublicKeys`
+  - added: `DeleteSshPublicKey`
+  - added: `GetCliFeatureFlags`
+  - added: `SubmitCliFeedback`
+  - added: `UpsertOriginUserSlackNotification`
+  - added: `DeleteOriginUserSlackNotification`
+  - added: `GetOriginUserSlackNotification`
+  - added: `GetOriginCommitEmailVerification`
+  - added: `StartOriginCommitEmailVerification`
+  - added: `CreateOriginUserSlackReviewReminder`
+  - added: `UpdateOriginUserSlackReviewReminder`
+  - added: `ListOriginUserSlackReviewReminders`
+  - added: `GetOriginUserSlackReviewReminder`
+  - added: `DisableOriginUserSlackReviewReminder`
+  - added: `SubscribeOriginSlackChannel`
+  - added: `UnsubscribeOriginSlackChannel`
+  - added: `ListOriginSlackChannelSubscriptions`
+  - added: `GetCommit`
+  - added: `GetBlob`
+  - added: `GetTag`
+  - added: `GetTree`
+  - added: `ResolveRepoPath`
+  - added: `GetRepoContent`
+  - added: `MintRawRepoFileLink`
+  - added: `GetRepoTarball`
+  - added: `GetRepoContentAtSha`
+  - added: `GetRepoContentDetailsAtSha`
+  - added: `BatchGetRepoContentAtSha`
+  - added: `ResolveCodeIntelligenceSymbolAtPosition`
+  - added: `FindCodeIntelligenceReferencesAtPosition`
+  - added: `GetRepoCodeowners`
+  - added: `GetGithubRepoCodeowners`
+  - added: `GetFileHistory`
+  - added: `GetFileHistoryPage`
+  - added: `GetFileHistoryPageWithDiffStats`
+  - added: `GetFuzzyPaths`
+  - added: `ListRepoPaths`
+  - added: `GrepRepo`
+  - added: `GetPullRequestDiff`
+  - added: `GetCommitDiff`
+  - added: `GetCommitDiff2`
+  - added: `GetCommitChangedPaths`
+  - added: `GetCommitDiffStats`
+  - added: `GetBlame`
+  - added: `GetTreeBlame`
+  - added: `ListRefs`
+  - added: `SearchRefs`
+  - added: `LookupCommits`
+  - added: `GetCommitActivity`
+  - added: `CompareCommits`
+  - added: `ListCommitsInRange`
+  - added: `ListCommits`
+  - added: `CanMerge`
+  - added: `CreateCommitFromFiles`
+  - added: `GetCollectedPullRequestDiff`
+  - added: `GetDiffListing`
+  - added: `StreamDiffFiles`
+  - added: `GetDiffFile`
+  - added: `GetDiffEngineInfo`
+  - added: `PortAnchors`
+  - added: `CreateChange`
+  - added: `ImportGithubPullRequest`
+  - added: `UpdateChange`
+  - added: `UpdateChangeBranch`
+  - added: `GetMergeConflictResolution`
+  - added: `ApplyMergeConflictResolution`
+  - added: `UndoMergeConflictResolution`
+  - added: `DeleteChangeHeadBranch`
+  - added: `RestorePullRequestBranch`
+  - added: `RetargetChange`
+  - added: `FoldChange`
+  - added: `LandChangeTreePath`
+  - added: `SplitChangeIntoStack`
+  - added: `UpdateChangeMetadata`
+  - added: `UpdateChangeStatus`
+  - added: `CommandeerChange`
+  - added: `CreateReview`
+  - added: `UpdateReview`
+  - added: `DismissReview`
+  - added: `ListReviews`
+  - added: `ListChangeTimelineEvents`
+  - added: `StartReview`
+  - added: `SubmitReview`
+  - added: `DiscardPendingReview`
+  - added: `GetPendingReview`
+  - added: `RequestReview`
+  - added: `ApplyReviewRequestChanges`
+  - added: `RequestReviews`
+  - added: `CloseReviewRequest`
+  - added: `ListReviewRequestEvents`
+  - added: `AddAssignee`
+  - added: `RemoveAssignee`
+  - added: `ListOriginRepoReviewerCandidates`
+  - added: `CreateComment`
+  - added: `ListComments`
+  - added: `CreateCommentThread`
+  - added: `CreateOwnershipExemption`
+  - added: `SubmitPullRequestGateReport`
+  - added: `SubmitPersonalPullRequestGateReport`
+  - added: `ListPullRequestGateReports`
+  - added: `UploadPullRequestGateTranscript`
+  - added: `GetPullRequestGateTranscript`
+  - added: `GetGateReportAuditInput`
+  - added: `CompleteGateReportAudit`
+  - added: `ListPersonalGates`
+  - added: `SetPersonalGate`
+  - added: `RemovePersonalGate`
+  - added: `ExemptPullRequestPersonalGate`
+  - added: `RemovePullRequestPersonalGateExemption`
+  - added: `RecordAgenticOwnersRiskRating`
+  - added: `ListCommentThreads`
+  - added: `AddCommentToThread`
+  - added: `ResolveCommentThread`
+  - added: `ReopenCommentThread`
+  - added: `UpdateComment`
+  - added: `DeleteComment`
+  - added: `SetCommentReaction`
+  - added: `ListCommentReactions`
+  - added: `MarkFileAsViewed`
+  - added: `UnmarkFileAsViewed`
+  - added: `MarkDirectoryAsViewed`
+  - added: `MarkAllFilesAsViewed`
+  - added: `UnmarkAllFilesAsViewed`
+  - added: `ListFileViewedStates`
+  - added: `MarkPullRequestAsViewed`
+  - added: `GetGeneratedCodeTour`
+  - added: `UpsertGeneratedCodeTour`
+  - added: `EnableChangeMergeWhenReady`
+  - added: `GetChangeMergeWhenReady`
+  - added: `DisableChangeMergeWhenReady`
+  - added: `EnqueueForMerge`
+  - added: `CancelMergeQueueEntry`
+  - added: `GetMergeQueueStatus`
+  - added: `GetMergeQueue`
+  - added: `GetMergeQueueConfig`
+  - added: `EnableMergeQueue`
+  - added: `DisableMergeQueue`
+  - added: `UpdateMergeQueueConfig`
+  - added: `GetChange`
+  - added: `GetChangeCodeownersApplication`
+  - added: `GetProjectedLatestVersions`
+  - added: `GetChangeStackPageData`
+  - added: `GetChangeStack`
+  - added: `ListChangeCommits`
+  - added: `ListChanges`
+  - added: `ListChangesByHeadRef`
+  - added: `GetCommitReferences`
+  - added: `BatchGetChanges`
+  - added: `SearchChanges`
+  - added: `GetSectionOfChanges`
+  - added: `ListChangeStacks`
+  - added: `ListChangeStackMembers`
+  - added: `CountSectionsOfChanges`
+  - added: `GetCiState`
+  - added: `BatchGetCommitCheckRollups`
+  - added: `GetCheckRun`
+  - added: `ListRepoCheckSources`
+  - added: `GetOriginCiJobLog`
+  - added: `GetOriginCiRun`
+  - added: `PostCheckRun`
+  - added: `CreateCheckRunAnnotations`
+  - added: `ListCheckRunAnnotations`
+  - added: `RerequestCheckRun`
+  - added: `GetChangesetMergeability`
+  - added: `GetReviewRequirements`
+  - added: `MergeStack`
+  - added: `RevertPullRequest`
+  - added: `RestackStack`
+  - added: `GetApp`
+  - added: `CreateApp`
+  - added: `AddAppSigningKey`
+  - added: `RevokeAppSigningKey`
+  - added: `GetAppMetadata`
+  - added: `ListNamespaceApps`
+  - added: `ListPublicApps`
+  - added: `CreateInstallation`
+  - added: `GetInstallation`
+  - added: `ListNamespaceInstallations`
+  - added: `ListRepoInstallations`
+  - added: `UpdateApp`
+  - added: `SetAppWebhookDeliveryEnabled`
+  - added: `SendAppWebhookTestDelivery`
+  - added: `SubmitAppForMarketplaceReview`
+  - added: `CheckMarketplaceListingSlug`
+  - added: `SetAppVisibility`
+  - added: `DeleteApp`
+  - added: `SetAppIcon`
+  - added: `ListAppCustomEmoji`
+  - added: `UpsertAppCustomEmoji`
+  - added: `DeleteAppCustomEmoji`
+  - added: `DeleteInstallation`
+  - added: `SuspendInstallation`
+  - added: `UnsuspendInstallation`
+  - added: `ListReposForAppInstall`
+  - added: `PreviewAppInstallation`
+  - added: `RequestAppInstall`
+  - added: `GetMyAppInstallRequest`
+  - added: `CancelMyAppInstallRequest`
+  - added: `ListAppInstallRequests`
+  - added: `DenyAppInstallRequests`
+  - added: `GetAtlasNode`
+  - added: `ListAtlasNodePaths`
+  - added: `GetAtlasRepoStatus`
+  - added: `SetAtlasRepoConfig`
+  - added: `RefreshAtlasRepo`
+  - added: `ListRulesets`
+  - added: `GetRuleset`
+  - added: `UpsertRuleset`
+  - added: `DeleteRuleset`
+  - added: `CreateLabel`
+  - added: `UpdateLabel`
+  - added: `DeleteLabel`
+  - added: `ListLabels`
+  - added: `GetLabelByName`
+  - added: `AddLabelToChange`
+  - added: `RemoveLabelFromChange`
+  - added: `CheckChangeCreationAccess`
+  - added: `WatchChangeSyncEvents`
+  - added: `GetChangeSyncSnapshot`
+  - added: `FastForwardBranch`
+  - added: `ListRepoExternalCollaborators`
+  - added: `SetRepoExternalCollaboratorAccess`
+  - added: `PreviewAppUserConfirmation`
+  - added: `ListAppUserConfirmationInstallations`
+  - added: `ConfirmAppUserConfirmation`
+  - added: `GithubOutageDrillProbe`
+  - changed: `WatchChangeSyncEventsV2`
+  - changed: `UpdateWatchChangeSyncSubscriptions`
+
+## Changed messages (72)
+- `aiserver.v1.ErrorDetails`
+  - changed: `1 error -> error`
+- `aiserver.v1.SyncMerkleSubtreeV2Request`
+  - changed: `1 client_repository_info -> client_repository_info`
+- `aiserver.v1.SyncMerkleSubtreeV2Response`
+  - changed: `2 mismatch -> mismatch`
+- `aiserver.v1.SyncMerkleSubtreeV2Response.PartialPathResult`
+  - changed: `2 mismatch -> mismatch`
+- `aiserver.v1.FastUpdateFileV2Request`
+  - changed: `1 client_repository_info -> client_repository_info`
+- `aiserver.v1.GetServerConfigResponse`
+  - changed: `21 interaction_config -> interaction_config`
+  - changed: `24 update_config -> update_config`
+- `aiserver.v1.CreatePackfileUploadResponse.AlreadyUploaded`
+  - changed: `1 direct_chunked_upload -> direct_chunked_upload`
+- `aiserver.v1.PackfileUploadCompletion`
+  - changed: `1 direct_chunked_upload -> direct_chunked_upload`
+- `aiserver.v1.StreamHoldCppRequest`
+  - changed: `1 current_file -> current_file`
+  - changed: `10 model_details -> model_details`
+- `aiserver.v1.StreamedBackToolCallV2`
+  - changed: `37 fix_lints_params -> fix_lints_params`
+  - changed: `64 create_plan_params -> create_plan_params`
+- `agent.v1.AgentRunRequest`
+  - changed: `29 system_prompt_spec -> system_prompt_spec`
+- `agent.v1.AgentHostTurnOptions`
+  - changed: `24 system_prompt_spec -> system_prompt_spec`
+- `agent.v1.AgentHostAgentStoreConflictNoticeResult`
+  - changed: `5 failed -> failed`
+- `agent.v1.ArtifactUploadMetadata`
+  - changed: `4 status -> status`
+- `agent.v1.UploadArtifactsRequest`
+  - changed: `1 uploads -> uploads`
+- `agent.v1.ReadFileResponse`
+  - changed: `3 complete -> complete`
+- `aiserver.v1.AiProjectAgentInitRequest`
+  - changed: `1 model_details -> model_details`
+- `aiserver.v1.AiProjectClarificationRequest`
+  - changed: `1 model_details -> model_details`
+- `aiserver.v1.AiProjectAgentPlanRequest`
+  - changed: `1 model_details -> model_details`
+- `aiserver.v1.AiProjectPlanFeedbackRequest`
+  - changed: `1 model_details -> model_details`
+- `aiserver.v1.AiProjectBreakdownRequest`
+  - changed: `1 model_details -> model_details`
+- `aiserver.v1.AiProjectBreakdownFeedbackRequest`
+  - changed: `1 model_details -> model_details`
+- `aiserver.v1.AiProjectStepRequest`
+  - changed: `1 model_details -> model_details`
+- `aiserver.v1.AiProjectStepFeedbackRequest`
+  - changed: `1 model_details -> model_details`
+- `aiserver.v1.StreamUnifiedChatRequest`
+  - changed: `5 model_details -> model_details`
+  - changed: `15 current_file -> current_file`
+  - changed: `58 project_layouts -> project_layouts`
+- `aiserver.v1.TerminalCmdKOptions`
+  - changed: `3 model_details -> model_details`
+- `aiserver.v1.CmdKOptions`
+  - changed: `3 model_details -> model_details`
+- `aiserver.v1.ReportEditFateResponse`
+  - changed: `2 current_file -> current_file`
+- `aiserver.v1.WarmApplyRequest`
+  - changed: `2 current_file -> current_file`
+- `aiserver.v1.TokenIndex`
+  - changed: `1 tokens_with_logprobs -> tokens_with_logprobs`
+- `aiserver.v1.TraceSpan`
+  - changed: `13 links -> links`
+- `aiserver.v1.AppDeployment`
+  - changed: `3 status -> status`
+- `aiserver.v1.Workflow`
+  - changed: `3 prompts -> prompts`
+- `aiserver.v1.Automation`
+  - changed: `19 appearance -> appearance`
+- `aiserver.v1.AutomationWithOwner`
+  - changed: `1 workflow -> workflow`
+- `aiserver.v1.CreateWorkflowFromTemplateResponse`
+  - changed: `1 workflow -> workflow`
+- `aiserver.v1.GetXaiTeamPlanManagementResponse`
+  - changed: `12 seat_offers -> seat_offers`
+- `aiserver.v1.CursorPredictionConfigResponse`
+  - changed: `1 models -> models`
+- `aiserver.v1.CustomerEvalStaticMetric`
+  - changed: `1 key -> key`
+- `aiserver.v1.ListCustomerEvalRunsResponse`
+  - changed: `1 runs -> runs`
+- `aiserver.v1.BugAnalysisRequest`
+  - changed: `3 model_details -> model_details`
+- `aiserver.v1.CommitSandBoxStoreManifestResponse`
+  - changed: `1 status -> status`
+- `aiserver.v1.GrokBotAutoReviewRuleSave`
+  - changed: `2 text_source -> text_source`
+- `aiserver.v1.ListGrokBotAgentsResponse`
+  - changed: `4 teams_connections -> teams_connections`
+- `aiserver.v1.ListGrokBotTeamAgentsResponse`
+  - changed: `3 teams_connections -> teams_connections`
+- `aiserver.v1.GrokBotUserComputerRequestFrame`
+  - changed: `12 discover_ai_tool -> discover_ai_tool`
+- `aiserver.v1.RequestGrokBotRoomMemberTurnRequest`
+  - changed: `2 room -> room`
+- `aiserver.v1.RequestGrokBotRoomMemberTurnResponse`
+  - changed: `1 dispatch -> dispatch`
+- `aiserver.v1.GrokBotHarnessMigrationPassStatus`
+  - changed: `8 agents -> agents`
+- `aiserver.v1.DeleteTeamGrokBotResponse`
+  - changed: `1 slack_app_removal -> slack_app_removal`
+- `aiserver.v1.GrokBotMeetingRequestLogEvent`
+  - changed: `5 closed -> closed`
+- `aiserver.v1.Opus2ChainPlanRequest`
+  - changed: `8 codebase_information -> codebase_information`
+- `aiserver.v1.RunInferenceClientMessage`
+  - changed: `6 agent_event -> agent_event`
+- `aiserver.v1.DismissOnboardingChecklistItemResponse`
+  - added: `10 snapshot_date_unix_milliseconds`
+  - added: `11 name`
+  - removed: `5 prompt_model`
+  - changed: `1 model_name -> agent_request_id`
+  - changed: `2 conversation_id -> initial_file_snapshots`
+  - changed: `3 client_turn_id -> file_snapshots`
+  - changed: `4 prompt_model_name -> too_big_files`
+- `aiserver.v1.CompleteRecommendedActionResponse`
+  - removed: `3 data`
+  - removed: `4 kind`
+  - removed: `5 error`
+  - changed: `1 id -> commit`
+  - changed: `2 method -> branch`
+- `aiserver.v1.RelayPipelineRunRecord`
+  - changed: `5 run_kind -> run_kind`
+- `aiserver.v1.CreateRelayPipelineRunRequest`
+  - changed: `3 run_kind -> run_kind`
+- `aiserver.v1.ListRelayPipelineRunsRequest`
+  - changed: `4 run_kind -> run_kind`
+- `aiserver.v1.UnpairControllerResponse`
+  - removed: `2 name`
+  - changed: `1 org -> healthy`
+- `aiserver.v1.PreflightPairReleaseResponse`
+  - changed: `2 error -> error`
+- `aiserver.v1.ApplyPairReleaseResponse`
+  - changed: `2 error -> error`
+- `origin.v1.AuthenticatedOriginViewer`
+  - changed: `3 gate -> gate`
+- `origin.v1.CodeIntelligenceIndex`
+  - changed: `2 provenance -> provenance`
+- `origin.v1.ChangeAssignment`
+  - changed: `6 created_via -> created_via`
+- `origin.v1.ReviewRequestEvent`
+  - changed: `7 created_via -> created_via`
+- `origin.v1.ChangeCodeownersChangedPath`
+  - changed: `5 resolved_owner_rules -> resolved_owner_rules`
+- `origin.v1.SectionOfChangesFilter`
+  - changed: `20 num_lines_changed -> num_lines_changed`
+- `origin.v1.UpdateAppRequest`
+  - changed: `11 default_scopes -> default_scopes`
+- `origin.v1.SetAtlasRepoConfigResponse`
+  - changed: `1 status -> status`
+- `agent.v1.RequestContextSubagentsPart`
+  - changed: `1 custom_subagents -> custom_subagents`
+- `aiserver.v1.ConversationMessage.MultiRangeCodeChunk`
+  - changed: `1 ranges -> ranges`
+- `aiserver.v1.WaterfallSpan`
+  - changed: `7 call_to_action -> call_to_action`
