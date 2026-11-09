@@ -1,0 +1,258 @@
+# Catalog diff: 3.29.9 -> 3.29.15
+
+- **services**: +0 / -0 / ~9
+- **messages**: +0 / -0 / ~92
+- **enums**: +0 / -0 / ~0
+- **ipc_channels**: +0 / -0 / ~0
+- **endpoint_hosts**: +2 / -0 / ~0
+
+## Changed services (9)
+- `aiserver.v1.CppService`
+  - changed: `MarkCppForEval`
+  - changed: `RecordCppFate`
+- `aiserver.v1.AppPublishService`
+  - changed: `ListPublishProposals`
+  - changed: `ListAppSecrets`
+  - changed: `GetAppAccessList`
+- `scmapi.v0.ScmService`
+  - changed: `GetPrAgentContext`
+  - changed: `ClosePullRequest`
+  - changed: `GetPullRequestCodeowners`
+- `origin.v1.OriginService`
+  - changed: `UpdateRepoBranchDeletionSetting`
+  - changed: `CancelPullRequestBypassRequest`
+  - changed: `GetActiveMirrorTransitionJob`
+  - changed: `GetShareInviteByToken`
+  - changed: `SetRepoGroupAccess`
+  - changed: `RemoveNamespaceSshCertificateAuthority`
+  - changed: `GetOriginUserEmailNotification`
+  - changed: `GetTag`
+  - changed: `MintRawRepoFileLink`
+  - changed: `UpdateChangeMetadata`
+  - changed: `ListReviews`
+  - changed: `ListPullRequestGateReports`
+  - changed: `SetPersonalGate`
+  - changed: `ReopenCommentThread`
+  - changed: `MarkPullRequestAsViewed`
+  - changed: `GetMergeQueueTimeline`
+  - changed: `GetProjectedLatestVersions`
+  - changed: `ListCheckRunAnnotations`
+  - changed: `UpdateAppWithEgressIpRanges`
+  - changed: `ListRepoInstallations`
+  - changed: `SetAppIcon`
+  - changed: `ListAtlasNodePaths`
+  - changed: `DeleteLabel`
+  - changed: `DeleteBranch`
+  - changed: `GithubOutageDrillProbe`
+- `aiserver.v1.RecommendedActionsService`
+  - changed: `DismissRecommendedAction`
+- `aiserver.v1.ProfilingService`
+  - changed: `SubmitProfile`
+- `aiserver.v1.UploadService`
+  - changed: `UploadDocumentation`
+- `aiserver.v1.AutomationsService`
+  - changed: `SetAutomationProject`
+  - changed: `ListAgentSdkAutomationRuns`
+  - changed: `GetChangeMonitorTeamSettings`
+  - changed: `UpdateAutomationMemory`
+  - changed: `CreateWorkflowFromTemplate`
+- `aiserver.v1.OnboardingChecklistService`
+  - changed: `DismissOnboardingChecklistItem`
+
+## Changed messages (92)
+- `aiserver.v1.StartBackgroundComposerFromSnapshotRequest`
+  - added: `146 skip_first_project_onboarding`
+- `aiserver.v1.CloudAgentState`
+  - added: `73 skip_first_project_onboarding`
+- `aiserver.v1.SetMcpServerPlacementResponse`
+  - changed: `1 updated -> updated`
+- `aiserver.v1.BatchResponse`
+  - changed: `1 level -> level`
+- `aiserver.v1.ClientLogEntry`
+  - changed: `1 level -> level`
+- `aiserver.v1.StreamUnifiedChatRequest`
+  - changed: `81 workspace_folders -> workspace_folders`
+- `aiserver.v1.StreamUnifiedChatResponse`
+  - changed: `11 web_citation -> web_citation`
+- `aiserver.v1.WarmStreamUnifiedChatWithToolsResponse`
+  - changed: `10 inclusion_type -> inclusion_type`
+- `aiserver.v1.CodeChunkContextInclusionInfoV2`
+  - changed: `10 inclusion_type -> inclusion_type`
+- `aiserver.v1.StreamHoldCppRequest`
+  - changed: `13 context_items -> context_items`
+- `aiserver.v1.ContextStatusUpdate`
+  - changed: `1 context_item_statuses -> context_item_statuses`
+- `aiserver.v1.GetCommitMetricsResponse`
+  - changed: `2 conversations -> conversations`
+- `aiserver.v1.GetServerConfigRequest`
+  - changed: `5 os_properties -> os_properties`
+- `aiserver.v1.PublishReview`
+  - changed: `1 state -> state`
+  - changed: `4 override -> override`
+- `aiserver.v1.GetPublishStatusResponse`
+  - added: `20 result_followup_id`
+- `aiserver.v1.AppAccessList`
+  - changed: `1 entries -> entries`
+- `aiserver.v1.UpdateAppAccessListRequest`
+  - changed: `3 entries -> entries`
+- `aiserver.v1.UpdatePublishedPageShareRequest`
+  - changed: `5 visibility -> visibility`
+- `agent.v1.AgentServerMessage`
+  - changed: `2 exec_server_message -> exec_server_message`
+- `aiserver.v1.Action`
+  - changed: `13 microsoft_teams -> microsoft_teams`
+- `aiserver.v1.GitTrigger`
+  - changed: `8 pull_request_review_comment -> pull_request_review_comment`
+- `aiserver.v1.CapturedProfile`
+  - changed: `2 duration -> duration`
+- `aiserver.v1.Interaction`
+  - changed: `2 type -> type`
+- `aiserver.v1.ToolCallTelemetryEvent`
+  - changed: `7 duration -> duration`
+  - changed: `13 approval_wait_duration -> approval_wait_duration`
+- `aiserver.v1.ChatRequestTelemetryEvent`
+  - changed: `6 duration -> duration`
+- `agent.v1.AgentHostApprovalOperation`
+  - changed: `3 read -> read`
+- `agent.v1.RespondToAgentHostInteractionResponse`
+  - changed: `1 status -> status`
+- `agent.v1.WatchAgentHostSessionBackgroundWorkEvent`
+  - changed: `2 state -> state`
+- `agent.v1.AgentHostConnected`
+  - changed: `2 trigger -> trigger`
+- `agent.v1.AgentHostReconnecting`
+  - changed: `2 trigger -> trigger`
+- `aiserver.v1.WaterfallSpan`
+  - changed: `6 status -> status`
+- `git_forge.v1.CommitDiff2Chunk`
+  - changed: `1 header -> header`
+- `origin.v1.Comment`
+  - changed: `13 reaction_groups -> reaction_groups`
+- `origin.v1.CreateReviewResponse`
+  - changed: `1 review -> review`
+- `origin.v1.UpdateReviewResponse`
+  - changed: `1 review -> review`
+- `origin.v1.DismissReviewResponse`
+  - changed: `1 review -> review`
+- `origin.v1.ListReviewsResponse`
+  - changed: `1 reviews -> reviews`
+- `origin.v1.ChangeCodeowner`
+  - changed: `5 reviewer_group -> reviewer_group`
+- `origin.v1.SectionOfChangesFilter`
+  - changed: `8 trunk -> trunk`
+  - changed: `21 includes_reviewer -> includes_reviewer`
+- `origin.v1.StartReviewResponse`
+  - changed: `1 review -> review`
+- `origin.v1.SubmitReviewResponse`
+  - changed: `1 review -> review`
+- `origin.v1.GetPendingReviewResponse`
+  - changed: `1 review -> review`
+- `origin.v1.SubmitPullRequestGateReportResponse`
+  - changed: `1 submitted -> submitted`
+- `origin.v1.ListPullRequestGateReportsResponse`
+  - changed: `4 reports -> reports`
+  - changed: `5 personal_reports -> personal_reports`
+  - changed: `6 others_personal_reports -> others_personal_reports`
+- `origin.v1.GateReportAuditInput`
+  - changed: `2 report -> report`
+- `origin.v1.GrepRepoClientRequest`
+  - changed: `7 priority -> priority`
+- `origin.v1.GetCiFailureInsightsClientResponse`
+  - changed: `5 totals -> totals`
+- `origin.v1.CiFailureInsightsHour`
+  - changed: `2 counts -> counts`
+- `origin.v1.CiFailureInsightsCheck`
+  - changed: `4 counts -> counts`
+- `aiserver.v1.InferenceStreamRequest`
+  - changed: `1 messages -> messages`
+- `aiserver.v1.InferenceRequestedModel`
+  - changed: `3 parameters -> parameters`
+- `aiserver.v1.AgentFollowupCategorizationRequest`
+  - changed: `3 messages -> messages`
+- `aiserver.v1.AgentPostTurnLabelingRequest`
+  - changed: `2 messages -> messages`
+  - changed: `10 parent_messages -> parent_messages`
+- `aiserver.v1.RunInferenceRunRequest`
+  - changed: `8 subagent_model_overrides -> subagent_model_overrides`
+- `aiserver.v1.RunInferenceRunReady`
+  - changed: `25 prompt_cache_refill -> prompt_cache_refill`
+- `aiserver.v1.RemoteAgentHostFrame`
+  - changed: `4 kind -> kind`
+- `aiserver.v1.ListPendingControllerApprovalsResponse`
+  - changed: `1 approvals -> approvals`
+- `agent.v1.TmuxSession`
+  - changed: `4 kind -> kind`
+- `agent.v1.CreateTmuxSessionRequest`
+  - changed: `3 kind -> kind`
+- `aiserver.v1.RescrapeDocsRequestV2`
+  - changed: `1 new_doc_req -> new_doc_req`
+- `aiserver.v1.UploadedStatus`
+  - changed: `1 status -> status`
+- `origin.v1.AddSshPublicKeyResponse`
+  - changed: `1 ssh_public_key -> ssh_public_key`
+- `origin.v1.ListSshPublicKeysRequest`
+  - changed: `1 ssh_public_keys -> ssh_public_keys`
+- `origin.v1.ListSshPublicKeysResponse`
+  - changed: `1 ssh_public_keys -> ssh_public_keys`
+- `origin.v1.FindCodeIntelligenceReferencesAtPositionResponse`
+  - changed: `3 trailer -> trailer`
+- `origin.v1.ImportedGithubPullRequest`
+  - changed: `17 reviews -> reviews`
+- `origin.v1.GetCiStateResponse`
+  - changed: `4 personal_gates -> personal_gates`
+- `origin.v1.CheckRunAnnotationBatch`
+  - changed: `1 annotations -> annotations`
+- `origin.v1.CreateCheckRunAnnotationsResponse`
+  - changed: `1 annotations -> annotations`
+- `origin.v1.ListCheckRunAnnotationsResponse`
+  - changed: `1 annotations -> annotations`
+- `origin.v1.GetChangesetMergeabilityResponse`
+  - changed: `17 origin_blockers -> origin_blockers`
+- `origin.v1.ChangesetMergeabilitySummary`
+  - changed: `4 origin_blockers -> origin_blockers`
+- `origin.v1.GetOriginCiJobTraceResponse`
+  - changed: `2 spans -> spans`
+- `origin.v1.ChangeStackPageItem`
+  - changed: `4 reviews -> reviews`
+- `origin.v1.GetReviewRequirementsResponse`
+  - changed: `7 personal_gates -> personal_gates`
+- `origin.v1.CreateAppRequest`
+  - changed: `14 workload_identity_policies -> workload_identity_policies`
+- `origin.v1.CreateAppResponse`
+  - changed: `1 app -> app`
+- `origin.v1.GetAppResponse`
+  - changed: `1 app -> app`
+  - changed: `4 workload_identity_policies -> workload_identity_policies`
+- `origin.v1.UpdateAppWithEgressIpRangesResponse`
+  - changed: `1 app -> app`
+- `origin.v1.AppWorkloadIdentityPoliciesReplace`
+  - changed: `1 policies -> policies`
+- `origin.v1.SetAppWebhookDeliveryEnabledResponse`
+  - changed: `1 app -> app`
+- `origin.v1.SubmitAppForMarketplaceReviewResponse`
+  - changed: `1 app -> app`
+- `origin.v1.UpdateAppResponse`
+  - changed: `1 app -> app`
+- `origin.v1.SetAppVisibilityResponse`
+  - changed: `1 app -> app`
+- `origin.v1.SetAppIconResponse`
+  - changed: `1 app -> app`
+- `origin.v1.ChangeSyncViewerState`
+  - changed: `2 pending_reviews -> pending_reviews`
+- `agent.v1.AgentHostPluginIdentifier`
+  - changed: `4 user_local -> user_local`
+- `agent.v1.AgentHostSurfaceCallbackInvocation`
+  - changed: `25 required_global_commands -> required_global_commands`
+- `agent.v1.RespondAgentHostSurfaceCallbackRequest`
+  - changed: `13 conversation_search -> conversation_search`
+- `agent.v1.AgentExecPermissions`
+  - changed: `6 user_configured_policy -> user_configured_policy`
+  - changed: `11 team_admin_policy -> team_admin_policy`
+- `agent.v1.AgentHostSurfaceAgentStoreRequest`
+  - changed: `7 conflict_notice_note_deferred -> conflict_notice_note_deferred`
+- `agent.v1.AgentHostSurfaceCloudSubagentBackground`
+  - changed: `1 background_reason -> background_reason`
+
+## Added endpoint hosts (2)
+- `feedback.example.com`
+- `s3.example.com`
